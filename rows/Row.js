@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 
 // create a component
 class Row extends Component {
@@ -11,6 +11,7 @@ class Row extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <Image style={styles.photo} source={{url: "https://randomuser.me/api/portraits/thumb/women/53.jpg"}}/>
                 <Text>{this.props.name}</Text>
             </View>
         );
@@ -24,6 +25,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#2c3e50',
+    },
+    photo: {
+        height: 40,
+        width: 40,
+        backgroundColor: "#838833"
     },
 });
 
