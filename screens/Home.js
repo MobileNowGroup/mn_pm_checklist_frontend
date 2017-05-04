@@ -1,6 +1,7 @@
 //import liraries
 import React, { Component } from 'react';
 import { View, Text, Button, StyleSheet, Alert, ListView } from 'react-native';
+import Row from '../rows/Row';
 
 // create a component
 class Home extends Component {
@@ -24,7 +25,7 @@ class Home extends Component {
     }
 
     componentWillMount(){
-        this.setSource(['aaa', 'bbb', 'ccc', 'ddd']);
+        this.setSource([{name: "aaa"}, {name: "bbb"}]);
     }
 
     render() {
@@ -34,7 +35,7 @@ class Home extends Component {
                 style = {styles.list}
                 enableEmptySections
                 dataSource = {this.state.dataSource}
-                renderRow={(data) => <View><Text>{data}</Text></View>}
+                renderRow={(data) => <Row {...data}/>}
                 /*renderRow = {({key, ...value}) => {
                         return (
                             <Row
