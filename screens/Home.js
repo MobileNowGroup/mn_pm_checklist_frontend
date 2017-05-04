@@ -6,18 +6,44 @@ import { View, Text, Button, StyleSheet, Alert, ListView } from 'react-native';
 class Home extends Component {
     constructor(props){
         super(props);
-        // this.newRelease = this.newRelease.bind(this);
+        const ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 !== r2
+        });
+        this.state = {
+            items: ['aaa', 'bbb', 'ccc'],
+            dataSource: ds.cloneWithRows([]),
+        };
+        this.setSource = this.setSource.bind(this);
     };
 
-    // newRelease = (navigation) => {
-    //     navigation.navigate('New')
-    // };
+    setSource(items){
+        this.setState({
+            // items: items, 
+            dataSource: this.state.dataSource.cloneWithRows(items),
+        })
+    }
+
+    componentWillMount(){
+        this.setSource(['aaa', 'bbb', 'ccc', 'ddd']);
+    }
 
     render() {
-        // const { navigate } = this.props.navigation;
         return (
             <View style={styles.container}>
-                <Text>Home</Text>
+                <ListView
+                style = {styles.list}
+                enableEmptySections
+                dataSource = {this.state.dataSource}
+                renderRow={(data) => <View><Text>{data}</Text></View>}
+                /*renderRow = {({key, ...value}) => {
+                        return (
+                            <Row
+                            key = {key}
+                            {...value}
+                            />
+                        )
+                    }}*/
+                />
             </View>
         );
     }
@@ -39,6 +65,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#2c3e50',
+    },
+    list: {
+
+    },
+    separator: {
+
     },
 });
 
