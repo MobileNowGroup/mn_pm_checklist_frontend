@@ -22,19 +22,21 @@ class Row extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        padding: 12,
+        flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#2c3e50',
+        justifyContent: 'flex-start',
     },
     photo: {
         height: 40,
         width: 40,
-        backgroundColor: "#838833"
+        backgroundColor: "#838833",
+        borderRadius: 20,
     },
     text: {
         marginLeft: 12,
         fontSize: 16,
-    }
+    },
 });
 
 //make this component available to the app

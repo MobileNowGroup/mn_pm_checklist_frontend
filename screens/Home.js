@@ -36,6 +36,7 @@ class Home extends Component {
                 enableEmptySections
                 dataSource = {this.state.dataSource}
                 renderRow={(data) => <Row {...data}/>}
+                renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.seperator}/>}
                 /*renderRow = {({key, ...value}) => {
                         return (
                             <Row
@@ -63,16 +64,18 @@ class Home extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#2c3e50',
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        backgroundColor: '#ffffff',
     },
     list: {
 
     },
-    separator: {
-
-    },
+    seperator: {
+        flex: 1,
+        height: StyleSheet.hairlineWidth,
+        backgroundColor: '#8E8E8E',
+    }
 });
 
 //make this component available to the app
