@@ -12,7 +12,7 @@ class Row extends Component {
         return (
             <View style={styles.container}>
                 <Image style={styles.photo} source={{url: "https://randomuser.me/api/portraits/thumb/women/53.jpg"}}/>
-                <Text>{this.props.name}</Text>
+                <Text style={styles.text}>{this.props.name}</Text>
             </View>
         );
     }
@@ -31,6 +31,10 @@ const styles = StyleSheet.create({
         width: 40,
         backgroundColor: "#838833"
     },
+    text: {
+        marginLeft: 12,
+        fontSize: 16,
+    }
 });
 
 //make this component available to the app
