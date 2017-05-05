@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 
 // create a component
-class Row extends Component {
+class HomeRow extends Component {
     componentWillMount(){
         console.log("props are " + this.props.name);
     }
@@ -40,4 +40,4 @@ const styles = StyleSheet.create({
 });
 
 //make this component available to the app
-export default Row;
+export default HomeRow;

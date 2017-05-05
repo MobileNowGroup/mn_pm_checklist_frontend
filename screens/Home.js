@@ -1,7 +1,7 @@
 //import liraries
 import React, { Component } from 'react';
 import { View, Text, Button, StyleSheet, Alert, ListView } from 'react-native';
-import Row from '../views/Row';
+import HomeRow from '../views/HomeRow';
 import Header from '../views/Header';
 
 // create a component
@@ -36,12 +36,16 @@ class Home extends Component {
                 style = {styles.list}
                 enableEmptySections
                 dataSource = {this.state.dataSource}
-                renderRow={(data) => <Row {...data}/>}
+                renderRow={(data) => <HomeRow {...data}/>}
                 renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.seperator}/>}
-                renderHeader={() => <Header />}
+                renderHeader={() => <Header callbackFunc = {this.handleCallback.bind(this)}/>}
                 />
             </View>
         );
+    }
+
+    handleCallback() {
+        Alert.alert("call back");
     }
 
     static navigationOptions = ({navigation}) => {
