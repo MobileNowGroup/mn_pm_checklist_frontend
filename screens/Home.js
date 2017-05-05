@@ -1,7 +1,8 @@
 //import liraries
 import React, { Component } from 'react';
 import { View, Text, Button, StyleSheet, Alert, ListView } from 'react-native';
-import Row from '../rows/Row';
+import Row from '../views/Row';
+import Header from '../views/Header';
 
 // create a component
 class Home extends Component {
@@ -37,14 +38,7 @@ class Home extends Component {
                 dataSource = {this.state.dataSource}
                 renderRow={(data) => <Row {...data}/>}
                 renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.seperator}/>}
-                /*renderRow = {({key, ...value}) => {
-                        return (
-                            <Row
-                            key = {key}
-                            {...value}
-                            />
-                        )
-                    }}*/
+                renderHeader={() => <Header />}
                 />
             </View>
         );
