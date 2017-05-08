@@ -21,8 +21,7 @@ class Home extends Component {
             rowHasChanged: (r1, r2) => r1 !== r2
         });
         this.state = {
-            items: [],
-            projects: [],
+            releases: [],
             dataSource: ds.cloneWithRows([]),
         };
         this.setSource = this.setSource.bind(this);
@@ -37,13 +36,14 @@ class Home extends Component {
 
     getReleases(projectId) {
         axios.get('http://192.168.31.206:3000/project/' + projectId + '/releases')
-            .then(response => this.setSource(response.data));
+            .then(response => this.setSource(response.data))
+            .catch(error => console.log(error));
     }
 
-    setSource(items) {
+    setSource(releases) {
         this.setState({
-            // items: items, 
-            dataSource: this.state.dataSource.cloneWithRows(items),
+            releases,
+            dataSource: this.state.dataSource.cloneWithRows(releases),
         });
     }
 
@@ -53,7 +53,7 @@ class Home extends Component {
     }
 
     handleRowCallback(releaseId) {
-        this.props.navigation.navigate('Detail');
+        this.props.navigation.navigate('Detail', { id: releaseId });
     }
 
     render() {

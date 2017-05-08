@@ -53802,8 +53802,7 @@ var Home = function (_Component) {
             }
         });
         _this.state = {
-            items: [],
-            projects: [],
+            releases: [],
             dataSource: ds.cloneWithRows([])
         };
         _this.setSource = _this.setSource.bind(_this);
@@ -53823,13 +53822,16 @@ var Home = function (_Component) {
 
             _axios2.default.get('http://192.168.31.206:3000/project/' + projectId + '/releases').then(function (response) {
                 return _this2.setSource(response.data);
+            }).catch(function (error) {
+                return console.log(error);
             });
         }
     }, {
         key: 'setSource',
-        value: function setSource(items) {
+        value: function setSource(releases) {
             this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(items)
+                releases: releases,
+                dataSource: this.state.dataSource.cloneWithRows(releases)
             });
         }
     }, {
@@ -53841,7 +53843,7 @@ var Home = function (_Component) {
     }, {
         key: 'handleRowCallback',
         value: function handleRowCallback(releaseId) {
-            this.props.navigation.navigate('Detail');
+            this.props.navigation.navigate('Detail', { id: releaseId });
         }
     }, {
         key: 'render',
@@ -54034,7 +54036,7 @@ var Header = function (_Component) {
             _axios2.default.get('http://192.168.31.206:3000/projects').then(function (response) {
                 return _this2.setSource(response.data);
             }).catch(function (error) {
-                return console.log(error);
+                return _reactNative.Alert.alert(error);
             });
         }
     }, {
@@ -55121,6 +55123,16 @@ var New = function (_Component) {
     return New;
 }(_react.Component);
 
+New.navigationOptions = function (_ref) {
+    var navigation = _ref.navigation;
+    return {
+        title: 'MNReleaseTool',
+        headerRight: _react2.default.createElement(_reactNative.Button, { title: '\u4FDD\u5B58', onPress: function onPress() {
+                return navigation.navigate('New');
+            } })
+    };
+};
+
 var styles = _reactNative.StyleSheet.create({
     container: {
         flex: 1,
@@ -55145,12 +55157,26 @@ var _reactNative = require(45            ); // 45 = react-native
 var Detail = function (_Component) {
     babelHelpers.inherits(Detail, _Component);
 
-    function Detail() {
+    function Detail(props) {
         babelHelpers.classCallCheck(this, Detail);
-        return babelHelpers.possibleConstructorReturn(this, (Detail.__proto__ || Object.getPrototypeOf(Detail)).apply(this, arguments));
+
+        var _this = babelHelpers.possibleConstructorReturn(this, (Detail.__proto__ || Object.getPrototypeOf(Detail)).call(this, props));
+
+        _this.state = {
+            releaseId: 10000
+        };
+        return _this;
     }
 
     babelHelpers.createClass(Detail, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            console.log('release id is ' + this.state.releaseId);
+        }
+    }, {
+        key: 'getReleaseDetail',
+        value: function getReleaseDetail(releaseId) {}
+    }, {
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
@@ -55159,13 +55185,22 @@ var Detail = function (_Component) {
                 _react2.default.createElement(
                     _reactNative.Text,
                     null,
-                    'New'
+                    this.props.navigation.navigate.releaseIdKey
                 )
             );
         }
     }]);
     return Detail;
 }(_react.Component);
+
+Detail.navigationOptions = function (props) {
+    return {
+        title: 'MNReleaseTool',
+        headerRight: _react2.default.createElement(_reactNative.Button, { title: '\u4FDD\u5B58', onPress: function onPress() {
+                return console.log(props.navigation.state.params.id);
+            } })
+    };
+};
 
 var styles = _reactNative.StyleSheet.create({
     container: {

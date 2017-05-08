@@ -1,9 +1,16 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
 // create a component
 class New extends Component {
+    static navigationOptions = ({ navigation }) => ({
+        title: 'MNReleaseTool',
+        headerRight: (
+            <Button title='保存' onPress={() => navigation.navigate('New')} />
+        ),
+    })
+
     render() {
         return (
             <View style={styles.container}>

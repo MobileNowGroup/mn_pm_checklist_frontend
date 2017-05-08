@@ -1,19 +1,42 @@
-//import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 
-// create a component
 class Detail extends Component {
+
+    static navigationOptions = (props) => ({
+        // this.getReleaseDetail(props.navigation.state.params.id),
+        // this.state.releaseId: props.navigation.state.params.id,
+        title: 'MNReleaseTool',
+        headerRight: (
+            <Button title='保存' onPress={() => console.log(props.navigation.state.params.id)} />
+        ),
+    })
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            releaseId: 10000
+        };
+    }
+
+    componentWillMount() {
+        console.log('release id is ' + this.state.releaseId);
+        // this.getReleaseDetail();
+    }
+
+    getReleaseDetail(releaseId) {
+
+    }
+
     render() {
         return (
             <View style={styles.container}>
-                <Text>New</Text>
+                <Text>{this.props.navigation.navigate.releaseIdKey}</Text>
             </View>
         );
     }
 }
 
-// define your styles
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -23,5 +46,4 @@ const styles = StyleSheet.create({
     },
 });
 
-//make this component available to the app
 export default Detail;
