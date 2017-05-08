@@ -1,19 +1,35 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 
 // create a component
 class HomeRow extends Component {
-    componentWillMount(){
-        console.log("props are " + this.props.name);
+
+    constructor(props) {
+        super(props);
+        HomeRow.propTypes = {
+            callbackFunc: React.PropTypes.func,
+        };
+        this.handlePress = this.handlePress.bind(this);
+    }
+
+    componentWillMount() {
+        
+    }
+
+    handlePress() {
+        // this.props.callbackFunc(this.props.ProjectId);
+        this.props.callbackFunc(this.props.ReleaseId);
     }
 
     render() {
         return (
-            <View style={styles.container}>
-                <Image style={styles.photo} source={{url: "https://randomuser.me/api/portraits/thumb/women/53.jpg"}}/>
-                <Text style={styles.text}>{this.props.name}</Text>
-            </View>
+            <TouchableHighlight underlayColor="lightgray" onPress={this.handlePress}>
+                <View style={styles.container}>
+                    <Text style={styles.text}>{this.props.ReleaseTitle}</Text>
+                    <Text style={styles.subText}>{this.props.ReleaseDate}</Text>
+                </View>
+            </TouchableHighlight>
         );
     }
 }
@@ -22,21 +38,20 @@ class HomeRow extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 12,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
-    photo: {
+        padding: 0,
         height: 40,
-        width: 40,
-        backgroundColor: "#838833",
-        borderRadius: 20,
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
     },
     text: {
         marginLeft: 12,
         fontSize: 16,
     },
+    subText: {
+        fontSize: 14,
+        marginLeft: 12,
+    }
 });
 
 //make this component available to the app

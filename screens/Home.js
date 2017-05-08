@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { View, Button, StyleSheet, Alert, ListView } from 'react-native';
 import HomeRow from '../views/HomeRow';
 import Header from '../views/Header';
+import axios from 'axios';
 
 // create a component
 class Home extends Component {
@@ -20,14 +21,23 @@ class Home extends Component {
             rowHasChanged: (r1, r2) => r1 !== r2
         });
         this.state = {
-            items: ['aaa', 'bbb', 'ccc'],
+            items: [],
+            projects: [],
             dataSource: ds.cloneWithRows([]),
         };
         this.setSource = this.setSource.bind(this);
+        this.getReleases = this.getReleases.bind(this);
+        this.handleHeaderCallback = this.handleHeaderCallback.bind(this);
+        this.handleRowCallback = this.handleRowCallback.bind(this);
     }
 
     componentWillMount() {
-        this.setSource([{ name: 'aaa' }, { name: 'bbb' }]);
+        // this.getProjects();
+    }
+
+    getReleases(projectId) {
+        axios.get('http://192.168.31.206:3000/project/' + projectId + '/releases')
+            .then(response => this.setSource(response.data));
     }
 
     setSource(items) {
@@ -37,8 +47,13 @@ class Home extends Component {
         });
     }
 
-    handleCallback() {
-        Alert.alert('call back');
+    handleHeaderCallback(projectId) {
+        console.log(projectId);
+        this.getReleases(projectId);
+    }
+
+    handleRowCallback(releaseId) {
+        this.props.navigation.navigate('Detail');
     }
 
     render() {
@@ -48,12 +63,9 @@ class Home extends Component {
                 style={styles.list}
                 enableEmptySections
                 dataSource={this.state.dataSource}
-                renderRow={(data) => <HomeRow {...data} />}
-                renderSeparator={(sectionId, rowId) => <View 
-                    key={rowId} 
-                    style={styles.seperator} 
-                />}
-                renderHeader={() => <Header callbackFunc={this.handleCallback.bind(this)} />}
+                renderRow={(data) => <HomeRow {...data} callbackFunc={this.handleRowCallback} />}
+                renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.seperator} />}
+                renderHeader={() => <Header callbackFunc={this.handleHeaderCallback} projects />}
                 />
             </View>
         );

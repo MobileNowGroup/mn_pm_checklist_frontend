@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableHighlight, Alert } from 'react-native';
 
 // create a component
 class HeaderRow extends Component {
@@ -11,22 +11,23 @@ class HeaderRow extends Component {
         };
         this.handlePress = this.handlePress.bind(this);
     }
-    componentWillMount(){
+
+    componentWillMount() {
         // console.log("props are " + this.props.name);
         
     }
 
     handlePress() {
-        this.props.callbackFunc();
+        this.props.callbackFunc(this.props.ProjectId);
     }
 
     render() {
         return (
-            <TouchableOpacity underlayColor="lightgray" onPress={this.handlePress}>
+            <TouchableHighlight underlayColor="lightgray" onPress={this.handlePress}>
                 <View style={styles.container}>
-                    <Text style={styles.text}>{this.props.name}</Text>
+                    <Text style={styles.text}>{this.props.ProjectName}</Text>
                 </View>
-            </TouchableOpacity>
+            </TouchableHighlight>
         );
     }
 }
@@ -35,7 +36,9 @@ class HeaderRow extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 12,
+        padding: 0,
+        width: 100,
+        height: 40,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
