@@ -1,11 +1,9 @@
-//import liraries
 import React, { Component } from 'react';
 import { View, Button, StyleSheet, Alert, ListView } from 'react-native';
 import HomeRow from '../views/HomeRow';
 import Header from '../views/Header';
 import axios from 'axios';
 
-// create a component
 class Home extends Component {
 
     static navigationOptions = ({ navigation }) => ({
@@ -60,19 +58,18 @@ class Home extends Component {
         return (
             <View style={styles.container}>
                 <ListView
-                style={styles.list}
-                enableEmptySections
-                dataSource={this.state.dataSource}
-                renderRow={(data) => <HomeRow {...data} callbackFunc={this.handleRowCallback} />}
-                renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.seperator} />}
-                renderHeader={() => <Header callbackFunc={this.handleHeaderCallback} projects />}
+                    style={styles.list}
+                    enableEmptySections
+                    dataSource={this.state.dataSource}
+                    renderRow={(data) => <HomeRow {...data} callbackFunc={this.handleRowCallback} />}
+                    renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.seperator} />}
+                    renderHeader={() => <Header callbackFunc={this.handleHeaderCallback} projects />}
                 />
             </View>
         );
     }
 }
 
-// define your styles
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -90,5 +87,4 @@ const styles = StyleSheet.create({
     }
 });
 
-//make this component available to the app
 export default Home;
