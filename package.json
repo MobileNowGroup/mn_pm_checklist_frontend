@@ -5,6 +5,16 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest"
+    /*
+    // start the flow server
+    "flow start": "flow start",
+    // stop the flow server
+    "flow stop": "flow stop",
+    // check the flow status
+    "flow status": "flow status",
+    // check the flow coverage percentage
+    "flow coverage": "flow coverage"
+    */
   },
   "dependencies": {
     "axios": "^0.16.1",
@@ -13,6 +23,7 @@
     "react-navigation": "^1.0.0-beta.9"
   },
   "devDependencies": {
+    "babel-eslint": "^7.2.3",
     "babel-jest": "19.0.0",
     "babel-preset-react-native": "1.9.1",
     "jest": "19.0.2",
