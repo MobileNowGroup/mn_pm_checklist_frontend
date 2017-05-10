@@ -54041,7 +54041,7 @@ var Header = function (_Component) {
             _axios2.default.get('http://192.168.31.206:3000/projects').then(function (response) {
                 return _this2.setSource(response.data);
             }).catch(function (error) {
-                return _reactNative.Alert.alert(error);
+                return console.log(error);
             });
         }
     }, {
@@ -55197,6 +55197,7 @@ var Detail = function (_Component) {
       dataSource: ds.cloneWithRows([])
     };
     _this.setSource = _this.setSource.bind(_this);
+    _this.handleRowCallback = _this.handleRowCallback.bind(_this);
     return _this;
   }
 
@@ -55209,7 +55210,6 @@ var Detail = function (_Component) {
     key: "setSource",
     value: function setSource(items) {
       var sortedItems = [];
-      console.log("index is " + this.state.selectedIndex);
       switch (this.state.selectedIndex) {
         case 0:
           sortedItems = items;
@@ -55217,23 +55217,40 @@ var Detail = function (_Component) {
         case 1:
           for (var i = 0; i < items.length; i++) {
             var anItem = items[i];
-            if (anItem.IsChecked) sortedItems.push(anItem);
+            if (Boolean(anItem.IsChecked)) sortedItems.push(anItem);
           }
           break;
         case 2:
           for (var i = 0; i < items.length; i++) {
             var anItem = items[i];
-            if (!anItem.IsChecked) sortedItems.push(anItem);
+            if (!Boolean(anItem.IsChecked)) sortedItems.push(anItem);
           }
           break;
         default:
           sortedItems = items;
           break;
       }
-      console.log(items);
-      this.setState(babelHelpers.extends({}, this.state, {
-        dataSource: this.state.dataSource.cloneWithRows(sortedItems)
-      }));
+      for (var i = 0; i < sortedItems.length; i++) {
+        var anItem = sortedItems[i];
+        console.log(anItem.IsChecked);
+      }
+      var newSortedItems = sortedItems.slice();
+      for (var i = 0; i < newSortedItems.length; i++) {
+        newSortedItems[i] = {
+          IsChecked: newSortedItems[i].IsChecked,
+          ItemId: newSortedItems[i].ItemId,
+          ItemTitle: newSortedItems[i].ItemTitle
+        };
+      }
+      var ds = new _reactNative.ListView.DataSource({
+        rowHasChanged: function rowHasChanged(r1, r2) {
+          return r1 !== r2;
+        }
+      });
+      this.setState({
+        items: items,
+        dataSource: ds.cloneWithRows(newSortedItems)
+      });
     }
   }, {
     key: "getReleaseDetail",
@@ -55248,6 +55265,18 @@ var Detail = function (_Component) {
     key: "handleReleaseDetail",
     value: function handleReleaseDetail(items) {
       this.setSource(items);
+    }
+  }, {
+    key: "handleRowCallback",
+    value: function handleRowCallback(isChecked, itemId) {
+      console.log(isChecked, itemId);
+      for (var i = 0; i < this.state.items.length; i++) {
+        var anItem = this.state.items[i];
+        if (anItem.ItemId == itemId) {
+          anItem.IsChecked = isChecked;
+        }
+      }
+      this.setSource(this.state.items);
     }
   }, {
     key: "render",
@@ -55292,10 +55321,9 @@ var _initialiseProps = function _initialiseProps() {
   var _this4 = this;
 
   this.handleIndexChange = function (index) {
-    _this4.setState(babelHelpers.extends({}, _this4.state, {
-      selectedIndex: index
-    }));
-    _this4.setSource(_this4.state.items);
+    _this4.setState({ selectedIndex: index }, function () {
+      this.setSource(this.state.items);
+    });
   };
 };
 
@@ -55350,7 +55378,9 @@ var ItemRow = function (_Component) {
     value: function componentWillMount() {}
   }, {
     key: "onCheck",
-    value: function onCheck() {}
+    value: function onCheck() {
+      this.props.callbackFunc(Boolean(this.props.IsChecked) ? 0 : 1, this.props.ItemId);
+    }
   }, {
     key: "render",
     value: function render() {

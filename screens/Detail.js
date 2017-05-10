@@ -26,6 +26,7 @@ class Detail extends Component {
       dataSource: ds.cloneWithRows([])
     };
     this.setSource = this.setSource.bind(this);
+    this.handleRowCallback = this.handleRowCallback.bind(this);
   }
 
   componentWillMount() {
@@ -35,7 +36,6 @@ class Detail extends Component {
 
   setSource(items) {
     var sortedItems = [];
-    console.log("index is " + this.state.selectedIndex);
     switch (this.state.selectedIndex) {
       case 0:
         sortedItems = items;
@@ -43,26 +43,39 @@ class Detail extends Component {
       case 1:
         for (var i = 0; i < items.length; i++) {
           var anItem = items[i];
-          if (anItem.IsChecked) sortedItems.push(anItem);
+          if (Boolean(anItem.IsChecked)) sortedItems.push(anItem);
         }
         break;
       case 2:
         for (var i = 0; i < items.length; i++) {
           var anItem = items[i];
-          if (!anItem.IsChecked) sortedItems.push(anItem);
+          if (!Boolean(anItem.IsChecked)) sortedItems.push(anItem);
         }
         break;
       default:
         sortedItems = items;
         break;
     }
-    console.log(items);
+    for (var i = 0; i < sortedItems.length; i++) {
+      var anItem = sortedItems[i];
+      console.log(anItem.IsChecked);
+    }
+    var newSortedItems = sortedItems.slice();
+    for (var i = 0; i < newSortedItems.length; i++) {
+      newSortedItems[i] = {
+        IsChecked: newSortedItems[i].IsChecked,
+        ItemId: newSortedItems[i].ItemId,
+        ItemTitle: newSortedItems[i].ItemTitle
+      };
+    }
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2
+    });
     this.setState({
-      ...this.state,
-      dataSource: this.state.dataSource.cloneWithRows(sortedItems)
+      items,
+      dataSource: ds.cloneWithRows(newSortedItems)
     });
   }
-
   getReleaseDetail(releaseId) {
     axios
       .get("http://192.168.31.206:3000/release/" + releaseId)
@@ -70,18 +83,33 @@ class Detail extends Component {
   }
 
   handleReleaseDetail(items) {
-    // this.state.items = items;
-    // console.log("items are " + items);
     this.setSource(items);
   }
 
   handleIndexChange = index => {
-    this.setState({
-      ...this.state,
-      selectedIndex: index
+    // set state is asynchronous
+    this.setState({ selectedIndex: index }, function() {
+      this.setSource(this.state.items);
     });
-    this.setSource(this.state.items);
   };
+
+  handleRowCallback(isChecked, itemId) {
+    console.log(isChecked, itemId);
+    for (var i = 0; i < this.state.items.length; i++) {
+      var anItem = this.state.items[i];
+      if (anItem.ItemId == itemId) {
+        // must copy item to get listview updated
+        // var items = this.state.items;
+        // var anItemCopy = Object.assign({}, anItem);
+        anItem.IsChecked = isChecked;
+        // var removedItems = items.splice(i, 1, anItemCopy);
+        // this.setState({
+        //   items
+        // });
+      }
+    }
+    this.setSource(this.state.items);
+  }
 
   render() {
     return (

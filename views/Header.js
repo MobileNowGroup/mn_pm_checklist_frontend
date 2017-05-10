@@ -28,7 +28,7 @@ class Header extends Component {
     getProjects() {
         axios.get('http://192.168.31.206:3000/projects')
             .then(response => this.setSource(response.data))
-            .catch(error => Alert.alert(error));
+            .catch(error => console.log(error));
     }
 
     setSource(projects) {

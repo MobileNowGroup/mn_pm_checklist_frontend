@@ -13,7 +13,12 @@ class ItemRow extends Component {
 
   componentWillMount() {}
 
-  onCheck() {}
+  onCheck() {
+    this.props.callbackFunc(
+      Boolean(this.props.IsChecked) ? 0 : 1,
+      this.props.ItemId
+    );
+  }
 
   render() {
     return (
@@ -25,8 +30,6 @@ class ItemRow extends Component {
           style={styles.checkbox}
           onClick={() => this.onCheck()}
           isChecked={Boolean(this.props.IsChecked)}
-          //   leftText={this.props.ItemTitle}
-          //   leftTextStyle={styles.text}
         />
       </View>
     );
