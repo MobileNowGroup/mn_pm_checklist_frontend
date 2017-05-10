@@ -23,7 +23,8 @@ class Detail extends Component {
       releaseId: this.props.navigation.state.params.releaseId,
       items: [],
       selectedIndex: 0,
-      dataSource: ds.cloneWithRows([])
+      dataSource: ds.cloneWithRows([]),
+      listViewNeedRerender: false
     };
     this.setSource = this.setSource.bind(this);
     this.handleRowCallback = this.handleRowCallback.bind(this);
@@ -60,20 +61,10 @@ class Detail extends Component {
       var anItem = sortedItems[i];
       console.log(anItem.IsChecked);
     }
-    var newSortedItems = sortedItems.slice();
-    for (var i = 0; i < newSortedItems.length; i++) {
-      newSortedItems[i] = {
-        IsChecked: newSortedItems[i].IsChecked,
-        ItemId: newSortedItems[i].ItemId,
-        ItemTitle: newSortedItems[i].ItemTitle
-      };
-    }
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2
-    });
+    this.state.listViewNeedRerender = !this.state.listViewNeedRerender;
     this.setState({
       items,
-      dataSource: ds.cloneWithRows(newSortedItems)
+      dataSource: this.state.dataSource.cloneWithRows(sortedItems)
     });
   }
   getReleaseDetail(releaseId) {
@@ -98,14 +89,7 @@ class Detail extends Component {
     for (var i = 0; i < this.state.items.length; i++) {
       var anItem = this.state.items[i];
       if (anItem.ItemId == itemId) {
-        // must copy item to get listview updated
-        // var items = this.state.items;
-        // var anItemCopy = Object.assign({}, anItem);
         anItem.IsChecked = isChecked;
-        // var removedItems = items.splice(i, 1, anItemCopy);
-        // this.setState({
-        //   items
-        // });
       }
     }
     this.setSource(this.state.items);
@@ -115,6 +99,7 @@ class Detail extends Component {
     return (
       <View style={styles.container}>
         <ListView
+          key={this.state.listViewNeedRerender}
           style={styles.list}
           enableEmptySections
           dataSource={this.state.dataSource}

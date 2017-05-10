@@ -23,7 +23,7 @@ class ItemRow extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text} numberOfLines={1}>
+        <Text style={styles.text} numberOfLines={2}>
           {this.props.ItemTitle}
         </Text>
         <CheckBox

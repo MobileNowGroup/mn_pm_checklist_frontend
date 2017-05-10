@@ -55194,7 +55194,8 @@ var Detail = function (_Component) {
       releaseId: _this.props.navigation.state.params.releaseId,
       items: [],
       selectedIndex: 0,
-      dataSource: ds.cloneWithRows([])
+      dataSource: ds.cloneWithRows([]),
+      listViewNeedRerender: false
     };
     _this.setSource = _this.setSource.bind(_this);
     _this.handleRowCallback = _this.handleRowCallback.bind(_this);
@@ -55234,22 +55235,10 @@ var Detail = function (_Component) {
         var anItem = sortedItems[i];
         console.log(anItem.IsChecked);
       }
-      var newSortedItems = sortedItems.slice();
-      for (var i = 0; i < newSortedItems.length; i++) {
-        newSortedItems[i] = {
-          IsChecked: newSortedItems[i].IsChecked,
-          ItemId: newSortedItems[i].ItemId,
-          ItemTitle: newSortedItems[i].ItemTitle
-        };
-      }
-      var ds = new _reactNative.ListView.DataSource({
-        rowHasChanged: function rowHasChanged(r1, r2) {
-          return r1 !== r2;
-        }
-      });
+      this.state.listViewNeedRerender = !this.state.listViewNeedRerender;
       this.setState({
         items: items,
-        dataSource: ds.cloneWithRows(newSortedItems)
+        dataSource: this.state.dataSource.cloneWithRows(sortedItems)
       });
     }
   }, {
@@ -55287,6 +55276,7 @@ var Detail = function (_Component) {
         _reactNative.View,
         { style: styles.container },
         _react2.default.createElement(_reactNative.ListView, {
+          key: this.state.listViewNeedRerender,
           style: styles.list,
           enableEmptySections: true,
           dataSource: this.state.dataSource,
@@ -55391,7 +55381,7 @@ var ItemRow = function (_Component) {
         { style: styles.container },
         _react2.default.createElement(
           _reactNative.Text,
-          { style: styles.text, numberOfLines: 1 },
+          { style: styles.text, numberOfLines: 2 },
           this.props.ItemTitle
         ),
         _react2.default.createElement(_reactNativeCheckBox2.default, {
