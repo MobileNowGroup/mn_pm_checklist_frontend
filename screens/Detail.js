@@ -28,6 +28,7 @@ class Detail extends Component {
     this.setSource = this.setSource.bind(this);
     this.handleRowCallback = this.handleRowCallback.bind(this);
     this.save = this.save.bind(this);
+    this.putCheckItems = this.putCheckItems.bind(this);
   }
 
   componentWillMount() {
@@ -41,9 +42,29 @@ class Detail extends Component {
   }
 
   save() {
-    Alert.alert("Save Button has been pressed!");
-    console.log("release id is " + this.state.releaseId);
-    // this.getReleaseDetail(this.state.releaseId);
+    this.putCheckItems();
+  }
+
+  putCheckItems() {
+    var checkedItems = [];
+    var uncheckedItems = [];
+    for (var i = 0; i < this.state.items.length; i++) {
+      var anItem = this.state.items[i];
+      if (Boolean(anItem.IsChecked)) {
+        checkedItems.push(anItem.ItemId);
+      } else {
+        uncheckedItems.push(anItem.ItemId);
+      }
+    }
+    console.log(checkedItems, uncheckedItems);
+    var url = "http://192.168.31.206:8080/release/" + this.state.releaseId;
+    axios
+      .put(url, {
+        uncheck_items: uncheckedItems,
+        check_items: checkedItems
+      })
+      .then(response => Alert.alert("success"))
+      .catch(error => console.log(error));
   }
 
   setSource(items) {
