@@ -141,7 +141,7 @@ class Detail extends Component {
           renderSeparator={(sectionId, rowId) => (
             <View key={rowId} style={styles.seperator} />
           )}
-          renderHeader={() => (
+          renderSectionHeader={() => (
             <SegmentedControlTab
               values={["全部", "通过", "未通过"]}
               selectedIndex={this.state.selectedIndex}

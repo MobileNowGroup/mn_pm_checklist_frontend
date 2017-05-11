@@ -70,7 +70,7 @@ class Home extends Component {
           renderSeparator={(sectionId, rowId) => (
             <View key={rowId} style={styles.seperator} />
           )}
-          renderHeader={() => (
+          renderSectionHeader={() => (
             <Header callbackFunc={this.handleHeaderCallback} projects />
           )}
         />

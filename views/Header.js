@@ -68,7 +68,8 @@ class Header extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 0
+    padding: 0,
+    backgroundColor: "#fff"
   },
   list: {
     flex: 1,
