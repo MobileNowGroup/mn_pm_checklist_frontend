@@ -4,15 +4,14 @@ import axios from "axios";
 import ItemRow from "../views/ItemRow";
 import SegmentedControlTab from "react-native-segmented-control-tab";
 
-const onButtonPress = () => {
-  Alert.alert("Save Button has been pressed!");
-};
-
 class Detail extends Component {
-  static navigationOptions = props => ({
-    title: props.navigation.state.params.releaseTitle,
-    headerRight: <Button title="保存" onPress={onButtonPress} />
-  });
+  static navigationOptions = props => {
+    const { state, setParams } = props.navigation;
+    return {
+      title: props.navigation.state.params.releaseTitle,
+      headerRight: <Button title={"Save"} onPress={state.params.handleSave} />
+    };
+  };
 
   constructor(props) {
     super(props);
@@ -28,11 +27,23 @@ class Detail extends Component {
     };
     this.setSource = this.setSource.bind(this);
     this.handleRowCallback = this.handleRowCallback.bind(this);
+    this.save = this.save.bind(this);
   }
 
   componentWillMount() {
     // console.log(this.state.releaseId);
     this.getReleaseDetail(this.state.releaseId);
+  }
+
+  componentDidMount() {
+    this.props.navigation.setParams({ handleSave: this.save });
+    console.log(this.state.releaseId);
+  }
+
+  save() {
+    Alert.alert("Save Button has been pressed!");
+    console.log("release id is " + this.state.releaseId);
+    // this.getReleaseDetail(this.state.releaseId);
   }
 
   setSource(items) {
@@ -69,7 +80,7 @@ class Detail extends Component {
   }
   getReleaseDetail(releaseId) {
     axios
-      .get("http://192.168.31.206:3000/release/" + releaseId)
+      .get("http://192.168.31.206:8080/release/" + releaseId)
       .then(response => this.handleReleaseDetail(response.data.CheckRecordDtl));
   }
 
