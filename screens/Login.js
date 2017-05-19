@@ -1,27 +1,27 @@
-//import liraries
 import React, { Component } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware, combineReduxers, compose } from "redux";
+import thunkMiddleware from "redux-thunk";
+import createLogger from "redux-logger";
 
-// create a component
-class New extends Component {
+class Login extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: "MNReleaseTool",
     headerRight: (
-      <Button title="保存" onPress={() => navigation.navigate("New")} />
+      <Button title=" + " onPress={() => navigation.navigate("New")} />
     )
   });
 
   render() {
-    console.log(this.props.navigation.state.params.projects);
     return (
       <View style={styles.container}>
-        <Text>New</Text>
+        <Text>Login</Text>
       </View>
     );
   }
 }
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -31,5 +31,4 @@ const styles = StyleSheet.create({
   }
 });
 
-//make this component available to the app
-export default New;
+export default Login;

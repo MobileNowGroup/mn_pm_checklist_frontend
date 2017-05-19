@@ -1,8 +1,5 @@
-import React, { Component } from 'react';
-import {
-  AppRegistry,
-} from 'react-native';
+import { AppRegistry } from "react-native";
 
 import App from "./app";
 
-AppRegistry.registerComponent('MNReleaseTool', () => App);
+AppRegistry.registerComponent("MNReleaseTool", () => App);

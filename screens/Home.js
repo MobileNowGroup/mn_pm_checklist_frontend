@@ -5,12 +5,20 @@ import Header from "../views/Header";
 import axios from "axios";
 
 class Home extends Component {
-  static navigationOptions = ({ navigation }) => ({
-    title: "MNReleaseTool",
-    headerRight: (
-      <Button title=" + " onPress={() => navigation.navigate("New")} />
-    )
-  });
+  static navigationOptions = props => {
+    const { state, setParams } = props.navigation;
+    if (typeof state.params == "undefined") {
+      return {
+        title: "MNReleaseTool"
+        // headerRight: <Button title=" + " onPress={state.params.handleNew} />
+      };
+    } else {
+      return {
+        title: "MNReleaseTool",
+        headerRight: <Button title=" + " onPress={state.params.handleNew} />
+      };
+    }
+  };
 
   constructor(props) {
     super(props);
@@ -19,16 +27,24 @@ class Home extends Component {
     });
     this.state = {
       releases: [],
-      dataSource: ds.cloneWithRows([])
+      dataSource: ds.cloneWithRows([]),
+      projects: []
     };
     this.setSource = this.setSource.bind(this);
     this.getReleases = this.getReleases.bind(this);
     this.handleHeaderCallback = this.handleHeaderCallback.bind(this);
     this.handleRowCallback = this.handleRowCallback.bind(this);
+    this.new = this.new.bind(this);
   }
 
-  componentWillMount() {
-    // this.getProjects();
+  componentDidMount() {
+    // this.props.navigation.navigate("Login");
+    this.props.navigation.setParams({ handleNew: this.new });
+  }
+
+  new() {
+    console.log(this.state.projects);
+    this.props.navigation.navigate("New", { projects: this.state.projects });
   }
 
   getReleases(projectId) {
@@ -45,9 +61,11 @@ class Home extends Component {
     });
   }
 
-  handleHeaderCallback(projectId) {
-    console.log(projectId);
+  handleHeaderCallback(projectId, projects) {
     this.getReleases(projectId);
+    this.setState({
+      projects
+    });
   }
 
   handleRowCallback(releaseId, releaseTitle) {
@@ -64,14 +82,14 @@ class Home extends Component {
           style={styles.list}
           enableEmptySections
           dataSource={this.state.dataSource}
-          renderRow={data => (
-            <HomeRow {...data} callbackFunc={this.handleRowCallback} />
+          renderRow={aRelease => (
+            <HomeRow {...aRelease} callbackFunc={this.handleRowCallback} />
           )}
           renderSeparator={(sectionId, rowId) => (
             <View key={rowId} style={styles.seperator} />
           )}
           renderSectionHeader={() => (
-            <Header callbackFunc={this.handleHeaderCallback} projects />
+            <Header callbackFunc={this.handleHeaderCallback} />
           )}
         />
       </View>

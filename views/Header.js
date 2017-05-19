@@ -33,16 +33,19 @@ class Header extends Component {
   }
 
   setSource(projects) {
-    this.handleCallback(projects[0].ProjectId);
-    this.setState({
-      projects,
-      dataSource: this.state.dataSource.cloneWithRows(projects)
-    });
+    this.setState(
+      {
+        projects,
+        dataSource: this.state.dataSource.cloneWithRows(projects)
+      },
+      function() {
+        this.handleCallback(projects[0].ProjectId);
+      }
+    );
   }
 
   handleCallback(projectId) {
-    // Alert.alert("handle callback entered");
-    this.props.callbackFunc(projectId);
+    this.props.callbackFunc(projectId, this.state.projects);
   }
 
   render() {
