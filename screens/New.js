@@ -5,9 +5,7 @@ import {
   Text,
   StyleSheet,
   Button,
-  Picker,
   KeyboardAvoidingView,
-  SegmentedControlIOS,
   TextInput
 } from "react-native";
 
@@ -19,22 +17,12 @@ class New extends Component {
       <Button title="保存" onPress={() => navigation.navigate("New")} />
     )
   });
-  state = {
-    behavior: "padding",
-    modalOpen: false
-  };
 
   render() {
+    console.log(this.props.navigation.state.params.projects);
     return (
       <View style={styles.container}>
-        <KeyboardAvoidingView
-          behavior={this.state.behavior}
-          style={styles.container}
-        >
-          <TextInput placeholder="<TextInput />" style={styles.textInput} />
-          {" "}
-        </KeyboardAvoidingView>
-
+        <Text>New</Text>
       </View>
     );
   }
@@ -45,15 +33,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center"
-    // backgroundColor: '#2c3e50',
-  },
-
-  textInput: {
-    borderRadius: 5,
-    borderWidth: 1,
-    height: 44,
-    paddingHorizontal: 10
+    alignItems: "center",
+    backgroundColor: "#2c3e50"
   }
 });
 

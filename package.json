@@ -17,7 +17,11 @@
     "react-native": "0.44.0",
     "react-native-check-box": "^1.0.4",
     "react-native-segmented-control-tab": "^3.0.2",
-    "react-navigation": "^1.0.0-beta.9"
+    "react-navigation": "^1.0.0-beta.9",
+    "react-redux": "^5.0.4",
+    "redux": "^3.6.0",
+    "redux-logger": "^3.0.1",
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",

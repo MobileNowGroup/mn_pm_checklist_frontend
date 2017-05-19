@@ -8,7 +8,7 @@ class Detail extends Component {
   static navigationOptions = props => {
     const { state, setParams } = props.navigation;
     return {
-      title: props.navigation.state.params.releaseTitle,
+      title: state.params.releaseTitle,
       headerRight: <Button title={"Save"} onPress={state.params.handleSave} />
     };
   };
@@ -89,16 +89,17 @@ class Detail extends Component {
         sortedItems = items;
         break;
     }
-    for (var i = 0; i < sortedItems.length; i++) {
-      var anItem = sortedItems[i];
-      console.log(anItem.IsChecked);
-    }
+    // for (var i = 0; i < sortedItems.length; i++) {
+    //   var anItem = sortedItems[i];
+    //   console.log(anItem.IsChecked);
+    // }
     this.state.listViewNeedRerender = !this.state.listViewNeedRerender;
     this.setState({
       items,
       dataSource: this.state.dataSource.cloneWithRows(sortedItems)
     });
   }
+
   getReleaseDetail(releaseId) {
     axios
       .get("http://192.168.31.206:8080/release/" + releaseId)
@@ -114,6 +115,8 @@ class Detail extends Component {
     this.setState({ selectedIndex: index }, function() {
       this.setSource(this.state.items);
     });
+    // this.setState({ selectedIndex: index });
+    // this.setSource(this.state.items);
   };
 
   handleRowCallback(isChecked, itemId) {
