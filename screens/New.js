@@ -12,7 +12,7 @@ class New extends Component {
   });
 
   render() {
-    console.log(this.props.navigation.state.params.projects);
+    console.log(this.props.navigation.state.params.releaseId);
     return (
       <View style={styles.container}>
         <Text>New</Text>

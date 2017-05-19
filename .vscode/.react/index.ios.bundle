@@ -46700,15 +46700,16 @@ var _Login = require(519               ); // 519 = ../screens/Login
 
 var _Login2 = babelHelpers.interopRequireDefault(_Login);
 
+var _ManagerTabNavigator = require(563                             ); // 563 = ../screens/ManagerTabNavigator
+
+var _ManagerTabNavigator2 = babelHelpers.interopRequireDefault(_ManagerTabNavigator);
+
 var Root = exports.Root = (0, _reactNavigation.StackNavigator)({
-  Home: {
-    screen: _Home2.default
-  },
+  Login: { screen: _Login2.default },
+  ManagerTabNavigator: { screen: _ManagerTabNavigator2.default },
+  Home: { screen: _Home2.default },
   New: { screen: _New2.default },
-  Detail: { screen: _Detail2.default },
-  Login: {
-    screen: _Login2.default
-  }
+  Detail: { screen: _Detail2.default }
 }, {
   mode: "card"
 });
@@ -53826,8 +53827,8 @@ var Home = function (_Component) {
   }
 
   babelHelpers.createClass(Home, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
+    key: "componentWillMount",
+    value: function componentWillMount() {
       this.props.navigation.setParams({ handleNew: this.new });
     }
   }, {
@@ -53906,12 +53907,14 @@ Home.navigationOptions = function (props) {
 
   if (typeof state.params == "undefined") {
     return {
-      title: "MNReleaseTool"
+      title: "MNReleaseTool",
+      headerLeft: null
     };
   } else {
     return {
       title: "MNReleaseTool",
-      headerRight: _react2.default.createElement(_reactNative.Button, { title: " + ", onPress: state.params.handleNew })
+      headerRight: _react2.default.createElement(_reactNative.Button, { title: " + ", onPress: state.params.handleNew }),
+      headerLeft: null
     };
   }
 };
@@ -55146,7 +55149,7 @@ var New = function (_Component) {
   babelHelpers.createClass(New, [{
     key: "render",
     value: function render() {
-      console.log(this.props.navigation.state.params.projects);
+      console.log(this.props.navigation.state.params.releaseId);
       return _react2.default.createElement(
         _reactNative.View,
         { style: styles.container },
@@ -55787,22 +55790,33 @@ var _reduxLogger2 = babelHelpers.interopRequireDefault(_reduxLogger);
 var Login = function (_Component) {
   babelHelpers.inherits(Login, _Component);
 
-  function Login() {
+  function Login(props) {
     babelHelpers.classCallCheck(this, Login);
-    return babelHelpers.possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).apply(this, arguments));
+
+    var _this = babelHelpers.possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).call(this, props));
+
+    _this.login = _this.login.bind(_this);
+    return _this;
   }
 
   babelHelpers.createClass(Login, [{
+    key: "login",
+    value: function login() {
+      this.props.navigation.navigate("ManagerTabNavigator");
+    }
+  }, {
     key: "render",
     value: function render() {
       return _react2.default.createElement(
-        _reactNative.View,
-        { style: styles.container },
-        _react2.default.createElement(
-          _reactNative.Text,
-          null,
-          "Login"
-        )
+        _reactNative.KeyboardAvoidingView,
+        { style: styles.container, behavior: "padding" },
+        _react2.default.createElement(_reactNative.TextInput, { style: styles.textInput, placeholder: "\u8BF7\u8F93\u5165\u7528\u6237\u540D" }),
+        _react2.default.createElement(_reactNative.TextInput, {
+          style: styles.textInput,
+          placeholder: "\u8BF7\u8F93\u5165\u5BC6\u7801",
+          secureTextEntry: true
+        }),
+        _react2.default.createElement(_reactNative.Button, { title: "\u767B\u5F55", onPress: this.login, style: styles.button })
       );
     }
   }]);
@@ -55812,19 +55826,32 @@ var Login = function (_Component) {
 Login.navigationOptions = function (_ref) {
   var navigation = _ref.navigation;
   return {
-    title: "MNReleaseTool",
-    headerRight: _react2.default.createElement(_reactNative.Button, { title: " + ", onPress: function onPress() {
-        return navigation.navigate("New");
-      } })
+    title: "登录"
   };
 };
 
 var styles = _reactNative.StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+
+    paddingTop: 150,
+    paddingLeft: 50,
+    paddingRight: 50,
+    paddingBottom: 150,
     alignItems: "center",
-    backgroundColor: "#2c3e50"
+    backgroundColor: "#fff"
+  },
+  textInput: {
+    height: 40,
+    borderColor: "gray",
+    borderRadius: 10,
+    borderWidth: 1,
+    paddingLeft: 20
+  },
+  button: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1
   }
 });
 
@@ -58404,6 +58431,203 @@ exports.default = {
 };
 module.exports = exports["default"];
 }, 562, null, "redux-logger/lib/defaults.js");
+__d(/* MNReleaseTool/screens/ManagerTabNavigator.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _reactNavigation = require(419               ); // 419 = react-navigation
+
+var _ProjectScreen = require(564              ); // 564 = ./ProjectScreen
+
+var _ProjectScreen2 = babelHelpers.interopRequireDefault(_ProjectScreen);
+
+var _CheckItemScreen = require(565                ); // 565 = ./CheckItemScreen
+
+var _CheckItemScreen2 = babelHelpers.interopRequireDefault(_CheckItemScreen);
+
+var ManagerTabNavigator = (0, _reactNavigation.TabNavigator)({
+  Recent: { screen: _ProjectScreen2.default },
+  All: { screen: _CheckItemScreen2.default }
+});
+
+exports.default = ManagerTabNavigator;
+}, 563, null, "MNReleaseTool/screens/ManagerTabNavigator.js");
+__d(/* MNReleaseTool/screens/ProjectScreen.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require(187    ); // 187 = react
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require(12            ); // 12 = react-native
+
+var ProjectScreen = function (_Component) {
+  babelHelpers.inherits(ProjectScreen, _Component);
+
+  function ProjectScreen(props) {
+    babelHelpers.classCallCheck(this, ProjectScreen);
+
+    var _this = babelHelpers.possibleConstructorReturn(this, (ProjectScreen.__proto__ || Object.getPrototypeOf(ProjectScreen)).call(this, props));
+
+    var ds = new _reactNative.ListView.DataSource({
+      rowHasChanged: function rowHasChanged(r1, r2) {
+        return r1 !== r2;
+      }
+    });
+    _this.state = {
+      dataSource: ds.cloneWithRows([]),
+      projects: []
+    };
+    _this.new = _this.new.bind(_this);
+    return _this;
+  }
+
+  babelHelpers.createClass(ProjectScreen, [{
+    key: "componentWillMount",
+    value: function componentWillMount() {
+      this.props.navigation.setParams({ handleNew: this.new });
+    }
+  }, {
+    key: "new",
+    value: function _new() {
+      this.props.navigation.navigate("New", { projects: this.state.projects });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        _reactNative.View,
+        { style: styles.container },
+        _react2.default.createElement(
+          _reactNative.Text,
+          null,
+          "ProjectScreen"
+        )
+      );
+    }
+  }]);
+  return ProjectScreen;
+}(_react.Component);
+
+ProjectScreen.navigationOptions = function (props) {
+  var _props$navigation = props.navigation,
+      state = _props$navigation.state,
+      setParams = _props$navigation.setParams;
+
+  if (typeof state.params == "undefined") {
+    return {
+      title: "项目",
+      headerLeft: null
+    };
+  } else {
+    return {
+      title: "项目",
+      headerLeft: null,
+      headerRight: _react2.default.createElement(_reactNative.Button, { title: " + ", onPress: state.params.handleNew })
+    };
+  }
+};
+
+var styles = _reactNative.StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#2c3e50"
+  }
+});
+
+exports.default = ProjectScreen;
+}, 564, null, "MNReleaseTool/screens/ProjectScreen.js");
+__d(/* MNReleaseTool/screens/CheckItemScreen.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = require(187    ); // 187 = react
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require(12            ); // 12 = react-native
+
+var CheckItemScreen = function (_Component) {
+  babelHelpers.inherits(CheckItemScreen, _Component);
+
+  function CheckItemScreen(props) {
+    babelHelpers.classCallCheck(this, CheckItemScreen);
+
+    var _this = babelHelpers.possibleConstructorReturn(this, (CheckItemScreen.__proto__ || Object.getPrototypeOf(CheckItemScreen)).call(this, props));
+
+    var ds = new _reactNative.ListView.DataSource({
+      rowHasChanged: function rowHasChanged(r1, r2) {
+        return r1 !== r2;
+      }
+    });
+    _this.state = {
+      dataSource: ds.cloneWithRows([]),
+      checkItems: []
+    };
+    _this.new = _this.new.bind(_this);
+    return _this;
+  }
+
+  babelHelpers.createClass(CheckItemScreen, [{
+    key: "componentWillMount",
+    value: function componentWillMount() {
+      this.props.navigation.setParams({ handleNew: this.new });
+    }
+  }, {
+    key: "new",
+    value: function _new() {
+      this.props.navigation.navigate("New", { projects: this.state.projects });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        _reactNative.View,
+        { style: styles.container },
+        _react2.default.createElement(
+          _reactNative.Text,
+          null,
+          "CheckItemScreen"
+        )
+      );
+    }
+  }]);
+  return CheckItemScreen;
+}(_react.Component);
+
+CheckItemScreen.navigationOptions = function (props) {
+  var _props$navigation = props.navigation,
+      state = _props$navigation.state,
+      setParams = _props$navigation.setParams;
+
+  if (typeof state.params == "undefined") {
+    return {
+      title: "题库",
+      headerLeft: null
+    };
+  } else {
+    return {
+      title: "题库",
+      headerLeft: null,
+      headerRight: _react2.default.createElement(_reactNative.Button, { title: " + ", onPress: state.params.handleNew })
+    };
+  }
+};
+
+var styles = _reactNative.StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#2c3e50"
+  }
+});
+
+exports.default = CheckItemScreen;
+}, 565, null, "MNReleaseTool/screens/CheckItemScreen.js");
 ;require(126);
 ;require(0);
 //# sourceMappingURL=index.ios.map
