@@ -9,13 +9,15 @@ class Home extends Component {
     const { state, setParams } = props.navigation;
     if (typeof state.params == "undefined") {
       return {
-        title: "MNReleaseTool"
+        title: "MNReleaseTool",
+        headerLeft: null
         // headerRight: <Button title=" + " onPress={state.params.handleNew} />
       };
     } else {
       return {
         title: "MNReleaseTool",
-        headerRight: <Button title=" + " onPress={state.params.handleNew} />
+        headerRight: <Button title=" + " onPress={state.params.handleNew} />,
+        headerLeft: null
       };
     }
   };
@@ -37,7 +39,7 @@ class Home extends Component {
     this.new = this.new.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
     // this.props.navigation.navigate("Login");
     this.props.navigation.setParams({ handleNew: this.new });
   }
