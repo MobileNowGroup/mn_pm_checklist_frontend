@@ -40,12 +40,10 @@ class Home extends Component {
   }
 
   componentWillMount() {
-    // this.props.navigation.navigate("Login");
     this.props.navigation.setParams({ handleNew: this.new });
   }
 
   new() {
-    console.log(this.state.projects);
     this.props.navigation.navigate("New", { projects: this.state.projects });
   }
 
