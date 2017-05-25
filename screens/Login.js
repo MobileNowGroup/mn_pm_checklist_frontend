@@ -7,7 +7,8 @@ import {
   KeyboardAvoidingView,
   TextInput,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from "react-native";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, combineReduxers, compose } from "redux";
@@ -21,11 +22,40 @@ class Login extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+            userName: '18684909663',
+            userPwd: '123456'
+        };
     this.login = this.login.bind(this);
   }
 
+   // 定义函数
+   updateNum(newText) {
+        this.setState((state)=> {
+            return {
+                userName: newText
+            }
+        });
+   }
+   // 定义函数
+   updatePW(newText) {
+        this.setState(()=> { // 用不到的参数也可以不用写
+            return {
+                userPwd: newText
+            }
+        });
+   }
+
   login() {
+    if(this.state.userName.length < 6){
+      Alert.alert('温馨提醒','用户名必须大于6位!')
+      return
+    }else if(this.state.userPwd.length < 6){
+      Alert.alert('温馨提醒','密码必须大于6位!')
+      return
+    }
     this.props.navigation.navigate("ManagerTabNavigator");
+
     // this.props.navigation.navigate("Home");
   }
 
@@ -37,17 +67,20 @@ class Login extends Component {
           <View style={styles.content}>
             <Text style={styles.logo}>- Check List -</Text>
             <View style={styles.inputContainer}>
-              <TextInput underlineColorAndroid='transparent' style={styles.input} placeholder='username'>
+              <TextInput underlineColorAndroid='transparent' style={styles.input} placeholder='username'
+              onChangeText={(newText)=>this.updateNum(newText)} value={this.state.userName}>
+              
               </TextInput>
 
-              <TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input} placeholder='password'>
+              <TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input} placeholder='password'
+              onChangeText={(newText)=>this.updatePW(newText)} value={this.state.userPwd}>
+
               </TextInput>
             </View>
 
             <TouchableOpacity onPress={this.login} style={styles.buttonContainer}>
               <Text style={styles.buttonText}>LOGIN</Text>
             </TouchableOpacity>
-
           </View>
         </Image>
       </View>
