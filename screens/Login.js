@@ -5,7 +5,9 @@ import {
   StyleSheet,
   Button,
   KeyboardAvoidingView,
-  TextInput
+  TextInput,
+  Image,
+  TouchableOpacity
 } from "react-native";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, combineReduxers, compose } from "redux";
@@ -29,42 +31,87 @@ class Login extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.container} behavior={"padding"}>
-        <TextInput style={styles.textInput} placeholder="请输入用户名" />
-        <TextInput
-          style={styles.textInput}
-          placeholder="请输入密码"
-          secureTextEntry={true}
-        />
-        <Button title="登录" onPress={this.login} style={styles.button} />
-      </KeyboardAvoidingView>
+
+      <View style={styles.bgView}>
+        <Image source={require('../img/background.jpg')} style={styles.backgroundImage}>
+          <View style={styles.content}>
+            <Text style={styles.logo}>- Check List -</Text>
+            <View style={styles.inputContainer}>
+              <TextInput underlineColorAndroid='transparent' style={styles.input} placeholder='username'>
+              </TextInput>
+
+              <TextInput secureTextEntry={true} underlineColorAndroid='transparent' style={styles.input} placeholder='password'>
+              </TextInput>
+            </View>
+
+            <TouchableOpacity onPress={this.login} style={styles.buttonContainer}>
+              <Text style={styles.buttonText}>LOGIN</Text>
+            </TouchableOpacity>
+
+          </View>
+        </Image>
+      </View>
+
     );
   }
 }
 
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // justifyContent: "space-between",
-    paddingTop: 150,
-    paddingLeft: 50,
-    paddingRight: 50,
-    paddingBottom: 150,
-    alignItems: "center",
-    backgroundColor: "#fff"
+  bgView: {
+    flex:1
   },
-  textInput: {
-    height: 40,
-    borderColor: "gray",
-    borderRadius: 10,
+  backgroundImage: {
+    flex:1,
+    alignSelf: 'stretch',
+    width: null,
+    justifyContent:'center',
+  },
+  content: {
+    alignItems: 'center'
+  },
+  logo: {
+    color: 'white',
+    fontSize: 40,
+    fontStyle: 'italic',
+    fontWeight: 'bold',
+    textShadowColor: '#252525',
+    textShadowOffset: {width: 2, height: 2},
+    textShadowRadius: 15,
+    marginBottom: 20,
+    backgroundColor: 'transparent'
+  },
+  inputContainer: {
+    margin: 20,
+    marginBottom: 0,
+    padding: 20,
+    paddingBottom: 10,
+    alignSelf: 'stretch',
     borderWidth: 1,
-    paddingLeft: 20
+    borderColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)'
   },
-  button: {
+  input: {
+    fontSize: 16,
     height: 40,
-    borderColor: "gray",
-    borderWidth: 1
-  }
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: 'rgba(255, 255, 255, 1)'
+  },
+  buttonContainer: {
+    alignSelf: 'stretch',
+    margin: 20,
+    padding: 20,
+    backgroundColor: 'blue',
+    borderWidth: 1,
+    borderColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)'
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
 });
 
 export default Login;
