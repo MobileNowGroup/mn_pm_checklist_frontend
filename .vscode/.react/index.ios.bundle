@@ -55855,37 +55855,112 @@ var Login = function (_Component) {
 
     var _this = babelHelpers.possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).call(this, props));
 
+    _this.state = {
+      userName: "18684909663",
+      userPwd: "123456"
+    };
     _this.login = _this.login.bind(_this);
     return _this;
   }
 
   babelHelpers.createClass(Login, [{
+    key: "updateNum",
+    value: function updateNum(newText) {
+      this.setState(function (state) {
+        return {
+          userName: newText
+        };
+      });
+    }
+  }, {
+    key: "updatePW",
+    value: function updatePW(newText) {
+      this.setState(function () {
+        return {
+          userPwd: newText
+        };
+      });
+    }
+  }, {
     key: "login",
     value: function login() {
       var _this2 = this;
 
-      this.props.actions.login("Perry", "123").then(function (responce) {
+      if (this.state.userName.length < 6) {
+        _reactNative.Alert.alert("温馨提醒", "用户名必须大于6位!");
+        return;
+      } else if (this.state.userPwd.length < 6) {
+        _reactNative.Alert.alert("温馨提醒", "密码必须大于6位!");
+        return;
+      }
+      console.log("this props are " + this.props.login());
+      this.props.login("Perry", "123").then(function (responce) {
         if (responce.userInfo.Basic.Role.RoleName == "PM") {
           _this2.props.navigation.navigate("ManagerTabNavigator");
         } else if (responce.userInfo.Basic.Role.RoleName == "PM") {
           _this2.props.navigation.navigate("Home");
         }
       });
-      console.log("userInfo is " + this.props.userInfo);
     }
   }, {
     key: "render",
     value: function render() {
+      var _this3 = this;
+
       return _react2.default.createElement(
-        _reactNative.KeyboardAvoidingView,
-        { style: styles.container, behavior: "padding" },
-        _react2.default.createElement(_reactNative.TextInput, { style: styles.textInput, placeholder: "\u8BF7\u8F93\u5165\u7528\u6237\u540D" }),
-        _react2.default.createElement(_reactNative.TextInput, {
-          style: styles.textInput,
-          placeholder: "\u8BF7\u8F93\u5165\u5BC6\u7801",
-          secureTextEntry: true
-        }),
-        _react2.default.createElement(_reactNative.Button, { title: "\u767B\u5F55", onPress: this.login, style: styles.button })
+        _reactNative.View,
+        { style: styles.bgView },
+        _react2.default.createElement(
+          _reactNative.Image,
+          {
+            source: require(571                    ), // 571 = ../img/background.jpg
+            style: styles.backgroundImage
+          },
+          _react2.default.createElement(
+            _reactNative.View,
+            { style: styles.content },
+            _react2.default.createElement(
+              _reactNative.Text,
+              { style: styles.logo },
+              "- Check List -"
+            ),
+            _react2.default.createElement(
+              _reactNative.View,
+              { style: styles.inputContainer },
+              _react2.default.createElement(_reactNative.TextInput, {
+                underlineColorAndroid: "transparent",
+                style: styles.input,
+                placeholder: "username",
+                onChangeText: function onChangeText(newText) {
+                  return _this3.updateNum(newText);
+                },
+                value: this.state.userName
+              }),
+              _react2.default.createElement(_reactNative.TextInput, {
+                secureTextEntry: true,
+                underlineColorAndroid: "transparent",
+                style: styles.input,
+                placeholder: "password",
+                onChangeText: function onChangeText(newText) {
+                  return _this3.updatePW(newText);
+                },
+                value: this.state.userPwd
+              })
+            ),
+            _react2.default.createElement(
+              _reactNative.TouchableOpacity,
+              {
+                onPress: this.login,
+                style: styles.buttonContainer
+              },
+              _react2.default.createElement(
+                _reactNative.Text,
+                { style: styles.buttonText },
+                "LOGIN"
+              )
+            )
+          )
+        )
       );
     }
   }]);
@@ -55900,39 +55975,73 @@ Login.navigationOptions = function (_ref) {
 };
 
 var styles = _reactNative.StyleSheet.create({
-  container: {
+  bgView: {
+    flex: 1
+  },
+  backgroundImage: {
     flex: 1,
-
-    paddingTop: 150,
-    paddingLeft: 50,
-    paddingRight: 50,
-    paddingBottom: 150,
-    alignItems: "center",
-    backgroundColor: "#fff"
+    alignSelf: "stretch",
+    width: null,
+    justifyContent: "center"
   },
-  textInput: {
-    height: 40,
-    borderColor: "gray",
-    borderRadius: 10,
+  content: {
+    alignItems: "center"
+  },
+  logo: {
+    color: "white",
+    fontSize: 40,
+    fontStyle: "italic",
+    fontWeight: "bold",
+    textShadowColor: "#252525",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 15,
+    marginBottom: 20,
+    backgroundColor: "transparent"
+  },
+  inputContainer: {
+    margin: 20,
+    marginBottom: 0,
+    padding: 20,
+    paddingBottom: 10,
+    alignSelf: "stretch",
     borderWidth: 1,
-    paddingLeft: 20
+    borderColor: "#fff",
+    backgroundColor: "rgba(255, 255, 255, 0.2)"
   },
-  button: {
+  input: {
+    fontSize: 16,
     height: 40,
-    borderColor: "gray",
-    borderWidth: 1
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: "rgba(255, 255, 255, 1)"
+  },
+  buttonContainer: {
+    alignSelf: "stretch",
+    margin: 20,
+    padding: 20,
+    backgroundColor: "blue",
+    borderWidth: 1,
+    borderColor: "#fff",
+    backgroundColor: "rgba(255, 255, 255, 0.6)"
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center"
   }
 });
 
-exports.default = (0, _reactRedux.connect)(function (state) {
+function mapStateToProps(state) {
   return {
     userInfo: state.userInfo
   };
-}, function (dispatch) {
-  return {
-    actions: (0, _redux.bindActionCreators)(loginActions, dispatch)
-  };
-})(Login);
+}
+
+function mapDispatchToProps(dispatch) {
+  return (0, _redux.bindActionCreators)(loginActions, dispatch);
+}
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Login);
 }, 519, null, "MNReleaseTool/screens/Login.js");
 __d(/* react-redux/lib/index.js */function(global, require, module, exports) {'use strict';
 
@@ -57687,6 +57796,8 @@ var SET_CHECKITEMS = exports.SET_CHECKITEMS = "SET_CHECKITEMS";
 var LOGIN = exports.LOGIN = "LOGIN";
 var SET_USERINFO = exports.SET_USERINFO = "SET_USERINFO";
 }, 557, null, "MNReleaseTool/redux/actions/types.js");
+__d(/* MNReleaseTool/img/background.jpg */function(global, require, module, exports) {module.exports = require(276                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/img","width":1920,"height":1280,"scales":[1],"hash":"ef55fce1f889872c5ff372bf283b252a","name":"background","type":"jpg"}); // 276 = react-native/Libraries/Image/AssetRegistry
+}, 571, null, "MNReleaseTool/img/background.jpg");
 __d(/* MNReleaseTool/screens/ManagerTabNavigator.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });

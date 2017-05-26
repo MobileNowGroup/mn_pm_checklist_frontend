@@ -55,8 +55,8 @@ class Login extends Component {
       Alert.alert("温馨提醒", "密码必须大于6位!");
       return;
     }
-    // console.log("this props are " + this.props.actions.login());
-    this.props.actions.login("Perry", "123").then(responce => {
+    console.log("this props are " + this.props.login());
+    this.props.login("Perry", "123").then(responce => {
       // console.log(responce);
       if (responce.userInfo.Basic.Role.RoleName == "PM") {
         this.props.navigation.navigate("ManagerTabNavigator");
@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
 
 // export default Login;
 
+/*
 export default connect(
   state => ({
     userInfo: state.userInfo
@@ -174,8 +175,8 @@ export default connect(
     actions: bindActionCreators(loginActions, dispatch)
   })
 )(Login);
+*/
 
-/*
 function mapStateToProps(state) {
   return {
     userInfo: state.userInfo
@@ -183,14 +184,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
-    login: () => {
-      dispatch({
-        type: "LOGIN"
-      });
-    }
-  };
+  return bindActionCreators(loginActions, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
-*/
