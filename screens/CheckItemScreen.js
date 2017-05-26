@@ -52,6 +52,11 @@ class CheckItemScreen extends Component {
   }
 
   getCheckItems() {
+    // console.log("props are " + this.props.fetchCheckItems());
+    // this.props
+    //   .fetchCheckItems()
+    //   .then(response => console.log("response is " + response));
+
     axios
       .get("http://192.168.31.206:8080/checkitems")
       .then(responce => this.handleCheckItems(responce.data))
@@ -110,3 +115,30 @@ const styles = StyleSheet.create({
 });
 
 export default CheckItemScreen;
+
+/*
+export default connect(
+  state => ({
+    state: state.checkItems
+  }),
+  dispatch => ({
+    actions: bindActionCreators(checkItemActions, dispatch)
+  })
+)(CheckItemScreen);
+*/
+
+/*
+function mapStateToProps(state) {
+  return {
+    checkItems: state.checkItems
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchCheckItems: () => dispatch(fetchCheckItems())
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CheckItemScreen);
+*/

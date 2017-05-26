@@ -1,3 +1,7 @@
-import handleCheckItem from "./checkItemReducer";
+import { combineReducers } from "redux";
+// import * as checkItemReducer from "./checkItemReducer";
+import loginReducer from "./loginReducer";
 
-export { handleCheckItem };
+// export default combineReducers({ loginReducer });
+
+export { loginReducer };

@@ -7,10 +7,10 @@ import {
   KeyboardAvoidingView,
   TextInput
 } from "react-native";
-import { Provider } from "react-redux";
-import { createStore, applyMiddleware, combineReduxers, compose } from "redux";
-import thunkMiddleware from "redux-thunk";
-import createLogger from "redux-logger";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as loginActions from "../redux/actions/loginActions";
+import LOGIN from "../redux/actions/types";
 
 class Login extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -23,7 +23,17 @@ class Login extends Component {
   }
 
   login() {
-    this.props.navigation.navigate("ManagerTabNavigator");
+    // console.log("this props are " + this.props.actions.login());
+    this.props.actions.login("Perry", "123").then(responce => {
+      // console.log(responce);
+      if (responce.userInfo.Basic.Role.RoleName == "PM") {
+        this.props.navigation.navigate("ManagerTabNavigator");
+      } else if (responce.userInfo.Basic.Role.RoleName == "PM") {
+        this.props.navigation.navigate("Home");
+      }
+    });
+    console.log("userInfo is " + this.props.userInfo);
+    // this.props.navigation.navigate("ManagerTabNavigator");
     // this.props.navigation.navigate("Home");
   }
 
@@ -67,4 +77,33 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Login;
+// export default Login;
+
+export default connect(
+  state => ({
+    userInfo: state.userInfo
+  }),
+  dispatch => ({
+    actions: bindActionCreators(loginActions, dispatch)
+  })
+)(Login);
+
+/*
+function mapStateToProps(state) {
+  return {
+    userInfo: state.userInfo
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    login: () => {
+      dispatch({
+        type: "LOGIN"
+      });
+    }
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
+*/

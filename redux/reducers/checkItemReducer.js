@@ -1,14 +1,11 @@
-import * as types from "../actions/actionTypes";
+import * as types from "../actions/types";
+import createReducer from "./createReducer";
 
 const initialState = {
   checkItems: []
 };
 
-export default function handleCheckItem(
-  state = initialState,
-  action = {},
-  checkItem
-) {
+export function handleCheckItem(state = initialState, action = {}, checkItem) {
   switch (action.type) {
     case types.DELETECHECKITEM:
       return {
@@ -19,3 +16,21 @@ export default function handleCheckItem(
       return state;
   }
 }
+
+export default function checkItemsReducer(state = initialState, action) {
+  switch (action.type) {
+  }
+}
+
+/*
+export const checkItems = createReducer(
+  {},
+  {
+    [types.SET_CHECKITEMS](state, action) {
+      let newState = {};
+      console.log("action is " + action);
+      return newState;
+    }
+  }
+);
+*/
