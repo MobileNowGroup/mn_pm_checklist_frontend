@@ -55893,11 +55893,9 @@ var Login = function (_Component) {
         _reactNative.Alert.alert("温馨提醒", "密码必须大于6位!");
         return;
       }
-      console.log("this props are " + this.props.login());
+
       this.props.login("Perry", "123").then(function (responce) {
-        if (responce.userInfo.Basic.Role.RoleName == "PM") {
-          _this2.props.navigation.navigate("ManagerTabNavigator");
-        } else if (responce.userInfo.Basic.Role.RoleName == "PM") {
+        if (responce.userInfo.Basic.Role.RoleName == "PM") {} else if (responce.userInfo.Basic.Role.RoleName == "PM") {
           _this2.props.navigation.navigate("Home");
         }
       });
@@ -57931,6 +57929,10 @@ var _checkItemActions = require(566                                ); // 566 = .
 
 var checkItemActions = babelHelpers.interopRequireWildcard(_checkItemActions);
 
+var _loginActions = require(556                            ); // 556 = ../redux/actions/loginActions
+
+var loginActions = babelHelpers.interopRequireWildcard(_loginActions);
+
 var _reactRedux = require(520          ); // 520 = react-redux
 
 var CheckItemScreen = function (_Component) {
@@ -58061,7 +58063,15 @@ var styles = _reactNative.StyleSheet.create({
   }
 });
 
-exports.default = CheckItemScreen;
+exports.default = (0, _reactRedux.connect)(function (state) {
+  return {
+    state: state.checkItems
+  };
+}, function (dispatch) {
+  return {
+    actions: (0, _redux.bindActionCreators)(checkItemActions, loginActions, dispatch)
+  };
+})(CheckItemScreen);
 }, 560, null, "MNReleaseTool/screens/CheckItemScreen.js");
 __d(/* MNReleaseTool/views/CheckItemRow.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
@@ -59322,20 +59332,85 @@ __d(/* redux-logger/dist/redux-logger.js */function(global, require, module, exp
 __d(/* MNReleaseTool/redux/reducers/index.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.loginReducer = undefined;
 
 var _redux = require(530    ); // 530 = redux
 
+var _checkItemReducer = require(572                 ); // 572 = ./checkItemReducer
+
+var checkItemReducers = babelHelpers.interopRequireWildcard(_checkItemReducer);
+
 var _loginReducer = require(570             ); // 570 = ./loginReducer
 
-var _loginReducer2 = babelHelpers.interopRequireDefault(_loginReducer);
-
-exports.loginReducer = _loginReducer2.default;
+var loginReducers = babelHelpers.interopRequireWildcard(_loginReducer);
+exports.default = (0, _redux.combineReducers)(babelHelpers.extends({}, loginReducers, checkItemReducers));
 }, 569, null, "MNReleaseTool/redux/reducers/index.js");
+__d(/* MNReleaseTool/redux/reducers/checkItemReducer.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.handleCheckItem = handleCheckItem;
+exports.default = checkItemsReducer;
+exports.test2 = test2;
+
+var _types = require(557               ); // 557 = ../actions/types
+
+var types = babelHelpers.interopRequireWildcard(_types);
+
+var _createReducer = require(573              ); // 573 = ./createReducer
+
+var _createReducer2 = babelHelpers.interopRequireDefault(_createReducer);
+
+var initialState = {
+  checkItems: []
+};
+
+function handleCheckItem() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+  switch (action.type) {
+    case types.DELETECHECKITEM:
+      return babelHelpers.extends({}, state, {
+        count: state.checkItems.append(checkItem)
+      });
+    default:
+      return state;
+  }
+}
+
+function checkItemsReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments[1];
+
+  switch (action.type) {}
+  return babelHelpers.extends({}, state);
+}
+
+function test2(state, action) {
+  return babelHelpers.extends({}, state);
+}
+}, 572, null, "MNReleaseTool/redux/reducers/checkItemReducer.js");
+__d(/* MNReleaseTool/redux/reducers/createReducer.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = createReducer;
+function createReducer(initialState, handlers) {
+  return function reducer() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+    var action = arguments[1];
+
+    if (handlers.hasOwnProperty(action.type)) {
+      return handlers[action.type](state, action);
+    } else {
+      return state;
+    }
+  };
+}
+}, 573, null, "MNReleaseTool/redux/reducers/createReducer.js");
 __d(/* MNReleaseTool/redux/reducers/loginReducer.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = loginReducer;
+exports.test = test;
 
 var _types = require(557               ); // 557 = ../actions/types
 
@@ -59351,13 +59426,17 @@ function loginReducer() {
   var action = arguments[1];
 
   switch (action.type) {
-    case types.LOGIN:
+    case types.SET_USERINFO:
       return babelHelpers.extends({}, state, {
         userInfo: action.userInfo
       });
     default:
       return babelHelpers.extends({}, state);
   }
+}
+
+function test(state, action) {
+  return babelHelpers.extends({}, state);
 }
 }, 570, null, "MNReleaseTool/redux/reducers/loginReducer.js");
 ;require(126);

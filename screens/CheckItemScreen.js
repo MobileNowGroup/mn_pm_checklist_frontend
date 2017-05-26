@@ -4,6 +4,7 @@ import axios from "axios";
 import CheckItemRow from "../views/CheckItemRow";
 import { bindActionCreators } from "redux";
 import * as checkItemActions from "../redux/actions/checkItemActions";
+import * as loginActions from "../redux/actions/loginActions";
 import { connect } from "react-redux";
 
 class CheckItemScreen extends Component {
@@ -40,6 +41,7 @@ class CheckItemScreen extends Component {
   }
 
   componentWillMount() {
+    // console.log(this.props.)
     this.props.navigation.setParams({ handleNew: this.new });
   }
 
@@ -114,18 +116,16 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CheckItemScreen;
+// export default CheckItemScreen;
 
-/*
 export default connect(
   state => ({
     state: state.checkItems
   }),
   dispatch => ({
-    actions: bindActionCreators(checkItemActions, dispatch)
+    actions: bindActionCreators(checkItemActions, loginActions, dispatch)
   })
 )(CheckItemScreen);
-*/
 
 /*
 function mapStateToProps(state) {

@@ -55,11 +55,11 @@ class Login extends Component {
       Alert.alert("温馨提醒", "密码必须大于6位!");
       return;
     }
-    console.log("this props are " + this.props.login());
+    // console.log("this props are " + this.props.login());
     this.props.login("Perry", "123").then(responce => {
       // console.log(responce);
       if (responce.userInfo.Basic.Role.RoleName == "PM") {
-        this.props.navigation.navigate("ManagerTabNavigator");
+        // this.props.navigation.navigate("ManagerTabNavigator");
       } else if (responce.userInfo.Basic.Role.RoleName == "PM") {
         this.props.navigation.navigate("Home");
       }

@@ -1,6 +1,7 @@
 import * as types from "./types";
 import axios from "axios";
 
+// action creator
 export function login(name, password) {
   /*
   return {
@@ -19,6 +20,7 @@ export function login(name, password) {
   };
 }
 
+// action creator
 export function setUserInfo({ userInfo }) {
   return {
     type: types.SET_USERINFO,

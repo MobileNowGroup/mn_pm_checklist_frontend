@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
-// import * as checkItemReducer from "./checkItemReducer";
-import loginReducer from "./loginReducer";
+import * as checkItemReducers from "./checkItemReducer";
+import * as loginReducers from "./loginReducer";
 
-// export default combineReducers({ loginReducer });
+export default combineReducers({ ...loginReducers, ...checkItemReducers });
 
-export { loginReducer };
+// export { loginReducers };

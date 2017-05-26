@@ -6,7 +6,7 @@ const initialState = {
 
 export default function loginReducer(state = {}, action) {
   switch (action.type) {
-    case types.LOGIN:
+    case types.SET_USERINFO:
       return {
         ...state,
         userInfo: action.userInfo
@@ -16,4 +16,10 @@ export default function loginReducer(state = {}, action) {
         ...state
       };
   }
+}
+
+export function test(state, action) {
+  return {
+    ...state
+  };
 }

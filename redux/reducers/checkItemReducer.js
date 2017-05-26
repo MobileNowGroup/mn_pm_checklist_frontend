@@ -5,7 +5,7 @@ const initialState = {
   checkItems: []
 };
 
-export function handleCheckItem(state = initialState, action = {}, checkItem) {
+export function handleCheckItem(state = initialState, action = {}) {
   switch (action.type) {
     case types.DELETECHECKITEM:
       return {
@@ -20,6 +20,15 @@ export function handleCheckItem(state = initialState, action = {}, checkItem) {
 export default function checkItemsReducer(state = initialState, action) {
   switch (action.type) {
   }
+  return {
+    ...state
+  };
+}
+
+export function test2(state, action) {
+  return {
+    ...state
+  };
 }
 
 /*
