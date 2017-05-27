@@ -1,5 +1,11 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, Button, ListView } from "react-native";
+import axios from "axios";
+import CheckItemRow from "../views/CheckItemRow";
+import { bindActionCreators } from "redux";
+import * as checkItemActions from "../redux/actions/checkItemActions";
+import * as loginActions from "../redux/actions/loginActions";
+import { connect } from "react-redux";
 
 class CheckItemScreen extends Component {
   static navigationOptions = props => {
@@ -25,26 +31,69 @@ class CheckItemScreen extends Component {
       rowHasChanged: (r1, r2) => r1 !== r2
     });
     this.state = {
-      dataSource: ds.cloneWithRows([]),
-      checkItems: []
+      checkItems: [],
+      dataSource: ds.cloneWithRows([])
     };
     this.new = this.new.bind(this);
+    this.getCheckItems = this.getCheckItems.bind(this);
+    this.handleCheckItems = this.handleCheckItems.bind(this);
+    this.setSource = this.setSource.bind(this);
   }
 
   componentWillMount() {
-    // this.props.navigation.navigate("Login");
+    // console.log(this.props.)
     this.props.navigation.setParams({ handleNew: this.new });
   }
 
+  componentDidMount() {
+    this.getCheckItems();
+  }
+
   new() {
-    // console.log(this.state.projects);
     this.props.navigation.navigate("New", { projects: this.state.projects });
   }
 
+  getCheckItems() {
+    // console.log("props are " + this.props.fetchCheckItems());
+    // this.props
+    //   .fetchCheckItems()
+    //   .then(response => console.log("response is " + response));
+
+    axios
+      .get("http://192.168.31.206:8080/checkitems")
+      .then(responce => this.handleCheckItems(responce.data))
+      .catch(error => console.log(error));
+  }
+
+  handleCheckItems(checkItems) {
+    this.setSource(checkItems);
+  }
+
+  setSource(checkItems) {
+    console.log("check items are " + checkItems[0].ItemTitle);
+    this.setState({
+      checkItems,
+      dataSource: this.state.dataSource.cloneWithRows(checkItems)
+    });
+  }
+
   render() {
+    const { state, actions } = this.props;
     return (
       <View style={styles.container}>
-        <Text>CheckItemScreen</Text>
+        <ListView
+          style={styles.list}
+          enableEmptySections
+          removeClippedSubviews={false}
+          dataSource={this.state.dataSource}
+          renderRow={aCheckItem => <CheckItemRow {...aCheckItem} />}
+          renderSeparator={(sectionId, rowId) => (
+            <View key={rowId} style={styles.seperator} />
+          )}
+          // renderSectionHeader={() => (
+          //   <Header callbackFunc={this.handleHeaderCallback} />
+          // )}
+        />
       </View>
     );
   }
@@ -55,8 +104,41 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#2c3e50"
+    backgroundColor: "#fff"
+  },
+  list: {
+    backgroundColor: "#fff"
+  },
+  seperator: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: "#8E8E8E"
   }
 });
 
-export default CheckItemScreen;
+// export default CheckItemScreen;
+
+export default connect(
+  state => ({
+    state: state.checkItems
+  }),
+  dispatch => ({
+    actions: bindActionCreators(checkItemActions, loginActions, dispatch)
+  })
+)(CheckItemScreen);
+
+/*
+function mapStateToProps(state) {
+  return {
+    checkItems: state.checkItems
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchCheckItems: () => dispatch(fetchCheckItems())
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CheckItemScreen);
+*/
