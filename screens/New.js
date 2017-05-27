@@ -25,6 +25,7 @@ class New extends Component {
 
   render() {
     console.log(this.props.navigation.state.params.releaseId);
+    alert(this.props.navigation.state.params.projects);
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView
@@ -45,15 +46,7 @@ class New extends Component {
           <Text>请输入版本:</Text>
           <TextInput placeholder="TextInput" style={styles.textInput} />
         </KeyboardAvoidingView>
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={this.state.language}
-            onValueChange={lang => this.setState({ language: lang })}
-          >
-            <Picker.Item label="Java" value="java" />
-            <Picker.Item label="JavaScript" value="js" />
-          </Picker>
-        </View>
+
       </View>
     );
   }
@@ -76,8 +69,8 @@ const styles = StyleSheet.create({
     width: 200,
     paddingHorizontal: 10
   },
-  pickerContainer: {},
   rowContainer: {
+    //flex: 2,
     padding: 20,
     paddingHorizontal: 20,
     flexDirection: "row",
