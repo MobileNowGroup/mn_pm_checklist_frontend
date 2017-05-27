@@ -46658,15 +46658,15 @@ var _redux = require(530    ); // 530 = redux
 
 var _reactRedux = require(520          ); // 520 = react-redux
 
-var _reduxThunk = require(567          ); // 567 = redux-thunk
+var _reduxThunk = require(568          ); // 568 = redux-thunk
 
 var _reduxThunk2 = babelHelpers.interopRequireDefault(_reduxThunk);
 
-var _reduxLogger = require(568           ); // 568 = redux-logger
+var _reduxLogger = require(569           ); // 569 = redux-logger
 
 var _reduxLogger2 = babelHelpers.interopRequireDefault(_reduxLogger);
 
-var _reducers = require(569               ); // 569 = ./redux/reducers
+var _reducers = require(570               ); // 570 = ./redux/reducers
 
 var reducers = babelHelpers.interopRequireWildcard(_reducers);
 
@@ -46730,7 +46730,7 @@ var _Login = require(519               ); // 519 = ../screens/Login
 
 var _Login2 = babelHelpers.interopRequireDefault(_Login);
 
-var _ManagerTabNavigator = require(558                             ); // 558 = ../screens/ManagerTabNavigator
+var _ManagerTabNavigator = require(559                             ); // 559 = ../screens/ManagerTabNavigator
 
 var _ManagerTabNavigator2 = babelHelpers.interopRequireDefault(_ManagerTabNavigator);
 
@@ -55895,8 +55895,10 @@ var Login = function (_Component) {
       }
 
       this.props.login("Perry", "123").then(function (responce) {
-        if (responce.userInfo.Basic.Role.RoleName == "PM") {} else if (responce.userInfo.Basic.Role.RoleName == "PM") {
-          _this2.props.navigation.navigate("Home");
+        if (responce.userInfo.Basic.Role.RoleName == "PM") {
+          _this2.props.navigation.navigate("ManagerTabNavigator");
+        } else if (responce.userInfo.Basic.Role.RoleName == "DEV") {
+          _this2.props.navigation.navigate("ManagerTabNavigator");
         }
       });
     }
@@ -55911,7 +55913,7 @@ var Login = function (_Component) {
         _react2.default.createElement(
           _reactNative.Image,
           {
-            source: require(571                    ), // 571 = ../img/background.jpg
+            source: require(558                    ), // 558 = ../img/background.jpg
             style: styles.backgroundImage
           },
           _react2.default.createElement(
@@ -57795,18 +57797,18 @@ var LOGIN = exports.LOGIN = "LOGIN";
 var SET_USERINFO = exports.SET_USERINFO = "SET_USERINFO";
 }, 557, null, "MNReleaseTool/redux/actions/types.js");
 __d(/* MNReleaseTool/img/background.jpg */function(global, require, module, exports) {module.exports = require(276                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/img","width":1920,"height":1280,"scales":[1],"hash":"ef55fce1f889872c5ff372bf283b252a","name":"background","type":"jpg"}); // 276 = react-native/Libraries/Image/AssetRegistry
-}, 571, null, "MNReleaseTool/img/background.jpg");
+}, 558, null, "MNReleaseTool/img/background.jpg");
 __d(/* MNReleaseTool/screens/ManagerTabNavigator.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
 var _reactNavigation = require(419               ); // 419 = react-navigation
 
-var _ProjectScreen = require(559              ); // 559 = ./ProjectScreen
+var _ProjectScreen = require(560              ); // 560 = ./ProjectScreen
 
 var _ProjectScreen2 = babelHelpers.interopRequireDefault(_ProjectScreen);
 
-var _CheckItemScreen = require(560                ); // 560 = ./CheckItemScreen
+var _CheckItemScreen = require(561                ); // 561 = ./CheckItemScreen
 
 var _CheckItemScreen2 = babelHelpers.interopRequireDefault(_CheckItemScreen);
 
@@ -57816,7 +57818,7 @@ var ManagerTabNavigator = (0, _reactNavigation.TabNavigator)({
 });
 
 exports.default = ManagerTabNavigator;
-}, 558, null, "MNReleaseTool/screens/ManagerTabNavigator.js");
+}, 559, null, "MNReleaseTool/screens/ManagerTabNavigator.js");
 __d(/* MNReleaseTool/screens/ProjectScreen.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -57904,7 +57906,7 @@ var styles = _reactNative.StyleSheet.create({
 });
 
 exports.default = ProjectScreen;
-}, 559, null, "MNReleaseTool/screens/ProjectScreen.js");
+}, 560, null, "MNReleaseTool/screens/ProjectScreen.js");
 __d(/* MNReleaseTool/screens/CheckItemScreen.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -57919,13 +57921,13 @@ var _axios = require(487    ); // 487 = axios
 
 var _axios2 = babelHelpers.interopRequireDefault(_axios);
 
-var _CheckItemRow = require(561                    ); // 561 = ../views/CheckItemRow
+var _CheckItemRow = require(562                    ); // 562 = ../views/CheckItemRow
 
 var _CheckItemRow2 = babelHelpers.interopRequireDefault(_CheckItemRow);
 
 var _redux = require(530    ); // 530 = redux
 
-var _checkItemActions = require(566                                ); // 566 = ../redux/actions/checkItemActions
+var _checkItemActions = require(567                                ); // 567 = ../redux/actions/checkItemActions
 
 var checkItemActions = babelHelpers.interopRequireWildcard(_checkItemActions);
 
@@ -57949,7 +57951,6 @@ var CheckItemScreen = function (_Component) {
       }
     });
     _this.state = {
-      checkItems: [],
       dataSource: ds.cloneWithRows([])
     };
     _this.new = _this.new.bind(_this);
@@ -57977,13 +57978,8 @@ var CheckItemScreen = function (_Component) {
   }, {
     key: "getCheckItems",
     value: function getCheckItems() {
-      var _this2 = this;
 
-      _axios2.default.get("http://192.168.31.206:8080/checkitems").then(function (responce) {
-        return _this2.handleCheckItems(responce.data);
-      }).catch(function (error) {
-        return console.log(error);
-      });
+      this.props.actions.fetchCheckItems();
     }
   }, {
     key: "handleCheckItems",
@@ -57995,17 +57991,40 @@ var CheckItemScreen = function (_Component) {
     value: function setSource(checkItems) {
       console.log("check items are " + checkItems[0].ItemTitle);
       this.setState({
-        checkItems: checkItems,
         dataSource: this.state.dataSource.cloneWithRows(checkItems)
       });
+    }
+  }, {
+    key: "componentWillReceiveProps",
+    value: function componentWillReceiveProps(nextProps) {
+      if (nextProps.checkItems !== this.props.checkItems) {
+        this.setSource(nextProps.checkItems);
+      }
+    }
+  }, {
+    key: "shouldComponentUpdate",
+    value: function shouldComponentUpdate(nextProps, nextState) {
+      console.log("shouldComponentUpdate");
+      return true;
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(nextProps, nextState) {
+      console.log("componentDidUpdate");
+    }
+  }, {
+    key: "componentWillUpdate",
+    value: function componentWillUpdate(nextProps, nextState) {
+      console.log("componentWillUpdate");
     }
   }, {
     key: "render",
     value: function render() {
       var _props = this.props,
-          state = _props.state,
+          checkItems = _props.checkItems,
           actions = _props.actions;
 
+      console.log("check items are " + checkItems);
       return _react2.default.createElement(
         _reactNative.View,
         { style: styles.container },
@@ -58014,8 +58033,8 @@ var CheckItemScreen = function (_Component) {
           enableEmptySections: true,
           removeClippedSubviews: false,
           dataSource: this.state.dataSource,
-          renderRow: function renderRow(aCheckItem) {
-            return _react2.default.createElement(_CheckItemRow2.default, aCheckItem);
+          renderRow: function renderRow(aCheckItem, sectionID, rowID) {
+            return _react2.default.createElement(_CheckItemRow2.default, babelHelpers.extends({}, aCheckItem, { rowID: rowID }));
           },
           renderSeparator: function renderSeparator(sectionId, rowId) {
             return _react2.default.createElement(_reactNative.View, { key: rowId, style: styles.seperator });
@@ -58065,14 +58084,14 @@ var styles = _reactNative.StyleSheet.create({
 
 exports.default = (0, _reactRedux.connect)(function (state) {
   return {
-    state: state.checkItems
+    checkItems: babelHelpers.extends({}, state.default.checkItemsReducer.checkItems)
   };
 }, function (dispatch) {
   return {
-    actions: (0, _redux.bindActionCreators)(checkItemActions, loginActions, dispatch)
+    actions: (0, _redux.bindActionCreators)(checkItemActions, dispatch)
   };
 })(CheckItemScreen);
-}, 560, null, "MNReleaseTool/screens/CheckItemScreen.js");
+}, 561, null, "MNReleaseTool/screens/CheckItemScreen.js");
 __d(/* MNReleaseTool/views/CheckItemRow.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -58083,9 +58102,17 @@ var _react2 = babelHelpers.interopRequireDefault(_react);
 
 var _reactNative = require(12            ); // 12 = react-native
 
-var _reactNativeSwipeout = require(562                    ); // 562 = react-native-swipeout
+var _reactNativeSwipeout = require(563                    ); // 563 = react-native-swipeout
 
 var _reactNativeSwipeout2 = babelHelpers.interopRequireDefault(_reactNativeSwipeout);
+
+var _checkItemActions = require(567                                ); // 567 = ../redux/actions/checkItemActions
+
+var checkItemActions = babelHelpers.interopRequireWildcard(_checkItemActions);
+
+var _reactRedux = require(520          ); // 520 = react-redux
+
+var _redux = require(530    ); // 530 = redux
 
 var CheckItemRow = function (_Component) {
   babelHelpers.inherits(CheckItemRow, _Component);
@@ -58108,7 +58135,10 @@ var CheckItemRow = function (_Component) {
     value: function handlePress() {}
   }, {
     key: "deleteRow",
-    value: function deleteRow() {}
+    value: function deleteRow() {
+      console.log("rowId is " + this.props.rowID);
+      this.props.actions.deleteCheckItem(this.props.ItemId, this.props.rowID);
+    }
   }, {
     key: "render",
     value: function render() {
@@ -58122,10 +58152,6 @@ var CheckItemRow = function (_Component) {
           _this2.deleteRow();
         }
       }];
-      var _props = this.props,
-          counter = _props.counter,
-          increment = _props.increment,
-          decrement = _props.decrement;
 
       return _react2.default.createElement(
         _reactNativeSwipeout2.default,
@@ -58191,21 +58217,27 @@ var styles = _reactNative.StyleSheet.create({
   }
 });
 
-exports.default = CheckItemRow;
-}, 561, null, "MNReleaseTool/views/CheckItemRow.js");
+exports.default = (0, _reactRedux.connect)(function (state) {
+  return {};
+}, function (dispatch) {
+  return {
+    actions: (0, _redux.bindActionCreators)(checkItemActions, dispatch)
+  };
+})(CheckItemRow);
+}, 562, null, "MNReleaseTool/views/CheckItemRow.js");
 __d(/* react-native-swipeout/index.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _reactTweenState = require(563                ); // 563 = react-tween-state
+var _reactTweenState = require(564                ); // 564 = react-tween-state
 
 var _reactTweenState2 = babelHelpers.interopRequireDefault(_reactTweenState);
 
-var _NativeButton = require(564             ); // 564 = ./NativeButton
+var _NativeButton = require(565             ); // 565 = ./NativeButton
 
 var _NativeButton2 = babelHelpers.interopRequireDefault(_NativeButton);
 
-var _styles = require(565       ); // 565 = ./styles
+var _styles = require(566       ); // 566 = ./styles
 
 var _styles2 = babelHelpers.interopRequireDefault(_styles);
 
@@ -58595,7 +58627,7 @@ Swipeout.NativeButton = _NativeButton2.default;
 Swipeout.SwipeoutButton = SwipeoutBtn;
 
 exports.default = Swipeout;
-}, 562, null, "react-native-swipeout/index.js");
+}, 563, null, "react-native-swipeout/index.js");
 __d(/* react-tween-state/lib/index.js */function(global, require, module, exports) {!function (e, n) {
   "object" == typeof exports && "object" == typeof module ? module.exports = n() : "function" == typeof define && define.amd ? define([], n) : "object" == typeof exports ? exports.tweenState = n() : e.tweenState = n();
 }(this, function () {
@@ -58826,7 +58858,7 @@ __d(/* react-tween-state/lib/index.js */function(global, require, module, export
         } };e.exports = t;
     } });
 });
-}, 563, null, "react-tween-state/lib/index.js");
+}, 564, null, "react-tween-state/lib/index.js");
 __d(/* react-native-swipeout/NativeButton.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -58935,7 +58967,7 @@ var NativeButton = _react2.default.createClass({
 });
 
 exports.default = NativeButton;
-}, 564, null, "react-native-swipeout/NativeButton.js");
+}, 565, null, "react-native-swipeout/NativeButton.js");
 __d(/* react-native-swipeout/styles.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -58982,7 +59014,7 @@ var styles = _reactNative.StyleSheet.create({
 });
 
 exports.default = styles;
-}, 565, null, "react-native-swipeout/styles.js");
+}, 566, null, "react-native-swipeout/styles.js");
 __d(/* MNReleaseTool/redux/actions/checkItemActions.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -58998,15 +59030,32 @@ var _axios = require(487    ); // 487 = axios
 
 var _axios2 = babelHelpers.interopRequireDefault(_axios);
 
-function deleteCheckItem() {
+function deleteCheckItem(itemID, index) {
+  return function (dispatch, getState) {
+    var currentState = getState();
+    var checkItems = currentState.default.checkItemsReducer.checkItems;
+
+    return _axios2.default.delete("http://192.168.31.206:8000/checkitem/" + itemID).then(function (responce) {
+      return handleDeleteItem(responce, dispatch, checkItems, index);
+    }).catch(function (error) {
+      return console.log(error);
+    });
+  };
   return {
     type: types.DELETECHECKITEM
   };
 }
 
+function handleDeleteItem(responce, dispatch, checkItems, index) {
+  if (responce.status == 200) {
+    checkItems.splice(index, 1);
+    dispatch(setCheckItems({ checkItems: checkItems }));
+  }
+}
+
 function fetchCheckItems() {
   return function (dispatch, getState) {
-    return _axios2.default.get("http://192.168.31.206:8080/checkitems").then(function (responce) {
+    return _axios2.default.get("http://192.168.31.206:8000/checkitems").then(function (responce) {
       return dispatch(setCheckItems({ checkItems: responce.data }));
     }).catch(function (error) {
       return console.log(error);
@@ -59019,10 +59068,10 @@ function setCheckItems(_ref) {
 
   return {
     type: types.SET_CHECKITEMS,
-    checkitems: checkitems
+    checkItems: checkItems
   };
 }
-}, 566, null, "MNReleaseTool/redux/actions/checkItemActions.js");
+}, 567, null, "MNReleaseTool/redux/actions/checkItemActions.js");
 __d(/* redux-thunk/lib/index.js */function(global, require, module, exports) {'use strict';
 
 exports.__esModule = true;
@@ -59046,7 +59095,7 @@ var thunk = createThunkMiddleware();
 thunk.withExtraArgument = createThunkMiddleware;
 
 exports['default'] = thunk;
-}, 567, null, "redux-thunk/lib/index.js");
+}, 568, null, "redux-thunk/lib/index.js");
 __d(/* redux-logger/dist/redux-logger.js */function(global, require, module, exports) {!function (e, t) {
   "object" == typeof exports && "undefined" != typeof module ? t(exports) : "function" == typeof define && define.amd ? define(["exports"], t) : t(e.reduxLogger = e.reduxLogger || {});
 }(this, function (e) {
@@ -59328,34 +59377,33 @@ __d(/* redux-logger/dist/redux-logger.js */function(global, require, module, exp
         r = e.getState;return "function" == typeof t || "function" == typeof r ? S()({ dispatch: t, getState: r }) : void console.error("\n[redux-logger v3] BREAKING CHANGE\n[redux-logger v3] Since 3.0.0 redux-logger exports by default logger with default settings.\n[redux-logger v3] Change\n[redux-logger v3] import createLogger from 'redux-logger'\n[redux-logger v3] to\n[redux-logger v3] import { createLogger } from 'redux-logger'\n");
   };e.defaults = L, e.createLogger = S, e.logger = T, e.default = T, Object.defineProperty(e, "__esModule", { value: !0 });
 });
-}, 568, null, "redux-logger/dist/redux-logger.js");
+}, 569, null, "redux-logger/dist/redux-logger.js");
 __d(/* MNReleaseTool/redux/reducers/index.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
 var _redux = require(530    ); // 530 = redux
 
-var _checkItemReducer = require(572                 ); // 572 = ./checkItemReducer
+var _checkItemReducer = require(571                 ); // 571 = ./checkItemReducer
 
 var checkItemReducers = babelHelpers.interopRequireWildcard(_checkItemReducer);
 
-var _loginReducer = require(570             ); // 570 = ./loginReducer
+var _loginReducer = require(573             ); // 573 = ./loginReducer
 
 var loginReducers = babelHelpers.interopRequireWildcard(_loginReducer);
-exports.default = (0, _redux.combineReducers)(babelHelpers.extends({}, loginReducers, checkItemReducers));
-}, 569, null, "MNReleaseTool/redux/reducers/index.js");
+exports.default = (0, _redux.combineReducers)(babelHelpers.extends(checkItemReducers, loginReducers));
+}, 570, null, "MNReleaseTool/redux/reducers/index.js");
 __d(/* MNReleaseTool/redux/reducers/checkItemReducer.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.handleCheckItem = handleCheckItem;
-exports.default = checkItemsReducer;
+exports.checkItemsReducer = checkItemsReducer;
 exports.test2 = test2;
 
 var _types = require(557               ); // 557 = ../actions/types
 
 var types = babelHelpers.interopRequireWildcard(_types);
 
-var _createReducer = require(573              ); // 573 = ./createReducer
+var _createReducer = require(572              ); // 572 = ./createReducer
 
 var _createReducer2 = babelHelpers.interopRequireDefault(_createReducer);
 
@@ -59363,32 +59411,25 @@ var initialState = {
   checkItems: []
 };
 
-function handleCheckItem() {
+function checkItemsReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
-  var action = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var action = arguments[1];
 
   switch (action.type) {
-    case types.DELETECHECKITEM:
-      return babelHelpers.extends({}, state, {
-        count: state.checkItems.append(checkItem)
-      });
+    case types.SET_CHECKITEMS:
+      return babelHelpers.extends({}, babelHelpers.extends({}, state, {
+        checkItems: action.checkItems
+      }));
+
     default:
       return state;
   }
 }
 
-function checkItemsReducer() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
-  var action = arguments[1];
-
-  switch (action.type) {}
-  return babelHelpers.extends({}, state);
-}
-
 function test2(state, action) {
   return babelHelpers.extends({}, state);
 }
-}, 572, null, "MNReleaseTool/redux/reducers/checkItemReducer.js");
+}, 571, null, "MNReleaseTool/redux/reducers/checkItemReducer.js");
 __d(/* MNReleaseTool/redux/reducers/createReducer.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -59405,7 +59446,7 @@ function createReducer(initialState, handlers) {
     }
   };
 }
-}, 573, null, "MNReleaseTool/redux/reducers/createReducer.js");
+}, 572, null, "MNReleaseTool/redux/reducers/createReducer.js");
 __d(/* MNReleaseTool/redux/reducers/loginReducer.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -59438,7 +59479,7 @@ function loginReducer() {
 function test(state, action) {
   return babelHelpers.extends({}, state);
 }
-}, 570, null, "MNReleaseTool/redux/reducers/loginReducer.js");
+}, 573, null, "MNReleaseTool/redux/reducers/loginReducer.js");
 ;require(126);
 ;require(0);
 //# sourceMappingURL=index.ios.map

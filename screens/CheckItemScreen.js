@@ -31,7 +31,7 @@ class CheckItemScreen extends Component {
       rowHasChanged: (r1, r2) => r1 !== r2
     });
     this.state = {
-      checkItems: [],
+      // checkItems: [],
       dataSource: ds.cloneWithRows([])
     };
     this.new = this.new.bind(this);
@@ -59,10 +59,15 @@ class CheckItemScreen extends Component {
     //   .fetchCheckItems()
     //   .then(response => console.log("response is " + response));
 
+    /*
     axios
       .get("http://192.168.31.206:8080/checkitems")
       .then(responce => this.handleCheckItems(responce.data))
       .catch(error => console.log(error));
+      */
+
+    this.props.actions.fetchCheckItems();
+    // .then(responce => this.handleCheckItems(responce.checkItems));
   }
 
   handleCheckItems(checkItems) {
@@ -72,13 +77,20 @@ class CheckItemScreen extends Component {
   setSource(checkItems) {
     console.log("check items are " + checkItems[0].ItemTitle);
     this.setState({
-      checkItems,
+      // checkItems,
       dataSource: this.state.dataSource.cloneWithRows(checkItems)
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.checkItems !== this.props.checkItems) {
+      this.setSource(nextProps.checkItems);
+    }
+  }
+
   render() {
-    const { state, actions } = this.props;
+    const { checkItems, actions } = this.props;
+    console.log("check items are " + checkItems);
     return (
       <View style={styles.container}>
         <ListView
@@ -86,7 +98,9 @@ class CheckItemScreen extends Component {
           enableEmptySections
           removeClippedSubviews={false}
           dataSource={this.state.dataSource}
-          renderRow={aCheckItem => <CheckItemRow {...aCheckItem} />}
+          renderRow={(aCheckItem, sectionID, rowID) => (
+            <CheckItemRow {...aCheckItem} rowID={rowID} />
+          )}
           renderSeparator={(sectionId, rowId) => (
             <View key={rowId} style={styles.seperator} />
           )}
@@ -120,10 +134,10 @@ const styles = StyleSheet.create({
 
 export default connect(
   state => ({
-    state: state.checkItems
+    checkItems: Object.assign({}, state.default.checkItemsReducer.checkItems)
   }),
   dispatch => ({
-    actions: bindActionCreators(checkItemActions, loginActions, dispatch)
+    actions: bindActionCreators(checkItemActions, dispatch)
   })
 )(CheckItemScreen);
 

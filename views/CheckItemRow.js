@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, TouchableHighlight } from "react-native";
 import Swipeout from "react-native-swipeout";
+import * as checkItemActions from "../redux/actions/checkItemActions";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 class CheckItemRow extends Component {
   constructor(props) {
@@ -15,7 +18,10 @@ class CheckItemRow extends Component {
     // this.props.callbackFunc(this.props.ReleaseId, this.props.ReleaseTitle);
   }
 
-  deleteRow() {}
+  deleteRow() {
+    console.log("rowId is " + this.props.rowID);
+    this.props.actions.deleteCheckItem(this.props.ItemId, this.props.rowID);
+  }
 
   render() {
     let swipeBtns = [
@@ -28,7 +34,7 @@ class CheckItemRow extends Component {
         }
       }
     ];
-    const { counter, increment, decrement } = this.props;
+    // const { counter, increment, decrement } = this.props;
     return (
       // <TouchableHighlight underlayColor="lightgray" onPress={this.handlePress}>
       (
@@ -86,4 +92,13 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CheckItemRow;
+// export default CheckItemRow;
+
+export default connect(
+  state => ({
+    // state: state.checkItems
+  }),
+  dispatch => ({
+    actions: bindActionCreators(checkItemActions, dispatch)
+  })
+)(CheckItemRow);

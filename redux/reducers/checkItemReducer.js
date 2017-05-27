@@ -5,18 +5,31 @@ const initialState = {
   checkItems: []
 };
 
-export function handleCheckItem(state = initialState, action = {}) {
+export function checkItemsReducer(state = initialState, action) {
   switch (action.type) {
-    case types.DELETECHECKITEM:
-      return {
-        ...state,
-        count: state.checkItems.append(checkItem)
-      };
+    case types.SET_CHECKITEMS:
+      return Object.assign(
+        {},
+        {
+          ...state,
+          checkItems: action.checkItems
+        }
+      );
+    // return {
+    //   ...state,
+    //   checkItems: action.checkItems
+    // };
+    // case types.DELETE_CHECKITEM:
+    //   return {
+    //     ...state,
+    //     checkItems: action.checkItems
+    //   };
     default:
       return state;
   }
 }
 
+/*
 export default function checkItemsReducer(state = initialState, action) {
   switch (action.type) {
   }
@@ -24,6 +37,7 @@ export default function checkItemsReducer(state = initialState, action) {
     ...state
   };
 }
+*/
 
 export function test2(state, action) {
   return {
