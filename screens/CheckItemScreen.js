@@ -6,6 +6,7 @@ import { bindActionCreators } from "redux";
 import * as checkItemActions from "../redux/actions/checkItemActions";
 import * as loginActions from "../redux/actions/loginActions";
 import { connect } from "react-redux";
+import NewCheckItemScreen from "./NewCheckItemScreen";
 
 class CheckItemScreen extends Component {
   static navigationOptions = props => {
@@ -50,7 +51,7 @@ class CheckItemScreen extends Component {
   }
 
   new() {
-    this.props.navigation.navigate("New", { projects: this.state.projects });
+    this.props.navigation.navigate("NewCheckItemScreen");
   }
 
   getCheckItems() {
