@@ -7,6 +7,7 @@ import * as checkItemActions from "../redux/actions/checkItemActions";
 import * as loginActions from "../redux/actions/loginActions";
 import { connect } from "react-redux";
 import NewCheckItemScreen from "./NewCheckItemScreen";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 class CheckItemScreen extends Component {
   static navigationOptions = props => {
@@ -55,14 +56,9 @@ class CheckItemScreen extends Component {
   }
 
   getCheckItems() {
-    // console.log("props are " + this.props.fetchCheckItems());
-    // this.props
-    //   .fetchCheckItems()
-    //   .then(response => console.log("response is " + response));
-
     /*
     axios
-      .get("http://192.168.31.206:8080/checkitems")
+      .get("http://192.168.31.206:9000/checkitems")
       .then(responce => this.handleCheckItems(responce.data))
       .catch(error => console.log(error));
       */

@@ -6,13 +6,13 @@ export function deleteCheckItem(itemID, index) {
     let currentState = getState();
     const { checkItems } = currentState.default.checkItemsReducer;
     return axios
-      .delete("http://192.168.31.206:8000/checkitem/" + itemID)
+      .delete("http://192.168.31.206:9000/checkitem/" + itemID)
       .then(responce => handleDeleteItem(responce, dispatch, checkItems, index))
       .catch(error => console.log(error));
   };
-  return {
-    type: types.DELETECHECKITEM
-  };
+  // return {
+  //   type: types.DELETECHECKITEM
+  // };
 }
 
 function handleDeleteItem(responce, dispatch, checkItems, index) {
@@ -22,10 +22,18 @@ function handleDeleteItem(responce, dispatch, checkItems, index) {
   }
 }
 
+export function newCheckItem(body) {
+  let url = "http://192.168.31.206:9000/checkitem";
+  axios
+    .post(url, body)
+    .then(responce => console.log(responce))
+    .catch(error => console.log(error));
+}
+
 export function fetchCheckItems() {
   return (dispatch, getState) => {
     return axios
-      .get("http://192.168.31.206:8000/checkitems")
+      .get("http://192.168.31.206:9000/checkitems")
       .then(responce => dispatch(setCheckItems({ checkItems: responce.data })))
       .catch(error => console.log(error));
   };

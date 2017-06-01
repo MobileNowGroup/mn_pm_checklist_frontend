@@ -6,15 +6,19 @@ import {
   TextInput,
   Dimensions,
   TouchableOpacity,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Alert
 } from "react-native";
 import CheckBox from "react-native-check-box";
+import axios from "axios";
 
 class NewCheckItemScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isEssential: false
+      isEssential: false,
+      itemTitle: "",
+      itemDesc: ""
     };
   }
 
@@ -24,7 +28,22 @@ class NewCheckItemScreen extends Component {
     });
   }
 
-  onOK() {}
+  onOK() {
+    if (this.state.itemTitle.length == 0) {
+      Alert.alert("请输入名称");
+      return;
+    }
+    if (this.state.itemDesc.length == 0) {
+      Alert.alert("请输入描述");
+      return;
+    }
+    var body = {
+      ItemTitle: this.state.itemTitle,
+      ItemDesc: this.state.itemDesc,
+      IsMandatory: this.state.isEssential ? 1 : 0,
+      Tags: ""
+    };
+  }
 
   render() {
     return (
@@ -32,14 +51,14 @@ class NewCheckItemScreen extends Component {
         <TextInput
           style={styles.textInput}
           placeholder="请输入名称"
-          //   onChangeText={text => this.setState({ text })}
+          onChangeText={text => this.setState({ itemTitle: text })}
           //   value={this.state.text}
         />
         <TextInput
           style={styles.textView}
           placeholder="请输入描述"
           multiline={true}
-          //   onChangeText={text => this.setState({ text })}
+          onChangeText={text => this.setState({ itemDesc: text })}
           //   value={this.state.text}
         />
         <View style={styles.checkBoxContainer}>

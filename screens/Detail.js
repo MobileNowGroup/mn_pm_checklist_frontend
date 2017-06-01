@@ -57,7 +57,7 @@ class Detail extends Component {
       }
     }
     console.log(checkedItems, uncheckedItems);
-    var url = "http://192.168.31.206:8080/release/" + this.state.releaseId;
+    var url = "http://192.168.31.206:9000/release/" + this.state.releaseId;
     axios
       .put(url, {
         uncheck_items: uncheckedItems,
@@ -102,7 +102,7 @@ class Detail extends Component {
 
   getReleaseDetail(releaseId) {
     axios
-      .get("http://192.168.31.206:8080/release/" + releaseId)
+      .get("http://192.168.31.206:9000/release/" + releaseId)
       .then(response => this.handleReleaseDetail(response.data.CheckRecordDtl));
   }
 
