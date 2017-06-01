@@ -10,6 +10,20 @@ import {
   TextInput
 } from "react-native";
 
+class PickerView extends Component {
+  render() {
+    return (
+      <Picker
+        selectedValue={this.state.language}
+        onValueChange={lang => this.setState({ language: lang })}
+      >
+        <Picker.Item label="Java" value="java" />
+        <Picker.Item label="JavaScript" value="js" />
+      </Picker>
+    );
+  }
+}
+
 // create a component
 class New extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -20,12 +34,12 @@ class New extends Component {
   });
   state = {
     behavior: "padding",
-    language: "java"
+    selectedName: ""
   };
 
   render() {
     console.log(this.props.navigation.state.params.releaseId);
-    alert(this.props.navigation.state.params.projects);
+    // alert(this.props.navigation.state.params.projects);
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView
@@ -36,6 +50,7 @@ class New extends Component {
           <TextInput
             placeholder="请选择"
             style={styles.textInput}
+            value={this.state.selectedName}
             onTouchStart={this.projectDidClick}
           />
         </KeyboardAvoidingView>
@@ -47,6 +62,22 @@ class New extends Component {
           <TextInput placeholder="TextInput" style={styles.textInput} />
         </KeyboardAvoidingView>
 
+        <View>
+          <Picker
+            selectedValue={this.state.selectedID}
+            onValueChange={value => this.setState({ selectedName: value })}
+          >
+            {this.props.navigation.state.params.projects.map(function(project) {
+              console.log(project);
+              return (
+                <Picker.Item
+                  label={project.ProjectName}
+                  value={project.ProjectName}
+                />
+              );
+            })}
+          </Picker>
+        </View>
       </View>
     );
   }

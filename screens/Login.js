@@ -59,8 +59,9 @@ class Login extends Component {
     this.props.login("Perry", "123").then(responce => {
       // console.log(responce);
       if (responce.userInfo.Basic.Role.RoleName == "PM") {
+        this.props.navigation.navigate("Home");
         // this.props.navigation.navigate("ManagerTabNavigator");
-      } else if (responce.userInfo.Basic.Role.RoleName == "PM") {
+      } else if (responce.userInfo.Basic.Role.RoleName == "DEV") {
         this.props.navigation.navigate("Home");
       }
     });
