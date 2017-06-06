@@ -6,6 +6,7 @@ import Detail from "../screens/Detail";
 import Login from "../screens/Login";
 import ManagerTabNavigator from "../screens/ManagerTabNavigator";
 import NewCheckItemScreen from "../screens/NewCheckItemScreen";
+import NewProjectScreen from "../screens/NewProjectScreen";
 
 export const Root = StackNavigator(
   {
@@ -14,7 +15,8 @@ export const Root = StackNavigator(
     Home: { screen: Home },
     New: { screen: New },
     Detail: { screen: Detail },
-    NewCheckItemScreen: { screen: NewCheckItemScreen }
+    NewCheckItemScreen: { screen: NewCheckItemScreen },
+    NewProjectScreen: { screen: NewProjectScreen }
   },
   {
     mode: "card"

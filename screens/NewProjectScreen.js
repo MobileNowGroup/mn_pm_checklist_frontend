@@ -11,44 +11,30 @@ import {
 } from "react-native";
 import CheckBox from "react-native-check-box";
 import axios from "axios";
-import * as checkItemActions from "../redux/actions/checkItemActions";
+import * as projectActions from "../redux/actions/projectActions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-class NewCheckItemScreen extends Component {
+class NewProjectScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isEssential: false,
-      itemTitle: "",
-      itemDesc: ""
+      projectName: ""
     };
-  }
-
-  onCheck() {
-    this.setState({
-      isEssential: !this.state.isEssential
-    });
   }
 
   onOK() {
-    if (this.state.itemTitle.length == 0) {
+    if (this.state.projectName.length == 0) {
       Alert.alert("请输入名称");
       return;
     }
-    if (this.state.itemDesc.length == 0) {
-      Alert.alert("请输入描述");
-      return;
-    }
+
     var body = {
-      ItemTitle: this.state.itemTitle,
-      ItemDesc: this.state.itemDesc,
-      IsMandatory: this.state.isEssential ? 1 : 0,
-      Tags: "基础信息"
+      ProjectName: this.state.projectName
     };
 
     this.props.actions
-      .newCheckItem(body)
+      .newProject(body)
       .then(responce => console.log("resp is " + responce));
     /*
     let url = "http://119.23.47.185:4001/checkitem";
@@ -65,27 +51,9 @@ class NewCheckItemScreen extends Component {
         <TextInput
           style={styles.textInput}
           placeholder="请输入名称"
-          onChangeText={text => this.setState({ itemTitle: text })}
+          onChangeText={text => this.setState({ projectName: text })}
           //   value={this.state.text}
         />
-        <TextInput
-          style={styles.textView}
-          placeholder="请输入描述"
-          multiline={true}
-          onChangeText={text => this.setState({ itemDesc: text })}
-          //   value={this.state.text}
-        />
-        <View style={styles.checkBoxContainer}>
-          <CheckBox
-            style={styles.checkbox}
-            onClick={() => this.onCheck()}
-            leftText="是否必需"
-            // leftTextStyle={{ textColor: "#000" }}
-            // rightText={"saffsda"}
-            //   style={styles.checkbox}
-            isChecked={this.state.isEssential}
-          />
-        </View>
         <TouchableOpacity
           style={styles.okButton}
           //   underlayColor="#763563"
@@ -169,6 +137,6 @@ export default connect(
     // checkItems: Object.assign({}, state.default.checkItemsReducer.checkItems)
   }),
   dispatch => ({
-    actions: bindActionCreators(checkItemActions, dispatch)
+    actions: bindActionCreators(projectActions, dispatch)
   })
-)(NewCheckItemScreen);
+)(NewProjectScreen);
