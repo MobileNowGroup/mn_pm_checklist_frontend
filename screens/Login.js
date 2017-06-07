@@ -14,6 +14,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as loginActions from "../redux/actions/loginActions";
 import LOGIN from "../redux/actions/types";
+import axios from "axios";
 
 class Login extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -58,6 +59,9 @@ class Login extends Component {
     // console.log("this props are " + this.props.login());
     this.props.login("Perry", "123").then(responce => {
       // console.log(responce);
+
+      axios.defaults.headers.common["Access-Token"] = responce.userInfo.Token;
+
       if (responce.userInfo.Basic.Role.RoleName == "PM") {
         this.props.navigation.navigate("Home");
         // this.props.navigation.navigate("ManagerTabNavigator");

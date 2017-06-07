@@ -58,7 +58,7 @@ class CheckItemScreen extends Component {
   getCheckItems() {
     /*
     axios
-      .get("http://192.168.31.206:9000/checkitems")
+      .get("http://119.23.47.185:4001/checkitems")
       .then(responce => this.handleCheckItems(responce.data))
       .catch(error => console.log(error));
       */
