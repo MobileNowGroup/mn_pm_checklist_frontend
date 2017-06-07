@@ -7,19 +7,25 @@ import * as checkItemActions from "../redux/actions/checkItemActions";
 import * as loginActions from "../redux/actions/loginActions";
 import { connect } from "react-redux";
 import NewCheckItemScreen from "./NewCheckItemScreen";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/Octicons";
 
 class CheckItemScreen extends Component {
   static navigationOptions = props => {
     const { state, setParams } = props.navigation;
     if (typeof state.params == "undefined") {
       return {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="checklist" size={30} color="#6D8673" />
+        ),
         title: "题库",
         headerLeft: null
         // headerRight: <Button title=" + " onPress={state.params.handleNew} />
       };
     } else {
       return {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="checklist" size={30} color="#6D8673" />
+        ),
         title: "题库",
         headerLeft: null,
         headerRight: <Button title=" + " onPress={state.params.handleNew} />

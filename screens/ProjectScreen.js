@@ -14,19 +14,25 @@ import * as projectActions from "../redux/actions/projectActions";
 import * as loginActions from "../redux/actions/loginActions";
 import { connect } from "react-redux";
 import NewProjectScreen from "./NewProjectScreen";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/Octicons";
 
 class ProjectScreen extends Component {
   static navigationOptions = props => {
     const { state, setParams } = props.navigation;
     if (typeof state.params == "undefined") {
       return {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="project" size={30} color="#6D8673" />
+        ),
         title: "项目",
         headerLeft: null
         // headerRight: <Button title=" + " onPress={state.params.handleNew} />
       };
     } else {
       return {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="project" size={30} color="#6D8673" />
+        ),
         title: "项目",
         headerLeft: null,
         headerRight: <Button title=" + " onPress={state.params.handleNew} />
