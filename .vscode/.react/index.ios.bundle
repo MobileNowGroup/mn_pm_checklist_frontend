@@ -59274,9 +59274,9 @@ var Login = function (_Component) {
         _axios2.default.defaults.headers.common["Access-Token"] = responce.userInfo.Token;
 
         if (responce.userInfo.Basic.Role.RoleName == "PM") {
-          _this2.props.navigation.navigate("Home");
+          _this2.props.navigation.navigate("ManagerTabNavigator");
         } else if (responce.userInfo.Basic.Role.RoleName == "DEV") {
-          _this2.props.navigation.navigate("Home");
+          _this2.props.navigation.navigate("ManagerTabNavigator");
         }
       });
     }
@@ -61180,8 +61180,17 @@ var ProjectScreen = function (_Component) {
       }
     }
   }, {
+    key: "handleCallback",
+    value: function handleCallback(rowID) {
+      this.props.navigation.navigate("NewProjectScreen", {
+        project: this.props.projects[parseInt(rowID)]
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       return _react2.default.createElement(
         _reactNative.View,
         { style: styles.container },
@@ -61191,7 +61200,12 @@ var ProjectScreen = function (_Component) {
           removeClippedSubviews: false,
           dataSource: this.state.dataSource,
           renderRow: function renderRow(aProject, sectionID, rowID) {
-            return _react2.default.createElement(_ProjectRow2.default, babelHelpers.extends({}, aProject, { rowID: rowID }));
+            return _react2.default.createElement(_ProjectRow2.default, babelHelpers.extends({}, aProject, {
+              rowID: rowID,
+              callbackFunc: function callbackFunc() {
+                return _this2.handleCallback(rowID);
+              }
+            }));
           },
           renderSeparator: function renderSeparator(sectionId, rowId) {
             return _react2.default.createElement(_reactNative.View, { key: rowId, style: styles.seperator });
@@ -61292,6 +61306,9 @@ var ProjectRow = function (_Component) {
 
     var _this = babelHelpers.possibleConstructorReturn(this, (ProjectRow.__proto__ || Object.getPrototypeOf(ProjectRow)).call(this, props));
 
+    ProjectRow.propTypes = {
+      callbackFunc: _react2.default.PropTypes.func
+    };
     _this.handlePress = _this.handlePress.bind(_this);
     _this.deleteRow = _this.deleteRow.bind(_this);
     return _this;
@@ -61302,7 +61319,9 @@ var ProjectRow = function (_Component) {
     value: function componentWillMount() {}
   }, {
     key: "handlePress",
-    value: function handlePress() {}
+    value: function handlePress() {
+      this.props.callbackFunc(this.props.rowID);
+    }
   }, {
     key: "deleteRow",
     value: function deleteRow() {
@@ -62286,13 +62305,16 @@ var NewProjectScreen = function (_Component) {
     var _this = babelHelpers.possibleConstructorReturn(this, (NewProjectScreen.__proto__ || Object.getPrototypeOf(NewProjectScreen)).call(this, props));
 
     _this.state = {
-      projectName: ""
+      projectName: typeof _this.props.navigation.state.params == "undefined" ? "" : _this.props.navigation.state.params.project.ProjectName
     };
     _this.handleNewProjectSuccess = _this.handleNewProjectSuccess.bind(_this);
     return _this;
   }
 
   babelHelpers.createClass(NewProjectScreen, [{
+    key: "componentWillMount",
+    value: function componentWillMount() {}
+  }, {
     key: "onOK",
     value: function onOK() {
       var _this2 = this;
@@ -62331,6 +62353,7 @@ var NewProjectScreen = function (_Component) {
         _react2.default.createElement(_reactNative.TextInput, {
           style: styles.textInput,
           placeholder: "\u8BF7\u8F93\u5165\u540D\u79F0",
+          value: this.state.projectName,
           onChangeText: function onChangeText(text) {
             return _this4.setState({ projectName: text });
           }
@@ -62358,6 +62381,21 @@ NewProjectScreen.navigationOptions = {
   title: "新建项目"
 };
 
+NewProjectScreen.navigationOptions = function (props) {
+  var _props$navigation = props.navigation,
+      state = _props$navigation.state,
+      setParams = _props$navigation.setParams;
+
+  if (typeof state.params == "undefined") {
+    return {
+      title: "新建项目"
+    };
+  } else {
+    return {
+      title: "编辑项目"
+    };
+  }
+};
 
 var styles = _reactNative.StyleSheet.create({
   container: {

@@ -67,6 +67,7 @@ class ProjectScreen extends Component {
     this.getProjects = this.getProjects.bind(this);
     this.handleCheckItems = this.handleCheckItems.bind(this);
     this.setSource = this.setSource.bind(this);
+    // this.handleCallback = this.handleCallback.bind(this);
   }
 
   componentWillMount() {
@@ -111,6 +112,13 @@ class ProjectScreen extends Component {
     }
   }
 
+  handleCallback(rowID) {
+    // this.state.projects[parseInt(rowID)];
+    this.props.navigation.navigate("NewProjectScreen", {
+      project: this.props.projects[parseInt(rowID)]
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -120,7 +128,11 @@ class ProjectScreen extends Component {
           removeClippedSubviews={false}
           dataSource={this.state.dataSource}
           renderRow={(aProject, sectionID, rowID) => (
-            <ProjectRow {...aProject} rowID={rowID} />
+            <ProjectRow
+              {...aProject}
+              rowID={rowID}
+              callbackFunc={() => this.handleCallback(rowID)}
+            />
           )}
           renderSeparator={(sectionId, rowId) => (
             <View key={rowId} style={styles.seperator} />

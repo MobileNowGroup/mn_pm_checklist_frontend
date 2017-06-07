@@ -19,14 +19,30 @@ class NewProjectScreen extends Component {
   static navigationOptions = {
     title: "新建项目"
   };
+  static navigationOptions = props => {
+    const { state, setParams } = props.navigation;
+    if (typeof state.params == "undefined") {
+      return {
+        title: "新建项目"
+      };
+    } else {
+      return {
+        title: "编辑项目"
+      };
+    }
+  };
 
   constructor(props) {
     super(props);
     this.state = {
-      projectName: ""
+      projectName: typeof this.props.navigation.state.params == "undefined"
+        ? ""
+        : this.props.navigation.state.params.project.ProjectName
     };
     this.handleNewProjectSuccess = this.handleNewProjectSuccess.bind(this);
   }
+
+  componentWillMount() {}
 
   onOK() {
     if (this.state.projectName.length == 0) {
@@ -39,9 +55,13 @@ class NewProjectScreen extends Component {
       ProjectCode: this.state.projectName
     };
 
-    this.props.actions
-      .newProject(body)
-      .then(responce => this.handleNewProjectSuccess());
+    if (typeof this.props.navigation.state.params == "undefined") {
+      this.props.actions
+        .newProject(body)
+        .then(responce => this.handleNewProjectSuccess());
+    } else {
+    }
+
     /*
     let url = "http://119.23.47.185:4001/checkitem";
     axios
@@ -63,8 +83,8 @@ class NewProjectScreen extends Component {
         <TextInput
           style={styles.textInput}
           placeholder="请输入名称"
+          value={this.state.projectName}
           onChangeText={text => this.setState({ projectName: text })}
-          //   value={this.state.text}
         />
         <TouchableOpacity
           // style={styles.okButton}
