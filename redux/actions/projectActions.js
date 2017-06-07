@@ -25,7 +25,7 @@ export function deleteProject(projectID, index) {
 
 export function newProject(body) {
   return (dispatch, getState) => {
-    let url = "http://119.23.47.185:4001/project";
+    let url = "http://119.23.47.185:4001/projects";
     return axios
       .post(url, body)
       .then(responce => dispatch(fetchProjects()))

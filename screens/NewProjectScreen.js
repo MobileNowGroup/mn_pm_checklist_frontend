@@ -21,6 +21,7 @@ class NewProjectScreen extends Component {
     this.state = {
       projectName: ""
     };
+    this.handleNewProjectSuccess = this.handleNewProjectSuccess.bind(this);
   }
 
   onOK() {
@@ -30,12 +31,13 @@ class NewProjectScreen extends Component {
     }
 
     var body = {
-      ProjectName: this.state.projectName
+      ProjectName: this.state.projectName,
+      ProjectCode: this.state.projectName
     };
 
     this.props.actions
       .newProject(body)
-      .then(responce => console.log("resp is " + responce));
+      .then(responce => this.handleNewProjectSuccess());
     /*
     let url = "http://119.23.47.185:4001/checkitem";
     axios
@@ -43,6 +45,12 @@ class NewProjectScreen extends Component {
       .then(responce => console.log(responce))
       .catch(error => console.log(error));
       */
+  }
+
+  handleNewProjectSuccess() {
+    Alert.alert("Success", "", [
+      { text: "OK", onPress: () => this.props.navigation.goBack() }
+    ]);
   }
 
   render() {

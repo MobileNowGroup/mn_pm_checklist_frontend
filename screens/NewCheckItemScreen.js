@@ -23,6 +23,7 @@ class NewCheckItemScreen extends Component {
       itemTitle: "",
       itemDesc: ""
     };
+    this.handleNewProjectSuccess = this.handleNewProjectSuccess.bind(this);
   }
 
   onCheck() {
@@ -49,7 +50,7 @@ class NewCheckItemScreen extends Component {
 
     this.props.actions
       .newCheckItem(body)
-      .then(responce => console.log("resp is " + responce));
+      .then(responce => this.handleNewProjectSuccess());
     /*
     let url = "http://119.23.47.185:4001/checkitem";
     axios
@@ -57,6 +58,12 @@ class NewCheckItemScreen extends Component {
       .then(responce => console.log(responce))
       .catch(error => console.log(error));
       */
+  }
+
+  handleNewProjectSuccess() {
+    Alert.alert("Success", "", [
+      { text: "OK", onPress: () => this.props.navigation.goBack() }
+    ]);
   }
 
   render() {
