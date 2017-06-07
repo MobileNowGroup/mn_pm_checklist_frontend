@@ -10,79 +10,108 @@ import {
   TextInput
 } from "react-native";
 
-class PickerView extends Component {
-  render() {
-    return (
-      <Picker
-        selectedValue={this.state.language}
-        onValueChange={lang => this.setState({ language: lang })}
-      >
-        <Picker.Item label="Java" value="java" />
-        <Picker.Item label="JavaScript" value="js" />
-      </Picker>
-    );
-  }
-}
-
 // create a component
 class New extends Component {
   static navigationOptions = ({ navigation }) => ({
-    title: "MNReleaseTool",
-    headerRight: (
-      <Button title="保存" onPress={() => navigation.navigate("New")} />
-    )
+    title: "新增Release"
   });
-  state = {
-    behavior: "padding",
-    selectedName: ""
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      behavior: "padding",
+      selectedName: "",
+      showPicker: 0,
+      releaseId: 0
+    };
+    // this.projectDidClick = this.projectDidClick.bind(this);
+  }
+  // state = {
+  //   behavior: "padding",
+  //   selectedName: "",
+  //   showPicker: 1
+  // };
+
+  showPicker(show) {
+    this.setState({
+      showPicker: show
+    });
+  }
+  nextBtnClick(releaseId) {
+    this.props.navigation.navigate("NewDetail", {
+      releaseId: this.state.releaseId
+    });
+  }
 
   render() {
-    console.log(this.props.navigation.state.params.releaseId);
-    // alert(this.props.navigation.state.params.projects);
+    // alert(this.props.navigation.state.params.projects.count);
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView
           style={styles.rowContainer}
           behavior={this.state.behavior}
         >
-          <Text>请选择APP:</Text>
+          <Text style={styles.subTitle}>请选择APP:</Text>
           <TextInput
             placeholder="请选择"
             style={styles.textInput}
             value={this.state.selectedName}
-            onTouchStart={this.projectDidClick}
+            onTouchStart={() => this.showPicker(1)}
           />
         </KeyboardAvoidingView>
         <KeyboardAvoidingView
           style={styles.rowContainer}
           behavior={this.state.behavior}
         >
-          <Text>请输入版本:</Text>
-          <TextInput placeholder="TextInput" style={styles.textInput} />
+          <Text style={styles.subTitle}>请输入版本:</Text>
+          <TextInput
+            placeholder="TextInput"
+            style={styles.textInput}
+            onTouchStart={() => this.showPicker(0)}
+          />
         </KeyboardAvoidingView>
 
-        <View>
-          <Picker
-            selectedValue={this.state.selectedID}
-            onValueChange={value => this.setState({ selectedName: value })}
-          >
-            {this.props.navigation.state.params.projects.map(function(project) {
-              console.log(project);
-              return (
-                <Picker.Item
-                  label={project.ProjectName}
-                  value={project.ProjectName}
-                />
-              );
-            })}
-          </Picker>
-        </View>
+        <KeyboardAvoidingView
+          style={styles.rowContainer}
+          behavior={this.state.behavior}
+        >
+          <Text style={styles.subTitle}>更新内容:</Text>
+          <TextInput
+            style={styles.textInputMutibleLine}
+            multiline={true}
+            onTouchStart={() => this.showPicker(0)}
+          />
+        </KeyboardAvoidingView>
+        <KeyboardAvoidingView
+          style={styles.rowContainer}
+          behavior={this.state.behavior}
+        >
+          <Button onPress={() => this.nextBtnClick()} title="下一步" />
+        </KeyboardAvoidingView>
+
+        {this.state.showPicker === 1
+          ? <View state={styles.pickerContainer}>
+              <Picker
+                selectedValue={this.state.selectedName}
+                onValueChange={(value, label) =>
+                  this.setState({ selectedName: label, releaseId: value })}
+              >
+                {this.props.navigation.state.params.projects.map(function(
+                  project
+                ) {
+                  console.log(project);
+                  return (
+                    <Picker.Item
+                      label={project.ProjectName}
+                      value={project.value}
+                    />
+                  );
+                })}
+              </Picker>
+            </View>
+          : null}
       </View>
     );
   }
-
-  projectDidClick() {}
 }
 
 // define your styles
@@ -100,6 +129,13 @@ const styles = StyleSheet.create({
     width: 200,
     paddingHorizontal: 10
   },
+  textInputMutibleLine: {
+    borderRadius: 5,
+    borderWidth: 1,
+    height: 120,
+    width: 200,
+    paddingHorizontal: 10
+  },
   rowContainer: {
     //flex: 2,
     padding: 20,
@@ -107,6 +143,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center"
+  },
+  pickerContainer: {
+    padding: 20
+  },
+  subTitle: {
+    margin: 10,
+    width: 100,
+    fontSize: 16,
+    textAlign: "right"
   }
 });
 
