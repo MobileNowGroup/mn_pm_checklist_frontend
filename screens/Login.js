@@ -58,16 +58,16 @@ class Login extends Component {
     }
     // console.log("this props are " + this.props.login());
     this.props.login("Perry", "123").then(responce => {
-      // console.log(responce);
+      console.log(responce.userInfo.Token);
 
       axios.defaults.headers.common["Access-Token"] = responce.userInfo.Token;
 
       if (responce.userInfo.Basic.Role.RoleName == "PM") {
-        this.props.navigation.navigate("Home");
-        // this.props.navigation.navigate("ManagerTabNavigator");
+        // this.props.navigation.navigate("Home");
+        this.props.navigation.navigate("ManagerTabNavigator");
       } else if (responce.userInfo.Basic.Role.RoleName == "DEV") {
-        this.props.navigation.navigate("Home");
-        // this.props.navigation.navigate("ManagerTabNavigator");
+        // this.props.navigation.navigate("Home");
+        this.props.navigation.navigate("ManagerTabNavigator");
       }
     });
   }

@@ -103,10 +103,11 @@ class NewDetail extends Component {
   getReleaseDetail(releaseId) {
     axios
       .get("http://192.168.31.206:9000/checkitems")
-      .then(response => this.handleReleaseDetail(response.data.CheckRecordDtl));
+      .then(response => this.handleReleaseDetail(response.data));
   }
 
   handleReleaseDetail(items) {
+    alert(items);
     this.setSource(items);
   }
 
