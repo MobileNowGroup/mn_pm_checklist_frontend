@@ -16,6 +16,10 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 class NewCheckItemScreen extends Component {
+  static navigationOptions = {
+    title: "新建题目"
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -72,12 +76,14 @@ class NewCheckItemScreen extends Component {
         <TextInput
           style={styles.textInput}
           placeholder="请输入名称"
+          placeholderTextColor="lightgray"
           onChangeText={text => this.setState({ itemTitle: text })}
           //   value={this.state.text}
         />
         <TextInput
           style={styles.textView}
           placeholder="请输入描述"
+          placeholderTextColor="lightgray"
           multiline={true}
           onChangeText={text => this.setState({ itemDesc: text })}
           //   value={this.state.text}
@@ -94,7 +100,7 @@ class NewCheckItemScreen extends Component {
           />
         </View>
         <TouchableOpacity
-          style={styles.okButton}
+          // style={styles.okButton}
           //   underlayColor="#763563"
           onPress={() => this.onOK()}
         >
@@ -163,9 +169,15 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.6)"
   },
   okText: {
+    width: Dimensions.get("window").width - 40,
+    height: 40,
     fontSize: 16,
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 8,
+    borderColor: "black"
   }
 });
 

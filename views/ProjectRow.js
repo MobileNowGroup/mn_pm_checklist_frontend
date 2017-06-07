@@ -88,7 +88,8 @@ const styles = StyleSheet.create({
   subText: {
     fontSize: 12,
     marginLeft: 12,
-    marginTop: 2
+    marginTop: 2,
+    color: "gray"
   }
 });
 

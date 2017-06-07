@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Button, ListView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  ListView,
+  TouchableOpacity
+} from "react-native";
 import axios from "axios";
 import CheckItemRow from "../views/CheckItemRow";
 import { bindActionCreators } from "redux";
@@ -15,7 +22,7 @@ class CheckItemScreen extends Component {
     if (typeof state.params == "undefined") {
       return {
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="checklist" size={30} color="#6D8673" />
+          <Icon name="checklist" size={30} color="#000" />
         ),
         title: "题库",
         headerLeft: null
@@ -24,11 +31,15 @@ class CheckItemScreen extends Component {
     } else {
       return {
         tabBarIcon: ({ tintColor }) => (
-          <Icon name="checklist" size={30} color="#6D8673" />
+          <Icon name="checklist" size={30} color="#000" />
         ),
         title: "题库",
         headerLeft: null,
-        headerRight: <Button title=" + " onPress={state.params.handleNew} />
+        headerRight: (
+          <TouchableOpacity onPress={state.params.handleNew}>
+            <Icon name="plus" size={30} color="#000" />
+          </TouchableOpacity>
+        )
       };
     }
   };

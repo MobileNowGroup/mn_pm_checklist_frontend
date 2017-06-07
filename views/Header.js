@@ -53,7 +53,7 @@ class Header extends Component {
       <View style={styles.container}>
         <ListView
           horizontal
-          style={styles.list}
+          contentContainerStyle={styles.list}
           enableEmptySections
           dataSource={this.state.dataSource}
           renderRow={data => (
@@ -75,9 +75,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   },
   list: {
-    flex: 1,
+    // flex: 1,
     padding: 12,
-    flexDirection: "column"
+    // width: 100000,
+    flexDirection: "row"
   }
 });
 

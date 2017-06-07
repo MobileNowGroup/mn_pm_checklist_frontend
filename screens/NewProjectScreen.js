@@ -16,6 +16,10 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 class NewProjectScreen extends Component {
+  static navigationOptions = {
+    title: "新建项目"
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -63,7 +67,7 @@ class NewProjectScreen extends Component {
           //   value={this.state.text}
         />
         <TouchableOpacity
-          style={styles.okButton}
+          // style={styles.okButton}
           //   underlayColor="#763563"
           onPress={() => this.onOK()}
         >
@@ -87,8 +91,9 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     marginTop: 40,
+    marginBottom: 40,
     paddingLeft: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     borderColor: "gray",
     borderWidth: 1
   },
@@ -132,9 +137,16 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.6)"
   },
   okText: {
+    width: Dimensions.get("window").width - 40,
+    height: 40,
     fontSize: 16,
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 8,
+    borderColor: "black"
+    // backgroundColor: "blue"
   }
 });
 
