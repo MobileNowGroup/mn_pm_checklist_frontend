@@ -10,9 +10,6 @@ export function deleteCheckItem(itemID, index) {
       .then(responce => handleDeleteItem(responce, dispatch, checkItems, index))
       .catch(error => console.log(error));
   };
-  // return {
-  //   type: types.DELETECHECKITEM
-  // };
 }
 
 function handleDeleteItem(responce, dispatch, checkItems, index) {
@@ -27,6 +24,16 @@ export function newCheckItem(body) {
     let url = "http://119.23.47.185:4001/checkitem";
     return axios
       .post(url, body)
+      .then(responce => dispatch(fetchCheckItems()))
+      .catch(error => console.log(error));
+  };
+}
+
+export function updateCheckItem(checkItemId, body) {
+  return (dispatch, getState) => {
+    let url = "http://119.23.47.185:4001/checkitem/" + checkItemId;
+    return axios
+      .put(url, body)
       .then(responce => dispatch(fetchCheckItems()))
       .catch(error => console.log(error));
   };

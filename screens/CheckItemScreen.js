@@ -89,10 +89,15 @@ class CheckItemScreen extends Component {
   }
 
   setSource(checkItems) {
-    console.log("check items are " + checkItems[0].ItemTitle);
     this.setState({
       // checkItems,
       dataSource: this.state.dataSource.cloneWithRows(checkItems)
+    });
+  }
+
+  handleCallback(rowID) {
+    this.props.navigation.navigate("NewCheckItemScreen", {
+      checkItem: this.props.checkItems[parseInt(rowID)]
     });
   }
 
@@ -113,7 +118,11 @@ class CheckItemScreen extends Component {
           removeClippedSubviews={false}
           dataSource={this.state.dataSource}
           renderRow={(aCheckItem, sectionID, rowID) => (
-            <CheckItemRow {...aCheckItem} rowID={rowID} />
+            <CheckItemRow
+              {...aCheckItem}
+              rowID={rowID}
+              callbackFunc={() => this.handleCallback(rowID)}
+            />
           )}
           renderSeparator={(sectionId, rowId) => (
             <View key={rowId} style={styles.seperator} />

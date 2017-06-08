@@ -58,8 +58,14 @@ class NewProjectScreen extends Component {
     if (typeof this.props.navigation.state.params == "undefined") {
       this.props.actions
         .newProject(body)
-        .then(responce => this.handleNewProjectSuccess());
+        .then(responce => this.handleNewProjectSuccess(responce));
     } else {
+      this.props.actions
+        .updateProject(
+          this.props.navigation.state.params.project.ProjectId,
+          body
+        )
+        .then(responce => this.handleNewProjectSuccess(responce));
     }
 
     /*
@@ -71,7 +77,7 @@ class NewProjectScreen extends Component {
       */
   }
 
-  handleNewProjectSuccess() {
+  handleNewProjectSuccess(responce) {
     Alert.alert("Success", "", [
       { text: "OK", onPress: () => this.props.navigation.goBack() }
     ]);

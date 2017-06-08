@@ -23,6 +23,16 @@ export function deleteProject(projectID, index) {
   };
 }
 
+export function updateProject(projectID, body) {
+  return (dispatch, getState) => {
+    let url = "http://119.23.47.185:4001/projects/" + projectID;
+    return axios
+      .put(url, body)
+      .then(responce => dispatch(fetchProjects()))
+      .catch(error => console.log(error));
+  };
+}
+
 export function newProject(body) {
   return (dispatch, getState) => {
     let url = "http://119.23.47.185:4001/projects";

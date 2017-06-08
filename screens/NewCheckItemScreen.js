@@ -16,18 +16,38 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 class NewCheckItemScreen extends Component {
-  static navigationOptions = {
-    title: "新建题目"
+  static navigationOptions = props => {
+    const { state, setParams } = props.navigation;
+    if (typeof state.params == "undefined") {
+      return {
+        title: "新建题目"
+      };
+    } else {
+      return {
+        title: "编辑题目"
+      };
+    }
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-      isEssential: false,
-      itemTitle: "",
-      itemDesc: ""
-    };
-    this.handleNewProjectSuccess = this.handleNewProjectSuccess.bind(this);
+    if (typeof this.props.navigation.state.params == "undefined") {
+      this.state = {
+        isEssential: false,
+        itemTitle: "",
+        itemDesc: ""
+      };
+    } else {
+      this.state = {
+        isEssential: Boolean(
+          this.props.navigation.state.params.checkItem.IsMandatory
+        ),
+        itemTitle: this.props.navigation.state.params.checkItem.ItemTitle,
+        itemDesc: this.props.navigation.state.params.checkItem.ItemDesc
+      };
+    }
+
+    this.handleNewCheckItemSuccess = this.handleNewCheckItemSuccess.bind(this);
   }
 
   onCheck() {
@@ -49,12 +69,24 @@ class NewCheckItemScreen extends Component {
       ItemTitle: this.state.itemTitle,
       ItemDesc: this.state.itemDesc,
       IsMandatory: this.state.isEssential ? 1 : 0,
-      Tags: "基础信息"
+      Tags: "基础信息",
+      ItemCode: this.state.itemTitle
     };
 
-    this.props.actions
-      .newCheckItem(body)
-      .then(responce => this.handleNewProjectSuccess());
+    if (typeof this.props.navigation.state.params == "undefined") {
+      this.props.actions
+        .newCheckItem(body)
+        .then(responce => this.handleNewCheckItemSuccess(responce));
+    } else {
+      this.props.actions
+        .updateCheckItem(
+          this.props.navigation.state.params.checkItem.ItemId,
+          body
+        )
+        .then(responce => this.handleNewCheckItemSuccess(responce))
+        .catch(error => console.log(error));
+    }
+
     /*
     let url = "http://119.23.47.185:4001/checkitem";
     axios
@@ -64,7 +96,7 @@ class NewCheckItemScreen extends Component {
       */
   }
 
-  handleNewProjectSuccess() {
+  handleNewCheckItemSuccess(responce) {
     Alert.alert("Success", "", [
       { text: "OK", onPress: () => this.props.navigation.goBack() }
     ]);
@@ -78,7 +110,7 @@ class NewCheckItemScreen extends Component {
           placeholder="请输入名称"
           placeholderTextColor="lightgray"
           onChangeText={text => this.setState({ itemTitle: text })}
-          //   value={this.state.text}
+          value={this.state.itemTitle}
         />
         <TextInput
           style={styles.textView}
@@ -86,24 +118,17 @@ class NewCheckItemScreen extends Component {
           placeholderTextColor="lightgray"
           multiline={true}
           onChangeText={text => this.setState({ itemDesc: text })}
-          //   value={this.state.text}
+          value={this.state.itemDesc}
         />
         <View style={styles.checkBoxContainer}>
           <CheckBox
             style={styles.checkbox}
             onClick={() => this.onCheck()}
             leftText="是否必需"
-            // leftTextStyle={{ textColor: "#000" }}
-            // rightText={"saffsda"}
-            //   style={styles.checkbox}
             isChecked={this.state.isEssential}
           />
         </View>
-        <TouchableOpacity
-          // style={styles.okButton}
-          //   underlayColor="#763563"
-          onPress={() => this.onOK()}
-        >
+        <TouchableOpacity onPress={() => this.onOK()}>
           <Text style={styles.okText}>{"确定"}</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>

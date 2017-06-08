@@ -15,7 +15,7 @@ class CheckItemRow extends Component {
   componentWillMount() {}
 
   handlePress() {
-    // this.props.callbackFunc(this.props.ReleaseId, this.props.ReleaseTitle);
+    this.props.callbackFunc(this.props.rowID);
   }
 
   deleteRow() {
