@@ -18,7 +18,8 @@ import axios from "axios";
 
 class Login extends Component {
   static navigationOptions = ({ navigation }) => ({
-    title: "登录"
+    // title: "登录"
+    header : null
   });
 
   constructor(props) {
