@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, TouchableHighlight } from "react-native";
 import Swipeout from "react-native-swipeout";
-import * as checkItemActions from "../redux/actions/checkItemActions";
+import * as projectActions from "../redux/actions/projectActions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-class CheckItemRow extends Component {
+class ProjectRow extends Component {
   constructor(props) {
     super(props);
+    ProjectRow.propTypes = {
+      callbackFunc: React.PropTypes.func
+    };
     this.handlePress = this.handlePress.bind(this);
     this.deleteRow = this.deleteRow.bind(this);
   }
@@ -15,12 +18,12 @@ class CheckItemRow extends Component {
   componentWillMount() {}
 
   handlePress() {
-    // this.props.callbackFunc(this.props.ReleaseId, this.props.ReleaseTitle);
+    this.props.callbackFunc(this.props.rowID);
   }
 
   deleteRow() {
     console.log("rowId is " + this.props.rowID);
-    this.props.actions.deleteCheckItem(this.props.ItemId, this.props.rowID);
+    this.props.actions.deleteProject(this.props.ProjectId, this.props.rowID);
   }
 
   render() {
@@ -52,13 +55,13 @@ class CheckItemRow extends Component {
           >
             <View style={styles.container}>
               <Text style={styles.text} numberOfLines={1}>
-                {this.props.ItemTitle}
+                {this.props.ProjectName}
               </Text>
               <Text style={styles.subText}>
-                {"最后修改时间：" + this.props.UpdatedAt}
+                {"Code: " + this.props.ProjectCode}
               </Text>
               <Text style={styles.subText}>
-                {"是否必须：" + (Boolean(this.props.IsMandatory) ? "是" : "否")}
+                {"创建时间：" + this.props.UpdatedAt}
               </Text>
             </View>
           </TouchableHighlight>
@@ -100,6 +103,6 @@ export default connect(
     // state: state.checkItems
   }),
   dispatch => ({
-    actions: bindActionCreators(checkItemActions, dispatch)
+    actions: bindActionCreators(projectActions, dispatch)
   })
-)(CheckItemRow);
+)(ProjectRow);

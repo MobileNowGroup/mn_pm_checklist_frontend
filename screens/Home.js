@@ -1,8 +1,16 @@
 import React, { Component } from "react";
-import { View, Button, StyleSheet, Alert, ListView } from "react-native";
+import {
+  View,
+  Button,
+  StyleSheet,
+  Alert,
+  ListView,
+  TouchableOpacity
+} from "react-native";
 import HomeRow from "../views/HomeRow";
 import Header from "../views/Header";
 import axios from "axios";
+import Icon from "react-native-vector-icons/Octicons";
 
 class Home extends Component {
   static navigationOptions = props => {
@@ -16,8 +24,12 @@ class Home extends Component {
     } else {
       return {
         title: "MNReleaseTool",
-        headerRight: <Button title=" + " onPress={state.params.handleNew} />,
-        headerLeft: null
+        headerLeft: null,
+        headerRight: (
+          <TouchableOpacity onPress={state.params.handleNew}>
+            <Icon name="plus" size={30} color="#000" />
+          </TouchableOpacity>
+        )
       };
     }
   };
@@ -49,7 +61,7 @@ class Home extends Component {
 
   getReleases(projectId) {
     axios
-      .get("http://192.168.31.206:8080/project/" + projectId + "/releases")
+      .get("http://119.23.47.185:4001/project/" + projectId + "/releases")
       .then(response => this.setSource(response.data))
       .catch(error => console.log(error));
   }

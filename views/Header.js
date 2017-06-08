@@ -27,7 +27,7 @@ class Header extends Component {
 
   getProjects() {
     axios
-      .get("http://192.168.31.206:8080/projects")
+      .get("http://119.23.47.185:4001/projects")
       .then(response => this.setSource(response.data))
       .catch(error => console.log(error));
   }
@@ -53,7 +53,7 @@ class Header extends Component {
       <View style={styles.container}>
         <ListView
           horizontal
-          style={styles.list}
+          contentContainerStyle={styles.list}
           enableEmptySections
           dataSource={this.state.dataSource}
           renderRow={data => (
@@ -75,9 +75,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff"
   },
   list: {
-    flex: 1,
+    // flex: 1,
     padding: 12,
-    flexDirection: "column"
+    // width: 100000,
+    flexDirection: "row"
   }
 });
 
