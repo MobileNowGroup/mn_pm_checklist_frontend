@@ -5,7 +5,9 @@ import {
   StyleSheet,
   Button,
   ListView,
-  Dimensions
+  Dimensions,
+  TouchableOpacity,
+  Image
 } from "react-native";
 import axios from "axios";
 import ProjectRow from "../views/ProjectRow";
@@ -14,25 +16,43 @@ import * as projectActions from "../redux/actions/projectActions";
 import * as loginActions from "../redux/actions/loginActions";
 import { connect } from "react-redux";
 import NewProjectScreen from "./NewProjectScreen";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/Octicons";
 
 class ProjectScreen extends Component {
   static navigationOptions = props => {
     const { state, setParams } = props.navigation;
     if (typeof state.params == "undefined") {
       return {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="project" size={30} color="#000" />
+        ),
         title: "项目",
         headerLeft: null
         // headerRight: <Button title=" + " onPress={state.params.handleNew} />
       };
     } else {
       return {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="project" size={30} color="#000" />
+        ),
         title: "项目",
         headerLeft: null,
-        headerRight: <Button title=" + " onPress={state.params.handleNew} />
+        headerRight: (
+          <TouchableOpacity onPress={state.params.handleNew}>
+            <Icon name="plus" size={30} color="#000" />
+          </TouchableOpacity>
+        )
       };
     }
   };
+
+  renderPlusButton() {
+    return (
+      <TouchableOpacity onPress={this._onPressButton}>
+        <Image style={styles.button} source="plus" />
+      </TouchableOpacity>
+    );
+  }
 
   constructor(props) {
     super(props);
@@ -47,6 +67,7 @@ class ProjectScreen extends Component {
     this.getProjects = this.getProjects.bind(this);
     this.handleCheckItems = this.handleCheckItems.bind(this);
     this.setSource = this.setSource.bind(this);
+    // this.handleCallback = this.handleCallback.bind(this);
   }
 
   componentWillMount() {
@@ -91,6 +112,13 @@ class ProjectScreen extends Component {
     }
   }
 
+  handleCallback(rowID) {
+    // this.state.projects[parseInt(rowID)];
+    this.props.navigation.navigate("NewProjectScreen", {
+      project: this.props.projects[parseInt(rowID)]
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -100,7 +128,11 @@ class ProjectScreen extends Component {
           removeClippedSubviews={false}
           dataSource={this.state.dataSource}
           renderRow={(aProject, sectionID, rowID) => (
-            <ProjectRow {...aProject} rowID={rowID} />
+            <ProjectRow
+              {...aProject}
+              rowID={rowID}
+              callbackFunc={() => this.handleCallback(rowID)}
+            />
           )}
           renderSeparator={(sectionId, rowId) => (
             <View key={rowId} style={styles.seperator} />

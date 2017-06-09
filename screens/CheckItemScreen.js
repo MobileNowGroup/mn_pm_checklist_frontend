@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Button, ListView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  ListView,
+  TouchableOpacity
+} from "react-native";
 import axios from "axios";
 import CheckItemRow from "../views/CheckItemRow";
 import { bindActionCreators } from "redux";
@@ -7,22 +14,32 @@ import * as checkItemActions from "../redux/actions/checkItemActions";
 import * as loginActions from "../redux/actions/loginActions";
 import { connect } from "react-redux";
 import NewCheckItemScreen from "./NewCheckItemScreen";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import Icon from "react-native-vector-icons/Octicons";
 
 class CheckItemScreen extends Component {
   static navigationOptions = props => {
     const { state, setParams } = props.navigation;
     if (typeof state.params == "undefined") {
       return {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="checklist" size={30} color="#000" />
+        ),
         title: "题库",
         headerLeft: null
         // headerRight: <Button title=" + " onPress={state.params.handleNew} />
       };
     } else {
       return {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="checklist" size={30} color="#000" />
+        ),
         title: "题库",
         headerLeft: null,
-        headerRight: <Button title=" + " onPress={state.params.handleNew} />
+        headerRight: (
+          <TouchableOpacity onPress={state.params.handleNew}>
+            <Icon name="plus" size={30} color="#000" />
+          </TouchableOpacity>
+        )
       };
     }
   };
@@ -72,10 +89,15 @@ class CheckItemScreen extends Component {
   }
 
   setSource(checkItems) {
-    console.log("check items are " + checkItems[0].ItemTitle);
     this.setState({
       // checkItems,
       dataSource: this.state.dataSource.cloneWithRows(checkItems)
+    });
+  }
+
+  handleCallback(rowID) {
+    this.props.navigation.navigate("NewCheckItemScreen", {
+      checkItem: this.props.checkItems[parseInt(rowID)]
     });
   }
 
@@ -96,7 +118,11 @@ class CheckItemScreen extends Component {
           removeClippedSubviews={false}
           dataSource={this.state.dataSource}
           renderRow={(aCheckItem, sectionID, rowID) => (
-            <CheckItemRow {...aCheckItem} rowID={rowID} />
+            <CheckItemRow
+              {...aCheckItem}
+              rowID={rowID}
+              callbackFunc={() => this.handleCallback(rowID)}
+            />
           )}
           renderSeparator={(sectionId, rowId) => (
             <View key={rowId} style={styles.seperator} />

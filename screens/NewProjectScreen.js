@@ -16,13 +16,33 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 class NewProjectScreen extends Component {
+  static navigationOptions = {
+    title: "新建项目"
+  };
+  static navigationOptions = props => {
+    const { state, setParams } = props.navigation;
+    if (typeof state.params == "undefined") {
+      return {
+        title: "新建项目"
+      };
+    } else {
+      return {
+        title: "编辑项目"
+      };
+    }
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      projectName: ""
+      projectName: typeof this.props.navigation.state.params == "undefined"
+        ? ""
+        : this.props.navigation.state.params.project.ProjectName
     };
     this.handleNewProjectSuccess = this.handleNewProjectSuccess.bind(this);
   }
+
+  componentWillMount() {}
 
   onOK() {
     if (this.state.projectName.length == 0) {
@@ -35,9 +55,19 @@ class NewProjectScreen extends Component {
       ProjectCode: this.state.projectName
     };
 
-    this.props.actions
-      .newProject(body)
-      .then(responce => this.handleNewProjectSuccess());
+    if (typeof this.props.navigation.state.params == "undefined") {
+      this.props.actions
+        .newProject(body)
+        .then(responce => this.handleNewProjectSuccess(responce));
+    } else {
+      this.props.actions
+        .updateProject(
+          this.props.navigation.state.params.project.ProjectId,
+          body
+        )
+        .then(responce => this.handleNewProjectSuccess(responce));
+    }
+
     /*
     let url = "http://119.23.47.185:4001/checkitem";
     axios
@@ -47,7 +77,7 @@ class NewProjectScreen extends Component {
       */
   }
 
-  handleNewProjectSuccess() {
+  handleNewProjectSuccess(responce) {
     Alert.alert("Success", "", [
       { text: "OK", onPress: () => this.props.navigation.goBack() }
     ]);
@@ -59,11 +89,11 @@ class NewProjectScreen extends Component {
         <TextInput
           style={styles.textInput}
           placeholder="请输入名称"
+          value={this.state.projectName}
           onChangeText={text => this.setState({ projectName: text })}
-          //   value={this.state.text}
         />
         <TouchableOpacity
-          style={styles.okButton}
+          // style={styles.okButton}
           //   underlayColor="#763563"
           onPress={() => this.onOK()}
         >
@@ -87,8 +117,9 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     marginTop: 40,
+    marginBottom: 40,
     paddingLeft: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     borderColor: "gray",
     borderWidth: 1
   },
@@ -132,9 +163,16 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.6)"
   },
   okText: {
+    width: Dimensions.get("window").width - 40,
+    height: 40,
     fontSize: 16,
     fontWeight: "bold",
-    textAlign: "center"
+    textAlign: "center",
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 8,
+    borderColor: "black"
+    // backgroundColor: "blue"
   }
 });
 
