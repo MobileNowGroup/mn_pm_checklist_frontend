@@ -62432,8 +62432,28 @@ __d(/* MNReleaseTool/tool/timeTool.js */function(global, require, module, export
 });
 exports.convertTimeStampToDate = convertTimeStampToDate;
 function convertTimeStampToDate(timestamp) {
-  var dateTime = new Date(timestamp);
-  return dateTime.toLocaleDateString() + " " + dateTime.toLocaleTimeString();
+
+  var d = new Date(timestamp * 1000),
+      yyyy = d.getFullYear(),
+      mm = ("0" + (d.getMonth() + 1)).slice(-2),
+      dd = ("0" + d.getDate()).slice(-2),
+      hh = d.getHours(),
+      h = hh,
+      min = ("0" + d.getMinutes()).slice(-2),
+      ampm = "AM",
+      time;
+  if (hh > 12) {
+    h = hh - 12;
+    ampm = "PM";
+  } else if (hh === 12) {
+    h = 12;
+    ampm = "PM";
+  } else if (hh == 0) {
+    h = 12;
+  }
+
+  time = yyyy + "-" + mm + "-" + dd + ", " + h + ":" + min + " " + ampm;
+  return time;
 }
 }, 737, null, "MNReleaseTool/tool/timeTool.js");
 __d(/* MNReleaseTool/screens/NewProjectScreen.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
