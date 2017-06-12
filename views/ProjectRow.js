@@ -59,7 +59,7 @@ class ProjectRow extends Component {
               {"Code: " + this.props.ProjectCode}
             </Text>
             <Text style={styles.subText}>
-              {"创建时间：" + timeTool.convertTimeStampToDate(this.props.UpdatedAt)}
+              {"修改时间：" + timeTool.convertTimeStampToDate(this.props.UpdatedAt)}
             </Text>
           </View>
         </TouchableHighlight>

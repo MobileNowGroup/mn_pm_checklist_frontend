@@ -61595,7 +61595,7 @@ var ProjectRow = function (_Component) {
             _react2.default.createElement(
               _reactNative.Text,
               { style: styles.subText },
-              "创建时间：" + timeTool.convertTimeStampToDate(this.props.UpdatedAt)
+              "修改时间：" + timeTool.convertTimeStampToDate(this.props.UpdatedAt)
             )
           )
         )
