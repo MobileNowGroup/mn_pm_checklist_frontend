@@ -8,3 +8,6 @@ export const SET_USERINFO = "SET_USERINFO";
 
 // project
 export const SET_PROJECTS = "SET_PROJECTS";
+
+// token
+export const SET_TOKEN_STATE = "SET_TOKEN_STATE";

@@ -15,11 +15,12 @@ import { bindActionCreators } from "redux";
 import * as loginActions from "../redux/actions/loginActions";
 import LOGIN from "../redux/actions/types";
 import axios from "axios";
+import * as projectActions from "../redux/actions/projectActions";
 
 class Login extends Component {
   static navigationOptions = ({ navigation }) => ({
     // title: "登录"
-    header : null
+    header: null
   });
 
   constructor(props) {
@@ -58,19 +59,12 @@ class Login extends Component {
       return;
     }
     // console.log("this props are " + this.props.login());
-    this.props.login("Perry", "123").then(responce => {
-      // console.log(responce);
-
-      axios.defaults.headers.common["Access-Token"] = responce.userInfo.Token;
-
-      if (responce.userInfo.Basic.Role.RoleName == "PM") {
-        // this.props.navigation.navigate("Home");
-        this.props.navigation.navigate("ManagerTabNavigator");
-      } else if (responce.userInfo.Basic.Role.RoleName == "DEV") {
-        // this.props.navigation.navigate("Home");
-        this.props.navigation.navigate("ManagerTabNavigator");
-      }
-    });
+    this.props
+      .login("Perry", "123")
+      .then(responce => {
+        this.props.navigation.goBack();
+      })
+      .catch(error => console.log(error));
   }
 
   render() {
@@ -186,12 +180,16 @@ export default connect(
 
 function mapStateToProps(state) {
   return {
-    userInfo: state.userInfo
+    userInfo: state.default.default.userInfo,
+    isTokenExpired: state.default.projectReducer.isTokenExpired
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(loginActions, dispatch);
+  return bindActionCreators(
+    Object.assign(loginActions, projectActions),
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
