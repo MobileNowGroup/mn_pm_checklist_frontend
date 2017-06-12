@@ -4,6 +4,7 @@ import Swipeout from "react-native-swipeout";
 import * as checkItemActions from "../redux/actions/checkItemActions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import * as timeTool from "../tool/timeTool";
 
 class CheckItemRow extends Component {
   constructor(props) {
@@ -34,37 +35,33 @@ class CheckItemRow extends Component {
         }
       }
     ];
-    // const { counter, increment, decrement } = this.props;
     return (
-      // <TouchableHighlight underlayColor="lightgray" onPress={this.handlePress}>
-      (
-        <Swipeout
-          // style={styles.container}
-          buttonWidth={60}
-          // sensitivity={100}
-          right={swipeBtns}
-          autoClose="true"
-          backgroundColor="transparent"
+      <Swipeout
+        // style={styles.container}
+        buttonWidth={60}
+        // sensitivity={100}
+        right={swipeBtns}
+        autoClose="true"
+        backgroundColor="transparent"
+      >
+        <TouchableHighlight
+          underlayColor="lightgray"
+          onPress={this.handlePress}
         >
-          <TouchableHighlight
-            underlayColor="lightgray"
-            onPress={this.handlePress}
-          >
-            <View style={styles.container}>
-              <Text style={styles.text} numberOfLines={1}>
-                {this.props.ItemTitle}
-              </Text>
-              <Text style={styles.subText}>
-                {"最后修改时间：" + this.props.UpdatedAt}
-              </Text>
-              <Text style={styles.subText}>
-                {"是否必须：" + (Boolean(this.props.IsMandatory) ? "是" : "否")}
-              </Text>
-            </View>
-          </TouchableHighlight>
-        </Swipeout>
-      )
-      // </TouchableHighlight>
+          <View style={styles.container}>
+            <Text style={styles.text} numberOfLines={1}>
+              {this.props.ItemTitle}
+            </Text>
+            <Text style={styles.subText}>
+              {"最后修改时间：" +
+                timeTool.convertTimeStampToDate(this.props.UpdatedAt)}
+            </Text>
+            <Text style={styles.subText}>
+              {"是否必须：" + (Boolean(this.props.IsMandatory) ? "是" : "否")}
+            </Text>
+          </View>
+        </TouchableHighlight>
+      </Swipeout>
     );
   }
 }
