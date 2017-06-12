@@ -97,6 +97,9 @@ class NewCheckItemScreen extends Component {
   }
 
   handleNewCheckItemSuccess(responce) {
+    if (typeof responce == "undefined") {
+      return;
+    }
     Alert.alert("Success", "", [
       { text: "OK", onPress: () => this.props.navigation.goBack() }
     ]);

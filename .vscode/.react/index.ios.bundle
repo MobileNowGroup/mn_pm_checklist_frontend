@@ -62498,6 +62498,9 @@ var NewProjectScreen = function (_Component) {
     value: function handleNewProjectSuccess(responce) {
       var _this3 = this;
 
+      if (typeof responce == "undefined") {
+        return;
+      }
       _reactNative.Alert.alert("Success", "", [{ text: "OK", onPress: function onPress() {
           return _this3.props.navigation.goBack();
         } }]);
