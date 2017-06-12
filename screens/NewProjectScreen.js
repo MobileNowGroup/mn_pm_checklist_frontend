@@ -66,6 +66,7 @@ class NewProjectScreen extends Component {
           body
         )
         .then(responce => this.handleNewProjectSuccess(responce));
+      // .catch(error => console.log(error));
     }
 
     /*
@@ -78,6 +79,9 @@ class NewProjectScreen extends Component {
   }
 
   handleNewProjectSuccess(responce) {
+    if (typeof responce == "undefined") {
+      return;
+    }
     Alert.alert("Success", "", [
       { text: "OK", onPress: () => this.props.navigation.goBack() }
     ]);

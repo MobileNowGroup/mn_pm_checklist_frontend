@@ -61517,6 +61517,10 @@ var _reactRedux = require(484          ); // 484 = react-redux
 
 var _redux = require(494    ); // 494 = redux
 
+var _timeTool = require(737               ); // 737 = ../tool/timeTool
+
+var timeTool = babelHelpers.interopRequireWildcard(_timeTool);
+
 var ProjectRow = function (_Component) {
   babelHelpers.inherits(ProjectRow, _Component);
 
@@ -61560,7 +61564,6 @@ var ProjectRow = function (_Component) {
           _this2.deleteRow();
         }
       }];
-
       return _react2.default.createElement(
         _reactNativeSwipeout2.default,
         {
@@ -61592,7 +61595,7 @@ var ProjectRow = function (_Component) {
             _react2.default.createElement(
               _reactNative.Text,
               { style: styles.subText },
-              "创建时间：" + this.props.UpdatedAt
+              "修改时间：" + timeTool.convertTimeStampToDate(this.props.UpdatedAt)
             )
           )
         )
@@ -62424,6 +62427,35 @@ var styles = _reactNative.StyleSheet.create({
 
 exports.default = styles;
 }, 722, null, "react-native-swipeout/styles.js");
+__d(/* MNReleaseTool/tool/timeTool.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.convertTimeStampToDate = convertTimeStampToDate;
+function convertTimeStampToDate(timestamp) {
+
+  var d = new Date(timestamp * 1000),
+      yyyy = d.getFullYear(),
+      mm = ("0" + (d.getMonth() + 1)).slice(-2),
+      dd = ("0" + d.getDate()).slice(-2),
+      hh = d.getHours(),
+      h = hh,
+      min = ("0" + d.getMinutes()).slice(-2),
+      ampm = "AM",
+      time;
+  if (hh > 12) {
+    h = hh - 12;
+    ampm = "PM";
+  } else if (hh === 12) {
+    h = 12;
+    ampm = "PM";
+  } else if (hh == 0) {
+    h = 12;
+  }
+
+  time = yyyy + "-" + mm + "-" + dd + ", " + h + ":" + min + " " + ampm;
+  return time;
+}
+}, 737, null, "MNReleaseTool/tool/timeTool.js");
 __d(/* MNReleaseTool/screens/NewProjectScreen.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -62498,6 +62530,9 @@ var NewProjectScreen = function (_Component) {
     value: function handleNewProjectSuccess(responce) {
       var _this3 = this;
 
+      if (typeof responce == "undefined") {
+        return;
+      }
       _reactNative.Alert.alert("Success", "", [{ text: "OK", onPress: function onPress() {
           return _this3.props.navigation.goBack();
         } }]);
@@ -62851,6 +62886,10 @@ var _reactRedux = require(484          ); // 484 = react-redux
 
 var _redux = require(494    ); // 494 = redux
 
+var _timeTool = require(737               ); // 737 = ../tool/timeTool
+
+var timeTool = babelHelpers.interopRequireWildcard(_timeTool);
+
 var CheckItemRow = function (_Component) {
   babelHelpers.inherits(CheckItemRow, _Component);
 
@@ -62891,7 +62930,6 @@ var CheckItemRow = function (_Component) {
           _this2.deleteRow();
         }
       }];
-
       return _react2.default.createElement(
         _reactNativeSwipeout2.default,
         {
@@ -62918,7 +62956,7 @@ var CheckItemRow = function (_Component) {
             _react2.default.createElement(
               _reactNative.Text,
               { style: styles.subText },
-              "最后修改时间：" + this.props.UpdatedAt
+              "最后修改时间：" + timeTool.convertTimeStampToDate(this.props.UpdatedAt)
             ),
             _react2.default.createElement(
               _reactNative.Text,
@@ -63143,6 +63181,9 @@ var NewCheckItemScreen = function (_Component) {
     value: function handleNewCheckItemSuccess(responce) {
       var _this3 = this;
 
+      if (typeof responce == "undefined") {
+        return;
+      }
       _reactNative.Alert.alert("Success", "", [{ text: "OK", onPress: function onPress() {
           return _this3.props.navigation.goBack();
         } }]);
