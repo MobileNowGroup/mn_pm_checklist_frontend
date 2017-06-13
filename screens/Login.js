@@ -8,7 +8,8 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -27,7 +28,8 @@ class Login extends Component {
     super(props);
     this.state = {
       userName: "18684909663",
-      userPwd: "123456"
+      userPwd: "123456",
+      animating: false,
     };
     this.login = this.login.bind(this);
   }
@@ -59,21 +61,30 @@ class Login extends Component {
       return;
     }
     // console.log("this props are " + this.props.login());
+    this.setState({animating:true})
     this.props
       .login("Perry", "123")
       .then(responce => {
         this.props.navigation.goBack();
+        this.setState({animating:false})
       })
       .catch(error => console.log(error));
   }
 
   render() {
     return (
+      
       <View style={styles.bgView}>
         <Image
           source={require("../img/background.jpg")}
           style={styles.backgroundImage}
         >
+          <ActivityIndicator
+                animating={this.state.animating}
+                style={[styles.centering,{backgroundColor:'transparent',transform:[{scale:2}]}]}
+                size= 'small'
+                color= 'white'
+          />
           <View style={styles.content}>
             <Text style={styles.logo}>- Check List -</Text>
             <View style={styles.inputContainer}>
@@ -162,6 +173,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center"
+  },
+  centering:{
+    alignItems:'center',
+    justifyContent:'center',
+    padding:8,
+  },
+  transparent:{
+    backgroundColor:'blue',
   }
 });
 
