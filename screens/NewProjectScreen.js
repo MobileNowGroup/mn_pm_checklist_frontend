@@ -91,10 +91,12 @@ class NewProjectScreen extends Component {
     return (
       <KeyboardAvoidingView style={styles.container}>
         <TextInput
+          maxLength={50}
           style={styles.textInput}
           placeholder="请输入名称"
           value={this.state.projectName}
           onChangeText={text => this.setState({ projectName: text })}
+          
         />
         <TouchableOpacity
           // style={styles.okButton}

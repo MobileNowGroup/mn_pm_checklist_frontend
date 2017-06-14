@@ -34,7 +34,7 @@ class ProjectRow extends Component {
       {
         text: "Delete",
         backgroundColor: "red",
-        underlayColor: "rgba(0, 0, 0, 1, 0.6)",
+        underlayColor: "rgba(0, 0, 0, 0.6)",
         onPress: () => {
           this.deleteRow();
         }
