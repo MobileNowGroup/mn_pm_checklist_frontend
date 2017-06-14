@@ -41,7 +41,7 @@ class CheckItemRow extends Component {
         buttonWidth={60}
         // sensitivity={100}
         right={swipeBtns}
-        autoClose="true"
+        autoClose={true}
         backgroundColor="transparent"
       >
         <TouchableHighlight

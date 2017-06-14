@@ -23,8 +23,10 @@ class ProjectRow extends Component {
   }
 
   deleteRow() {
-    console.log("rowId is " + this.props.rowID);
-    this.props.actions.deleteProject(this.props.ProjectId, this.props.rowID);
+    this.props.actions
+      .deleteProject(this.props.ProjectId, this.props.rowID)
+      .then(responce => console.log("res is " + responce))
+      .catch(error => console.log("error is " + error));
   }
 
   render() {
@@ -44,7 +46,7 @@ class ProjectRow extends Component {
         buttonWidth={60}
         // sensitivity={100}
         right={swipeBtns}
-        autoClose="true"
+        autoClose={true}
         backgroundColor="transparent"
       >
         <TouchableHighlight
