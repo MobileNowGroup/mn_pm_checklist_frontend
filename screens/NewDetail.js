@@ -33,7 +33,8 @@ class NewDetail extends Component {
 
   componentWillMount() {
     // console.log(this.state.releaseId);
-    this.getReleaseDetail(this.state.releaseId);
+    // this.getReleaseDetail(this.state.releaseId);
+    this.getCheckItems();
   }
 
   componentDidMount() {
@@ -57,7 +58,7 @@ class NewDetail extends Component {
       }
     }
     console.log(checkedItems, uncheckedItems);
-    var url = "http://192.168.31.206:9000/checkitems";
+    var url = "http://119.23.47.185:4001/checkitems";
     axios
       .put(url, {
         uncheck_items: uncheckedItems,
@@ -76,13 +77,13 @@ class NewDetail extends Component {
       case 1:
         for (var i = 0; i < items.length; i++) {
           var anItem = items[i];
-          if (Boolean(anItem.IsChecked)) sortedItems.push(anItem);
+          if (Boolean(anItem.IsMandatory)) sortedItems.push(anItem);
         }
         break;
       case 2:
         for (var i = 0; i < items.length; i++) {
           var anItem = items[i];
-          if (!Boolean(anItem.IsChecked)) sortedItems.push(anItem);
+          if (!Boolean(anItem.IsMandatory)) sortedItems.push(anItem);
         }
         break;
       default:
@@ -100,15 +101,25 @@ class NewDetail extends Component {
     });
   }
 
-  getReleaseDetail(releaseId) {
+  // getReleaseDetail(releaseId) {
+  //   axios
+  //     .get("http://119.23.47.185:4001/checkitems")
+  //     .then(response => this.handleReleaseDetail(response.data));
+  // }
+
+  getCheckItems() {
     axios
-      .get("http://192.168.31.206:9000/checkitems")
-      .then(response => this.handleReleaseDetail(response.data));
+      .get("http://119.23.47.185:4001/checkitems")
+      .then(response => this.handleCheckItemsDetail(response.data));
   }
 
-  handleReleaseDetail(items) {
+  // handleReleaseDetail(items) {
+  //   alert(items);
+  //   this.setSource(items);
+  // }
+
+  handleCheckItemsDetail(items) {
     alert(items);
-    this.setSource(items);
   }
 
   handleIndexChange = index => {
@@ -147,7 +158,7 @@ class NewDetail extends Component {
           )}
           renderSectionHeader={() => (
             <SegmentedControlTab
-              values={["全部", "通过", "未通过"]}
+              values={["全部", "基础", "定制"]}
               selectedIndex={this.state.selectedIndex}
               onTabPress={this.handleIndexChange}
             />
