@@ -1,12 +1,13 @@
 import axios from "axios";
 import * as types from "./types";
+import * as tokenActions from "./tokenActions";
 
 export function fetchProjects() {
   return (dispatch, getState) => {
     return axios
       .get("http://119.23.47.185:4001/projects")
       .then(responce => dispatch(setProjects({ projects: responce.data })))
-      .catch(error => console.log(error));
+      .catch(error => tokenActions.handleError(dispatch, error));
   };
 }
 
@@ -19,7 +20,7 @@ export function deleteProject(projectID, index) {
       .then(responce =>
         handleDeleteProject(responce, dispatch, projects, index)
       )
-      .catch(error => console.log(error));
+      .catch(error => tokenActions.handleError(dispatch, error));
   };
 }
 
@@ -29,7 +30,7 @@ export function updateProject(projectID, body) {
     return axios
       .put(url, body)
       .then(responce => dispatch(fetchProjects()))
-      .catch(error => console.log(error));
+      .catch(error => tokenActions.handleError(dispatch, error));
   };
 }
 
@@ -39,7 +40,7 @@ export function newProject(body) {
     return axios
       .post(url, body)
       .then(responce => dispatch(fetchProjects()))
-      .catch(error => console.log(error));
+      .catch(error => tokenActions.handleError(dispatch, error));
   };
 }
 

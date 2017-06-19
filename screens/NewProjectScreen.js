@@ -66,6 +66,7 @@ class NewProjectScreen extends Component {
           body
         )
         .then(responce => this.handleNewProjectSuccess(responce));
+      // .catch(error => console.log(error));
     }
 
     /*
@@ -78,6 +79,9 @@ class NewProjectScreen extends Component {
   }
 
   handleNewProjectSuccess(responce) {
+    if (typeof responce == "undefined") {
+      return;
+    }
     Alert.alert("Success", "", [
       { text: "OK", onPress: () => this.props.navigation.goBack() }
     ]);
@@ -87,10 +91,12 @@ class NewProjectScreen extends Component {
     return (
       <KeyboardAvoidingView style={styles.container}>
         <TextInput
+          maxLength={50}
           style={styles.textInput}
           placeholder="请输入名称"
           value={this.state.projectName}
           onChangeText={text => this.setState({ projectName: text })}
+          
         />
         <TouchableOpacity
           // style={styles.okButton}

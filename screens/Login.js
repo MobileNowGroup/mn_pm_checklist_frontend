@@ -8,13 +8,15 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
-  Alert
+  Alert,
+  ActivityIndicator
 } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as loginActions from "../redux/actions/loginActions";
 import LOGIN from "../redux/actions/types";
 import axios from "axios";
+import * as projectActions from "../redux/actions/projectActions";
 
 class Login extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -26,7 +28,8 @@ class Login extends Component {
     super(props);
     this.state = {
       userName: "18684909663",
-      userPwd: "123456"
+      userPwd: "123456",
+      animating: false,
     };
     this.login = this.login.bind(this);
   }
@@ -58,28 +61,30 @@ class Login extends Component {
       return;
     }
     // console.log("this props are " + this.props.login());
-    this.props.login("Perry", "123").then(responce => {
-      console.log(responce.userInfo.Token);
-
-      axios.defaults.headers.common["Access-Token"] = responce.userInfo.Token;
-
-      if (responce.userInfo.Basic.Role.RoleName == "PM") {
-        this.props.navigation.navigate("Home");
-        // this.props.navigation.navigate("ManagerTabNavigator");
-      } else if (responce.userInfo.Basic.Role.RoleName == "DEV") {
-        this.props.navigation.navigate("Home");
-        // this.props.navigation.navigate("ManagerTabNavigator");
-      }
-    });
+    this.setState({animating:true})
+    this.props
+      .login("Perry", "123")
+      .then(responce => {
+        this.props.navigation.goBack();
+        this.setState({animating:false})
+      })
+      .catch(error => console.log(error));
   }
 
   render() {
     return (
+      
       <View style={styles.bgView}>
         <Image
           source={require("../img/background.jpg")}
           style={styles.backgroundImage}
         >
+          <ActivityIndicator
+                animating={this.state.animating}
+                style={[styles.centering,{backgroundColor:'transparent',transform:[{scale:2}]}]}
+                size= 'small'
+                color= 'white'
+          />
           <View style={styles.content}>
             <Text style={styles.logo}>- Check List -</Text>
             <View style={styles.inputContainer}>
@@ -168,6 +173,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center"
+  },
+  centering:{
+    alignItems:'center',
+    justifyContent:'center',
+    padding:8,
+  },
+  transparent:{
+    backgroundColor:'blue',
   }
 });
 
@@ -186,12 +199,16 @@ export default connect(
 
 function mapStateToProps(state) {
   return {
-    userInfo: state.userInfo
+    userInfo: state.default.default.userInfo,
+    isTokenExpired: state.default.projectReducer.isTokenExpired
   };
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators(loginActions, dispatch);
+  return bindActionCreators(
+    Object.assign(loginActions, projectActions),
+    dispatch
+  );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

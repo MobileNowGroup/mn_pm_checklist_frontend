@@ -16,6 +16,7 @@
     "react": "16.0.0-alpha.6",
     "react-native": "0.44.0",
     "react-native-check-box": "^1.0.4",
+    "react-native-progress-hud": "^1.0.4",
     "react-native-segmented-control-tab": "^3.0.2",
     "react-native-swipeout": "^2.1.1",
     "react-native-vector-icons": "^4.2.0",

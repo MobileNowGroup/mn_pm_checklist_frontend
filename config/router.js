@@ -1,27 +1,15 @@
-import React from "react";
+import React, { Component } from "react";
 import { StackNavigator } from "react-navigation";
-import Home from "../screens/Home";
-import New from "../screens/New";
-import Detail from "../screens/Detail";
 import Login from "../screens/Login";
-import ManagerTabNavigator from "../screens/ManagerTabNavigator";
-import NewCheckItemScreen from "../screens/NewCheckItemScreen";
-import NewProjectScreen from "../screens/NewProjectScreen";
-import NewDetail from "../screens/NewDetail";
+import Main from "./main";
 
 export const Root = StackNavigator(
   {
-    Login: { screen: Login },
-    ManagerTabNavigator: { screen: ManagerTabNavigator },
-    Home: { screen: Home },
-    New: { screen: New },
-    NewDetail: { screen: NewDetail },
-    Detail: { screen: Detail },
-    NewCheckItemScreen: { screen: NewCheckItemScreen },
-    NewProjectScreen: { screen: NewProjectScreen }
+    Main: { screen: Main },
+    Login: { screen: Login }
   },
   {
-    mode: "card"
-    // headerMode: "none"
+    mode: "modal",
+    headerMode: "none"
   }
 );

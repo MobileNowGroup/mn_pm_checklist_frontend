@@ -1,5 +1,6 @@
 import * as types from "./types";
 import axios from "axios";
+import * as tokenActions from "./tokenActions";
 
 export function deleteCheckItem(itemID, index) {
   return (dispatch, getState) => {
@@ -8,7 +9,7 @@ export function deleteCheckItem(itemID, index) {
     return axios
       .delete("http://119.23.47.185:4001/checkitem/" + itemID)
       .then(responce => handleDeleteItem(responce, dispatch, checkItems, index))
-      .catch(error => console.log(error));
+      .catch(error => tokenActions.handleError(dispatch, error));
   };
 }
 
@@ -25,7 +26,7 @@ export function newCheckItem(body) {
     return axios
       .post(url, body)
       .then(responce => dispatch(fetchCheckItems()))
-      .catch(error => console.log(error));
+      .catch(error => tokenActions.handleError(dispatch, error));
   };
 }
 
@@ -35,7 +36,7 @@ export function updateCheckItem(checkItemId, body) {
     return axios
       .put(url, body)
       .then(responce => dispatch(fetchCheckItems()))
-      .catch(error => console.log(error));
+      .catch(error => tokenActions.handleError(dispatch, error));
   };
 }
 
@@ -44,7 +45,7 @@ export function fetchCheckItems() {
     return axios
       .get("http://119.23.47.185:4001/checkitems")
       .then(responce => dispatch(setCheckItems({ checkItems: responce.data })))
-      .catch(error => console.log(error));
+      .catch(error => tokenActions.handleError(dispatch, error));
   };
 }
 

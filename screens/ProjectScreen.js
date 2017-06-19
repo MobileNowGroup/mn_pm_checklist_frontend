@@ -169,7 +169,8 @@ const styles = StyleSheet.create({
 
 export default connect(
   state => ({
-    projects: Object.assign({}, state.default.projectReducer.projects)
+    projects: Object.assign({}, state.default.projectReducer.projects),
+    isTokenExpired: state.default.projectReducer.isTokenExpired
   }),
   dispatch => ({
     actions: bindActionCreators(projectActions, dispatch)
