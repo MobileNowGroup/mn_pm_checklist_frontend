@@ -53865,7 +53865,8 @@ var Login = function (_Component) {
 
     _this.state = {
       userName: "18684909663",
-      userPwd: "123456"
+      userPwd: "123456",
+      animating: false
     };
     _this.login = _this.login.bind(_this);
     return _this;
@@ -53902,8 +53903,10 @@ var Login = function (_Component) {
         return;
       }
 
+      this.setState({ animating: true });
       this.props.login("Perry", "123").then(function (responce) {
         _this2.props.navigation.goBack();
+        _this2.setState({ animating: false });
       }).catch(function (error) {
         return console.log(error);
       });
@@ -53922,6 +53925,12 @@ var Login = function (_Component) {
             source: require(549                    ), // 549 = ../img/background.jpg
             style: styles.backgroundImage
           },
+          _react2.default.createElement(_reactNative.ActivityIndicator, {
+            animating: this.state.animating,
+            style: [styles.centering, { backgroundColor: 'transparent', transform: [{ scale: 2 }] }],
+            size: "small",
+            color: "white"
+          }),
           _react2.default.createElement(
             _reactNative.View,
             { style: styles.content },
@@ -54034,6 +54043,14 @@ var styles = _reactNative.StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     textAlign: "center"
+  },
+  centering: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8
+  },
+  transparent: {
+    backgroundColor: 'blue'
   }
 });
 
@@ -56950,9 +56967,9 @@ var Main = function (_Component) {
       if (typeof this.props.userInfo == "undefined") {
         return _react2.default.createElement(_reactNative.View, null);
       }
-      if (this.props.userInfo.Basic.Role.RoleName == "PM") {
+      if (this.props.userInfo.Basic.RoleId == 4) {
         return _react2.default.createElement(PMStack, null);
-      } else if (this.props.userInfo.Basic.Role.RoleName == "DEV") {
+      } else if (this.props.userInfo.Basic.RoleId == 4) {
         return _react2.default.createElement(PMStack, null);
       }
     }
@@ -61562,7 +61579,7 @@ var ProjectRow = function (_Component) {
       var swipeBtns = [{
         text: "Delete",
         backgroundColor: "red",
-        underlayColor: "rgba(0, 0, 0, 1, 0.6)",
+        underlayColor: "rgba(0, 0, 0, 0.6)",
         onPress: function onPress() {
           _this2.deleteRow();
         }
@@ -61573,7 +61590,7 @@ var ProjectRow = function (_Component) {
           buttonWidth: 60,
 
           right: swipeBtns,
-          autoClose: "true",
+          autoClose: true,
           backgroundColor: "transparent"
         },
         _react2.default.createElement(
@@ -62549,12 +62566,14 @@ var NewProjectScreen = function (_Component) {
         _reactNative.KeyboardAvoidingView,
         { style: styles.container },
         _react2.default.createElement(_reactNative.TextInput, {
+          maxLength: 50,
           style: styles.textInput,
           placeholder: "\u8BF7\u8F93\u5165\u540D\u79F0",
           value: this.state.projectName,
           onChangeText: function onChangeText(text) {
             return _this4.setState({ projectName: text });
           }
+
         }),
         _react2.default.createElement(
           _reactNative.TouchableOpacity,
@@ -62928,7 +62947,7 @@ var CheckItemRow = function (_Component) {
       var swipeBtns = [{
         text: "Delete",
         backgroundColor: "red",
-        underlayColor: "rgba(0, 0, 0, 1, 0.6)",
+        underlayColor: "rgba(0, 0, 0, 0.6)",
         onPress: function onPress() {
           _this2.deleteRow();
         }
@@ -62939,7 +62958,7 @@ var CheckItemRow = function (_Component) {
           buttonWidth: 60,
 
           right: swipeBtns,
-          autoClose: "true",
+          autoClose: true,
           backgroundColor: "transparent"
         },
         _react2.default.createElement(

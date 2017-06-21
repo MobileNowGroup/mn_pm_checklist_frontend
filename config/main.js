@@ -54,9 +54,9 @@ class Main extends Component {
     if (typeof this.props.userInfo == "undefined") {
       return <View />;
     }
-    if (this.props.userInfo.Basic.Role.RoleName == "PM") {
+    if (this.props.userInfo.Basic.RoleId == 4) {
       return <PMStack />;
-    } else if (this.props.userInfo.Basic.Role.RoleName == "DEV") {
+    } else if (this.props.userInfo.Basic.RoleId == 4) {
       // return <DeveloperStack />;
       return <PMStack />;
     }
