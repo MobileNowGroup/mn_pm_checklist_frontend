@@ -3,11 +3,11 @@ import {
   View,
   Text,
   StyleSheet,
-  Button,
   KeyboardAvoidingView,
   TextInput,
   Image,
   TouchableOpacity,
+  Dimensions,
   Alert,
   ActivityIndicator
 } from "react-native";
@@ -17,6 +17,10 @@ import * as loginActions from "../redux/actions/loginActions";
 import LOGIN from "../redux/actions/types";
 import axios from "axios";
 import * as projectActions from "../redux/actions/projectActions";
+import LoadingView from '../app/components/LoadingView';
+import Loading from '../app/components/Loading';
+import Button  from '../app/components/Button';
+
 
 class Login extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -27,8 +31,8 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userName: "18684909663",
-      userPwd: "123456",
+      userName: "1234567",
+      userPwd: "1234567",
       animating: false,
     };
     this.login = this.login.bind(this);
@@ -73,47 +77,44 @@ class Login extends Component {
 
   render() {
     return (
-      
       <View style={styles.bgView}>
-        <Image
-          source={require("../img/background.jpg")}
-          style={styles.backgroundImage}
-        >
-          <ActivityIndicator
-                animating={this.state.animating}
-                style={[styles.centering,{backgroundColor:'transparent',transform:[{scale:2}]}]}
-                size= 'small'
-                color= 'white'
+        <Loading visible={this.state.animating}
+          size='large'
+          color='white'
           />
           <View style={styles.content}>
-            <Text style={styles.logo}>- Check List -</Text>
+            <Image source={require('../img/logo.png')} style={styles.logo} />
             <View style={styles.inputContainer}>
+              <Image source={require('../img/username_icon.png')} style={styles.icon} />
+              <View style={styles.line} />
               <TextInput
                 underlineColorAndroid="transparent"
                 style={styles.input}
-                placeholder="username"
+                placeholder="用户名"
                 onChangeText={newText => this.updateNum(newText)}
                 value={this.state.userName}
               />
-
+            </View>
+            <View style={styles.inputContainer}>
+              <Image source={require('../img/password_icon.png')} style={styles.icon} />
+              <View style={styles.line} />
               <TextInput
                 secureTextEntry={true}
                 underlineColorAndroid="transparent"
                 style={styles.input}
-                placeholder="password"
+                placeholder="密码"
                 onChangeText={newText => this.updatePW(newText)}
                 value={this.state.userPwd}
               />
             </View>
 
-            <TouchableOpacity
+            <Button 
               onPress={this.login}
-              style={styles.buttonContainer}
-            >
-              <Text style={styles.buttonText}>LOGIN</Text>
-            </TouchableOpacity>
+              text='登录'
+              style={styles.buttonText}
+              containerStyle={styles.buttonContainer}
+              />
           </View>
-        </Image>
       </View>
     );
   }
@@ -121,58 +122,72 @@ class Login extends Component {
 
 const styles = StyleSheet.create({
   bgView: {
-    flex: 1
+    flex: 1,
+    backgroundColor: 'white',
   },
   backgroundImage: {
     flex: 1,
-    alignSelf: "stretch",
-    width: null,
-    justifyContent: "center"
+    // alignSelf: "stretch",
+    // width: null,
+    // justifyContent: "center"
   },
   content: {
     alignItems: "center"
   },
   logo: {
-    color: "white",
-    fontSize: 40,
-    fontStyle: "italic",
-    fontWeight: "bold",
-    textShadowColor: "#252525",
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 15,
-    marginBottom: 20,
-    backgroundColor: "transparent"
+    alignItems: 'center',
+    marginTop: 140,
+    marginBottom: 40,
   },
   inputContainer: {
-    margin: 20,
+    flexDirection: 'row',
+    marginTop: 20,
+    margin: 60,
     marginBottom: 0,
-    padding: 20,
-    paddingBottom: 10,
+  //  padding: 20,
+   // paddingBottom: 10,
     alignSelf: "stretch",
-    borderWidth: 1,
-    borderColor: "#fff",
-    backgroundColor: "rgba(255, 255, 255, 0.2)"
+    borderWidth: 2,
+    borderColor: "#78e9ff",
+    borderRadius: 8,
+    height: 42,
+  },
+  icon: {
+     margin: 10,
+     marginTop: 8,
+  },
+  line: {
+    margin: 10,
+    marginLeft: 0,
+    marginTop: 8,
+    backgroundColor: "#78e9ff",
+    width: 1,
+    height: 24,
   },
   input: {
     fontSize: 16,
     height: 40,
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: "rgba(255, 255, 255, 1)"
+    marginRight: 10,
+    marginLeft: 0,
+    width: Dimensions.get('window').width - 180 ,
+    color: '#828282',
   },
   buttonContainer: {
     alignSelf: "stretch",
     margin: 20,
     padding: 20,
-    backgroundColor: "blue",
-    borderWidth: 1,
-    borderColor: "#fff",
-    backgroundColor: "rgba(255, 255, 255, 0.6)"
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: "bold",
-    textAlign: "center"
+    justifyContent: 'center',
+    paddingTop: 12,
+    fontSize: 15,
+    textAlign: "center",
+    backgroundColor: '#78e9ff',
+    color: '#3f7a86',
+    //设置圆角
+    borderRadius: 21,
+    overflow: 'hidden',
+    height: 42,
   },
   centering:{
     alignItems:'center',
