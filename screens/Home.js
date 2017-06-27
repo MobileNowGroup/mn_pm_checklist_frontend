@@ -61,7 +61,7 @@ class Home extends Component {
 
   getReleases(projectId) {
     axios
-      .get("http://119.23.47.185:4001/project/" + projectId + "/releases")
+      .get("http://119.23.47.185:4001/projects/" + projectId + "/releases")
       .then(response => this.setSource(response.data))
       .catch(error => console.log(error));
   }
