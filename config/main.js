@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { StackNavigator } from "react-navigation";
 import Home from "../screens/Home";
 import New from "../screens/New";
+import NewDetail from "../screens/NewDetail";
 import Detail from "../screens/Detail";
 import Login from "../screens/Login";
 import ManagerTabNavigator from "../screens/ManagerTabNavigator";
@@ -14,6 +15,7 @@ import * as loginActions from "../redux/actions/loginActions";
 import LOGIN from "../redux/actions/types";
 import axios from "axios";
 import * as projectActions from "../redux/actions/projectActions";
+import Splash from '../screens/Splash';
 
 export const PMStack = StackNavigator(
   {
@@ -31,7 +33,8 @@ export const DeveloperStack = StackNavigator(
   {
     Home: { screen: Home },
     New: { screen: New },
-    Detail: { screen: Detail }
+    Detail: { screen: Detail },
+    NewDetail: { screen: NewDetail },
   },
   {
     mode: "card"
@@ -51,12 +54,12 @@ class Main extends Component {
   }
 
   render() {
-    if (typeof this.props.userInfo == "undefined") {
+    if (typeof this.props.userInfo === "undefined") {
       return <View />;
     }
     if (this.props.userInfo.Basic.RoleId == 4) {
       return <DeveloperStack />;
-      // return <PMStack />;
+     // return <PMStack />;
     } else if (this.props.userInfo.Basic.RoleId == 4) {
       // return <DeveloperStack />;
       return <PMStack />;
@@ -66,8 +69,8 @@ class Main extends Component {
 
 function mapStateToProps(state) {
   return {
-    userInfo: state.default.default.userInfo,
-    isTokenExpired: state.default.tokenReducer.isTokenExpired
+    userInfo: state.Login.userInfo,
+    isTokenExpired: state.Token.isTokenExpired,
   };
 }
 

@@ -4,7 +4,7 @@ const initialState = {
   projects: []
 };
 
-export function projectReducer(state = initialState, action) {
+let projectReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.SET_PROJECTS:
       return {
@@ -16,3 +16,5 @@ export function projectReducer(state = initialState, action) {
       return state;
   }
 }
+
+export default projectReducer;

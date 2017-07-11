@@ -41,6 +41,7 @@ class ProjectRow extends Component {
       }
     ];
     return (
+
       <Swipeout
         // style={styles.container}
         buttonWidth={60}
@@ -54,14 +55,9 @@ class ProjectRow extends Component {
           onPress={this.handlePress}
         >
           <View style={styles.container}>
-            <Text style={styles.text} numberOfLines={1}>
-              {this.props.ProjectName}
-            </Text>
+            <Text style={styles.text} numberOfLines={1}> {this.props.ProjectName}</Text>
             <Text style={styles.subText}>
-              {"Code: " + this.props.ProjectCode}
-            </Text>
-            <Text style={styles.subText}>
-              {"修改时间：" + timeTool.convertTimeStampToDate(this.props.UpdatedAt)}
+              {"更新时间：" + timeTool.convertTimeStampToDate(this.props.UpdatedAt)}
             </Text>
           </View>
         </TouchableHighlight>
@@ -74,23 +70,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 0,
-    height: 80,
+   // height: 80,
     flexDirection: "column",
-    alignItems: "flex-start",
-    justifyContent: "flex-start"
+    // alignItems: "flex-start",
+    // justifyContent: "flex-start"
   },
   text: {
-    height: 25,
-    marginLeft: 12,
+   // height: 25,
+    marginLeft: 15,
     fontSize: 16,
     marginTop: 10,
-    fontWeight: "bold"
+    color: '#333'
+   // fontWeight: "bold"
   },
   subText: {
     fontSize: 12,
-    marginLeft: 12,
-    marginTop: 2,
-    color: "gray"
+    marginLeft: 18,
+    marginTop: 5,
+    marginBottom: 5,
+    color: "#666",
   }
 });
 

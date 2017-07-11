@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
 
 export default connect(
   state => ({
-    checkItems: Object.assign({}, state.default.checkItemsReducer.checkItems)
+    checkItems: Object.assign({}, state.CheckItem.checkItems)
   }),
   dispatch => ({
     actions: bindActionCreators(checkItemActions, dispatch)

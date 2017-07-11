@@ -6,7 +6,7 @@ export function fetchProjects() {
   return (dispatch, getState) => {
     return axios
       .get("http://119.23.47.185:4001/projects")
-      .then(responce => dispatch(setProjects({ projects: responce.data })))
+      .then(responce => dispatch(setProjects(responce.data.data)))
       .catch(error => tokenActions.handleError(dispatch, error));
   };
 }
@@ -51,7 +51,7 @@ function handleDeleteProject(responce, dispatch, projects, index) {
   }
 }
 
-export function setProjects({ projects }) {
+export function setProjects(projects) {
   return {
     type: types.SET_PROJECTS,
     projects

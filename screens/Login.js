@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
    // paddingBottom: 10,
     alignSelf: "stretch",
     borderWidth: 2,
-    borderColor: "#78e9ff",
+    borderColor: "#51c4d4",
     borderRadius: 8,
     height: 42,
   },
@@ -199,23 +199,10 @@ const styles = StyleSheet.create({
   }
 });
 
-// export default Login;
-
-/*
-export default connect(
-  state => ({
-    userInfo: state.userInfo
-  }),
-  dispatch => ({
-    actions: bindActionCreators(loginActions, dispatch)
-  })
-)(Login);
-*/
-
 function mapStateToProps(state) {
   return {
-    userInfo: state.default.default.userInfo,
-    isTokenExpired: state.default.projectReducer.isTokenExpired
+    userInfo: state.Login.userInfo,
+    isTokenExpired: state.Project.isTokenExpired
   };
 }
 

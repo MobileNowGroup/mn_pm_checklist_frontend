@@ -12,39 +12,34 @@ import {
 import axios from "axios";
 import ProjectRow from "../views/ProjectRow";
 import { bindActionCreators } from "redux";
-import * as projectActions from "../redux/actions/projectActions";
+import * as ProjectCreators from "../redux/actions/projectActions";
 import * as loginActions from "../redux/actions/loginActions";
 import { connect } from "react-redux";
 import NewProjectScreen from "./NewProjectScreen";
 import Icon from "react-native-vector-icons/Octicons";
+import { commonstyles } from '../common/CommonStyles'
 
 class ProjectScreen extends Component {
-  static navigationOptions = props => {
-    const { state, setParams } = props.navigation;
-    if (typeof state.params == "undefined") {
-      return {
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="project" size={30} color="#000" />
-        ),
-        title: "项目",
-        headerLeft: null
-        // headerRight: <Button title=" + " onPress={state.params.handleNew} />
-      };
-    } else {
-      return {
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="project" size={30} color="#000" />
-        ),
-        title: "项目",
-        headerLeft: null,
-        headerRight: (
-          <TouchableOpacity onPress={state.params.handleNew}>
-            <Icon name="plus" size={30} color="#000" />
+
+  static navigationOptions = ({ navigation }) => ({
+     title: '项目',
+      tabBarIcon: ({ tintColor }) => (
+      <Icon name="checklist" size={25} color={tintColor} />
+      ),
+      headerRight: ( 
+        navigation.state.params !== undefined &&
+        navigation.state.params.isFirst
+        ? null
+        : <TouchableOpacity onPress={() => {
+            navigation.state.params.handleNew();
+          }}>
+          <Image source={require('../img/plus_icon.png')}  style={{marginRight: 15}} />
           </TouchableOpacity>
-        )
-      };
-    }
-  };
+        ),
+      headerStyle: commonstyles.headerStyle,
+      headerTitleStyle: commonstyles.headerTitleStyle,
+      headerTintColor: 'black',
+  });
 
   renderPlusButton() {
     return (
@@ -64,7 +59,6 @@ class ProjectScreen extends Component {
       dataSource: ds.cloneWithRows([])
     };
     this.new = this.new.bind(this);
-    this.getProjects = this.getProjects.bind(this);
     this.handleCheckItems = this.handleCheckItems.bind(this);
     this.setSource = this.setSource.bind(this);
     // this.handleCallback = this.handleCallback.bind(this);
@@ -72,27 +66,26 @@ class ProjectScreen extends Component {
 
   componentWillMount() {
     // console.log(this.props.)
-    this.props.navigation.setParams({ handleNew: this.new });
   }
 
   componentDidMount() {
-    this.getProjects();
-  }
+    /**  
+     * 将单击回调函数作为参数传递  
+     */ 
+    this.props.navigation.setParams({ handleNew: this.new });
+    //加载项目列表数据
+    const { projectActions } = this.props;
+    projectActions
+      .fetchProjects()
+      .then(response => this.setSource(response.projects))
 
+  }
+  
+  /**
+   * 新增项目
+   */
   new() {
     this.props.navigation.navigate("NewProjectScreen");
-  }
-
-  getProjects() {
-    /*
-    axios
-      .get("http://119.23.47.185:4001/checkitems")
-      .then(responce => this.handleCheckItems(responce.data))
-      .catch(error => console.log(error));
-      */
-
-    this.props.actions.fetchProjects();
-    // .then(responce => this.handleCheckItems(responce.checkItems));
   }
 
   handleCheckItems(projects) {
@@ -113,9 +106,11 @@ class ProjectScreen extends Component {
   }
 
   handleCallback(rowID) {
-    // this.state.projects[parseInt(rowID)];
+    
+    const { Project } = this.props;
+    console.log(Project.projects[parseInt(rowID)])
     this.props.navigation.navigate("NewProjectScreen", {
-      project: this.props.projects[parseInt(rowID)]
+      project: Project.projects[parseInt(rowID)],
     });
   }
 
@@ -165,17 +160,31 @@ const styles = StyleSheet.create({
   }
 });
 
-// export default CheckItemScreen;
+const mapStateToProps = (state) => {
+  const { Project } = state;
+  return {
+    Project
+  };
+};
 
-export default connect(
-  state => ({
-    projects: Object.assign({}, state.default.projectReducer.projects),
-    isTokenExpired: state.default.projectReducer.isTokenExpired
-  }),
-  dispatch => ({
-    actions: bindActionCreators(projectActions, dispatch)
-  })
-)(ProjectScreen);
+const mapDispatchToProps = (dispatch) => {
+  const projectActions = bindActionCreators(ProjectCreators, dispatch);
+  return {
+    projectActions
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectScreen);
+
+// export default connect(
+//   state => ({
+//     projects: Object.assign({}, state.default.projectReducer.projects),
+//     isTokenExpired: state.default.projectReducer.isTokenExpired
+//   }),
+//   dispatch => ({
+//     actions: bindActionCreators(projectActions, dispatch)
+//   })
+// )(ProjectScreen);
 
 /*
 function mapStateToProps(state) {

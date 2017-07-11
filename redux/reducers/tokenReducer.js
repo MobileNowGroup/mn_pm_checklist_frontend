@@ -4,7 +4,7 @@ const initialState = {
   isTokenExpired: false
 };
 
-export function tokenReducer(state = initialState, action) {
+let tokenReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.SET_TOKEN_STATE:
       return {
@@ -16,3 +16,5 @@ export function tokenReducer(state = initialState, action) {
       return state;
   }
 }
+
+export default tokenReducer;

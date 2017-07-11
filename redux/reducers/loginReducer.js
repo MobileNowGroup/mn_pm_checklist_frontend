@@ -4,7 +4,7 @@ const initialState = {
   userInfo: {}
 };
 
-export default function loginReducer(state = {}, action) {
+let loginReducer = (state = {}, action) => {
   switch (action.type) {
     case types.SET_USERINFO:
       return {
@@ -18,8 +18,5 @@ export default function loginReducer(state = {}, action) {
   }
 }
 
-export function test(state, action) {
-  return {
-    ...state
-  };
-}
+export default loginReducer;
+

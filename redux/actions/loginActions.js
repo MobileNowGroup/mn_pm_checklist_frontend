@@ -1,12 +1,13 @@
 import * as types from "./types";
 import axios from "axios";
 import * as tokenActions from "./tokenActions";
+import * as Api from '../../app/constant/api';
 
 // action creator
 export function login(name, password) {
   return (dispatch, getState) => {
     return axios
-      .post("http://119.23.47.185:4001/login", {
+      .post(Api.API_LOGIN, {
         username: name,
         password: password
       })
@@ -16,11 +17,13 @@ export function login(name, password) {
 }
 
 function handleLoginResponce(responce, dispatch) {
-  axios.defaults.headers.common["Access-Token"] = responce.data.Token;
+  console.log(responce.data.data.Token)
+  //将Token放入请求头
+  axios.defaults.headers.common["Access-Token"] = responce.data.data.Token;
 
   dispatch(tokenActions.setTokenState(false));
 
-  dispatch(setUserInfo({ userInfo: responce.data }));
+  dispatch(setUserInfo({ userInfo: responce.data.data }));
 }
 
 // action creator

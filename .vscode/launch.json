@@ -23,7 +23,7 @@
             "type": "reactnative",
             "request": "launch",
             "platform": "ios",
-            "target": "iPhone 7",
+            "target": "iPhone 6",
             "sourceMaps": true,
             "outDir": "${workspaceRoot}/.vscode/.react"
         },
