@@ -6,8 +6,11 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Picker,
-  TextInput
+  TextInput,
+  ScrollView,
+  Dimensions,
 } from "react-native";
+import ReactNative from 'react-native';
 
 import DatePicker from 'react-native-datepicker'
 import ToastUtil from '../tool/ToastUtil';
@@ -38,6 +41,7 @@ class New extends Component {
       date: timeTool.getNowFormatDate(),
     };
      this.nextBtnClick = this.nextBtnClick.bind(this);
+     this.scrollViewTo = this.scrollViewTo.bind(this);
   }
 
   componentWillMount() {
@@ -47,14 +51,43 @@ class New extends Component {
       projects: projects,
     })
   }
-
+  
+  /**
+   * 
+   * scrollView滑动到指定高度
+   * @param {any} event 
+   * @memberof New
+   */
+  scrollViewTo(event) {
+    let target = event.nativeEvent.target;
+    let scrollLength = 160;
+    this.refs.scroll.scrollTo({x: 0,y: scrollLength,animated: true});
+  }
+  
+  /**
+   * 
+   * 显示或隐藏选择项目的picker
+   * @param {bool} show 
+   * @memberof New
+   */
   showPicker(show) {
+    if (show == true) {
+      //隐藏键盘
+      const dismissKeyboard = require('dismissKeyboard');
+      dismissKeyboard()
+    }
+    
     this.setState({
       showPicker: show,
       showDatePicker: 0
     });
   }
-
+  /**
+   * 
+   * 显示或隐藏选择日期的picker
+   * @param {bool} show 
+   * @memberof New
+   */
   showDatePicker(show) {
     this.setState({
       showPicker: 0,
@@ -89,70 +122,80 @@ class New extends Component {
 
   render() {
     return (
-     <View style={styles.container}>
-        <View style={styles.rowContainer} >
-          <Text style={styles.subTitle}>选择app:</Text>
-          <TextInput
-            placeholder="请选择"
-            style={styles.textInput}
-            value={this.state.selectedName}
-            onTouchStart={() => this.showPicker(1)}
-          />
-        </View>
-        <View style={styles.rowContainer} >
-          <Text style={styles.subTitle}>输入标题:</Text>
-          <TextInput
-            style={styles.textInput}
-            onTouchStart={() => this.showPicker(0)}
-            onChangeText={(text) => {
-            this.state.releaseTitle = text;
-          }}
-          />
-        </View>
-        <View style={styles.rowContainer} >
-          <Text style={styles.subTitle}>输入版本号:</Text>
-          <TextInput
-            style={styles.textInput}
-            onTouchStart={() => this.showPicker(0)}
-            onChangeText={(text) => {
-            this.state.versionText = text;
-          }}
-          />
-        </View>
-        <View style={styles.rowContainer} >
-          <Text style={styles.subTitle}>选择发布日期:</Text>
-          <DatePicker 
-              style={{marginLeft: 0,width: 200 }} 
-              date={this.state.date}
-              mode='date'
-              placeholder='选择日期'
-              format='YYYY-MM-DD'
-              minDate={this.state.date}
-              confirmBtnText='确定'
-              cancelBtnText='取消'
-              onDateChange={(date) => {this.setState({date: date})}} 
-          />
-        </View>
-        <View style={styles.updateContainer} >
-         <Text style={styles.subTitle}>更新内容:</Text>
-          <TextInput
-            style={styles.textInputMutibleLine}
-            multiline={true}
-            onTouchStart={() => this.showPicker(0)}
-            onChangeText={(text) => {
-            this.state.updateText = text;
-          }}
-          />
-        </View>
-         <Button 
+      <ScrollView ref='scroll' keyboardShouldPersistTaps='always' style={styles.container}>
+        <View style={styles.content} onStartShouldSetResponderCapture={(event) => {
+          const target = event.nativeEvent.target;
+          if (target !== ReactNative.findNodeHandle(this.refs.updateInput)) {
+            this.refs.updateInput.blur();
+          }
+        }}>
+          <View style={styles.rowContainer}>
+            <Text style={styles.subTitle}>选择app:</Text>
+              <TextInput
+                placeholder="请选择"
+                style={styles.textInput}
+                value={this.state.selectedName}
+                onFocus={() => this.showPicker(1)}
+              />
+          </View>
+          <View style={styles.rowContainer} >
+            <Text style={styles.subTitle}>输入标题:</Text>
+              <TextInput
+                style={styles.textInput}
+                onTouchStart={() => this.showPicker(0)}
+                onChangeText={(text) => {
+                this.state.releaseTitle = text;
+                }}
+              />
+          </View>
+          <View style={styles.rowContainer} >
+            <Text style={styles.subTitle}>输入版本号:</Text>
+              <TextInput
+                style={styles.textInput}
+                onTouchStart={() => this.showPicker(0)}
+                keyboardType='decimal-pad'
+                onChangeText={(text) => {
+                this.state.versionText = text;
+                }}
+              />
+          </View>
+          <View style={styles.rowContainer} >
+            <Text style={styles.subTitle}>选择发布日期:</Text>
+              <DatePicker 
+                style={{marginLeft: 0,width: 170 }} 
+                date={this.state.date}
+                mode='date'
+                placeholder='选择日期'
+                format='YYYY-MM-DD'
+                minDate={this.state.date}
+                confirmBtnText='确定'
+                cancelBtnText='取消'
+                onDateChange={(date) => {this.setState({date: date})}} 
+              />
+          </View>
+          <View style={styles.updateContainer} >
+            <Text style={styles.subTitle}>更新内容:</Text>
+              <TextInput
+                style={styles.textInputMutibleLine}
+                ref = 'updateInput'
+                multiline={true}
+                onTouchStart={() => this.showPicker(0)}
+                onChangeText={(text) => {
+                this.state.updateText = text;
+                }}
+                onFocus={this.scrollViewTo}
+                onEndEditing={() => this.refs.scroll.scrollTo({x: 0,y: 0,animated: true})}
+            />
+          </View>
+          <Button 
             onPress={this.nextBtnClick}
             text='下一步'
             style={styles.buttonText}
             containerStyle={styles.buttonContainer}
          />
-        {this.state.showPicker === 1
+         {this.state.showPicker === 1
           ? <Picker
-              style={styles.pickerContainer}
+              style={styles.pickerContent}
                selectedValue={this.state.selectedName}
                onValueChange={(label,value,key) =>
                    this.setState({ selectedName: label,projectId: value })
@@ -166,7 +209,8 @@ class New extends Component {
                })}
               </Picker>
           : null} 
-      </View>
+          </View>
+      </ScrollView>
     );
   }
 }
@@ -176,6 +220,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f7f7f7",
+    height: Dimensions.get('window').height,
+  },
+  content: {
+    flex: 1,
+    backgroundColor: "#f7f7f7",
+    height: Dimensions.get('window').height,
   },
   rowContainer: {
     margin: 0,
@@ -197,8 +247,8 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     marginLeft: 20,
-    width: 110,
-    fontSize: 16,
+    width: 95,
+    fontSize: 14,
     textAlign: "left",
     color: '#404040',
   },
@@ -213,13 +263,17 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
   },
-  pickerContainer: {
-    padding: 0,
+  pickerContent: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: '#fff',
   },
   buttonContainer: {
     alignSelf: "stretch",
     margin: 20,
+    marginBottom: 0,
     padding: 20,
   },
   buttonText: {
@@ -233,6 +287,7 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     overflow: 'hidden',
     height: 42,
+    marginBottom: 0,
   },
 
 });

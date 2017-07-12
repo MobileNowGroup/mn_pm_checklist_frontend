@@ -1,22 +1,41 @@
 import axios from "axios";
 import * as types from "./types";
 import * as tokenActions from "./tokenActions";
+import * as Api from '../../app/constant/api';
 
-export function fetchProjects() {
-  return (dispatch, getState) => {
+export function fetchProjects(isLoading,isRefreshing) {
+  return dispatch => {
+    // 1.发出拉取数据的信号
+    dispatch(loadProjectData(isLoading,isRefreshing));
+      // 2.请求网络
     return axios
-      .get("http://119.23.47.185:4001/projects")
-      .then(responce => dispatch(setProjects(responce.data.data)))
+      .get(Api.API_PROJECT_LIST)
+      .then(responce => dispatch(receiveProjectData(responce.data.data)))
       .catch(error => tokenActions.handleError(dispatch, error));
   };
+}
+
+let loadProjectData = (isLoading,isRefreshing) => {
+    return {
+        type: types.LOAD_PROJECT_LIST,
+        isLoading: isLoading,
+        isRefreshing: isRefreshing,
+    }
+}
+
+let receiveProjectData = (projectList) => {
+    return {
+        type: types.SET_PROJECTS,
+        projects: projectList,
+    }
 }
 
 export function deleteProject(projectID, index) {
   return (dispatch, getState) => {
     let currentState = getState();
-    const { projects } = currentState.default.projectReducer;
+    const { projects } = currentState.Project;
     return axios
-      .delete("http://119.23.47.185:4001/projects/" + projectID)
+      .delete(API_DELETE_PROJECT + projectID)
       .then(responce =>
         handleDeleteProject(responce, dispatch, projects, index)
       )
@@ -51,9 +70,4 @@ function handleDeleteProject(responce, dispatch, projects, index) {
   }
 }
 
-export function setProjects(projects) {
-  return {
-    type: types.SET_PROJECTS,
-    projects
-  };
-}
+

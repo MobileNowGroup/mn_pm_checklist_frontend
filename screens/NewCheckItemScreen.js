@@ -7,25 +7,26 @@ import {
   Dimensions,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Alert
+  Alert,
+
 } from "react-native";
 import CheckBox from "react-native-check-box";
 import axios from "axios";
 import * as checkItemActions from "../redux/actions/checkItemActions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import ToastUtil from '../tool/ToastUtil';
+import Button from '../app/components/Button'
+import * as timeTool from "../tool/timeTool";
+import { commonstyles } from '../common/CommonStyles'
 
 class NewCheckItemScreen extends Component {
   static navigationOptions = props => {
     const { state, setParams } = props.navigation;
-    if (typeof state.params == "undefined") {
-      return {
-        title: "新建题目"
-      };
-    } else {
-      return {
-        title: "编辑题目"
-      };
+    return {
+      title: state.params == undefined 
+               ? "新建项目"
+               : "编辑项目"
     }
   };
 
@@ -107,34 +108,43 @@ class NewCheckItemScreen extends Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={styles.container}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="请输入名称"
-          placeholderTextColor="lightgray"
-          onChangeText={text => this.setState({ itemTitle: text })}
-          value={this.state.itemTitle}
-        />
-        <TextInput
-          style={styles.textView}
-          placeholder="请输入描述"
-          placeholderTextColor="lightgray"
-          multiline={true}
-          onChangeText={text => this.setState({ itemDesc: text })}
-          value={this.state.itemDesc}
-        />
-        <View style={styles.checkBoxContainer}>
-          <CheckBox
-            style={styles.checkbox}
-            onClick={() => this.onCheck()}
-            leftText="是否必需"
-            isChecked={this.state.isEssential}
-          />
+      <View style={styles.container}>
+        <View style={styles.rowContainer} >
+            <Text style={styles.subTitle}>输入标题:</Text>
+              <TextInput
+                style={styles.textInput}
+                onChangeText={(text) => {
+                this.state.itemTitle = text;
+                }}
+              />
+          </View>
+        <View style={styles.updateContainer} >
+            <Text style={styles.subTitle}>描述:</Text>
+              <TextInput
+                style={styles.textInputMutibleLine}
+                ref = 'updateInput'
+                multiline={true}
+                onChangeText={(text) => {
+                this.state.itemDesc = text;
+                }}
+            />
+          </View>
+          <View style={styles.checkBoxContainer}>
+            <CheckBox
+              style={styles.checkbox}
+              onClick={() => this.onCheck()}
+              leftText="是否必需"
+              isChecked={this.state.isEssential}
+              leftTextStyle={{color: '#404040',fontSize: 14}}
+            />
         </View>
-        <TouchableOpacity onPress={() => this.onOK()}>
-          <Text style={styles.okText}>{"确定"}</Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
+          <Button 
+            onPress={this.nextBtnClick}
+            text='保 存'
+            style={styles.buttonText}
+            containerStyle={styles.buttonContainer}
+         />
+      </View>
     );
   }
 }
@@ -143,70 +153,75 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    backgroundColor: "#fff"
+    // justifyContent: "flex-start",
+    // alignItems: "center",
+    backgroundColor: "#f4f4f4"
+  },
+  rowContainer: {
+    margin: 0,
+    flexDirection: "row",
+    alignItems: 'center',
+    backgroundColor: 'white',
+    height: 60,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#cccccc',
+  },
+  updateContainer: {
+    margin: 0,
+    flexDirection: "row",
+    alignItems: 'center',
+    backgroundColor: 'white',
+    height: 100,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#cccccc',
+  },
+  subTitle: {
+    marginLeft: 20,
+    width: 80,
+    fontSize: 14,
+    textAlign: "left",
+    color: '#404040',
   },
   textInput: {
-    height: 40,
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 40,
-    paddingLeft: 10,
-    borderRadius: 5,
-    borderColor: "gray",
-    borderWidth: 1
+    width: 200,
+    fontSize: 16,
   },
-  textView: {
+  textInputMutibleLine: {
     height: 100,
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 40,
-    paddingLeft: 10,
-    borderRadius: 5,
-    borderColor: "gray",
-    borderWidth: 1
+    width: 200,
+    fontSize: 16,
+    marginTop: 5,
+    marginBottom: 5,
   },
-  checkbox: {
-    // flex: 1,
-    padding: 0,
-    width: 100,
-    height: 60
-    // backgroundColor: "#383748"
-    // justifyContent: "flex-start"
-    // height: 60
-  },
-  checkBoxContainer: {
-    // flex: 1,
-    // justifyContent: "flex-start",
-    // alignItems: "flex-start",
-    width: Dimensions.get("window").width - 40,
-    height: 60,
-    // marginLeft: 20,
-    // marginRight: 20,
-    // backgroundColor: "#142523",
-    marginTop: 10
-  },
-  okButton: {
+  buttonContainer: {
     alignSelf: "stretch",
     margin: 20,
+    marginBottom: 0,
     padding: 20,
-    backgroundColor: "blue",
-    borderWidth: 1,
-    borderColor: "#fff",
-    backgroundColor: "rgba(255, 255, 255, 0.6)"
   },
-  okText: {
-    width: Dimensions.get("window").width - 40,
-    height: 40,
-    fontSize: 16,
-    fontWeight: "bold",
+  buttonText: {
+    justifyContent: 'center',
+    paddingTop: 12,
+    fontSize: 15,
     textAlign: "center",
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 8,
-    borderColor: "black"
-  }
+    backgroundColor: '#78e9ff',
+    color: '#3f7a86',
+    //设置圆角
+    borderRadius: 21,
+    overflow: 'hidden',
+    height: 42,
+    marginBottom: 0,
+  },
+  checkBoxContainer: {
+    height: 30,
+    marginLeft: 20,
+    marginTop: 10,
+  },
+  checkbox: {
+    padding: 0,
+    width: 100,
+    height: 30,
+  },
 });
 
 // export default NewCheckItemScreen;

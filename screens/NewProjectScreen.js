@@ -14,39 +14,45 @@ import axios from "axios";
 import * as projectActions from "../redux/actions/projectActions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import Button from '../app/components/Button';
+import ToastUtil from '../tool/ToastUtil';
 
 class NewProjectScreen extends Component {
-  static navigationOptions = {
-    title: "新建项目"
-  };
   static navigationOptions = props => {
     const { state, setParams } = props.navigation;
-    if (typeof state.params == "undefined") {
-      return {
-        title: "新建项目"
-      };
-    } else {
-      return {
-        title: "编辑项目"
-      };
+    return {
+      title: state.params == undefined 
+               ? "新建项目"
+               : "编辑项目"
     }
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      projectName: typeof this.props.navigation.state.params == "undefined"
-        ? ""
-        : this.props.navigation.state.params.project.ProjectName
+      projectName: ''
     };
-    this.handleNewProjectSuccess = this.handleNewProjectSuccess.bind(this);
+    this._handleResult = this._handleResult.bind(this);
+    this._save = this._save.bind(this);
   }
 
-  componentWillMount() {}
+  componentDidMount() {
+    //获取上个页面的传值
+    this.setState({
+      projectName: this.props.navigation.state.params === undefined
+                     ? ""
+                     : this.props.navigation.state.params.project.ProjectName
+    })
+  }
 
-  onOK() {
+  /**
+   * 
+   * 保存
+   * @memberof NewProjectScreen
+   */
+  _save() {
     if (this.state.projectName.length == 0) {
-      Alert.alert("请输入名称");
+      ToastUtil.showShort('请输入项目名');
       return;
     }
 
@@ -65,20 +71,19 @@ class NewProjectScreen extends Component {
           this.props.navigation.state.params.project.ProjectId,
           body
         )
-        .then(responce => this.handleNewProjectSuccess(responce));
+        .then(responce => this._handleResult(responce));
       // .catch(error => console.log(error));
     }
 
-    /*
-    let url = "http://119.23.47.185:4001/checkitem";
-    axios
-      .post(url, body)
-      .then(responce => console.log(responce))
-      .catch(error => console.log(error));
-      */
   }
-
-  handleNewProjectSuccess(responce) {
+  
+  /**
+   * 
+   * 处理返回结果
+   * @param {any} response 
+   * @memberof NewProjectScreen
+   */
+  _handleResult(response) {
     if (typeof responce == "undefined") {
       return;
     }
@@ -87,25 +92,28 @@ class NewProjectScreen extends Component {
     ]);
   }
 
+
   render() {
     return (
-      <KeyboardAvoidingView style={styles.container}>
-        <TextInput
-          maxLength={50}
-          style={styles.textInput}
-          placeholder="请输入名称"
-          value={this.state.projectName}
-          onChangeText={text => this.setState({ projectName: text })}
-          
+      <View style={styles.container}>
+        <View style={styles.nameInputContainer} >
+            <Text style={styles.subTitle}>输入项目名:</Text>
+              <TextInput
+                placeholder='项目名称'
+                style={styles.textInput}
+                value={this.state.projectName}
+                onChangeText={(text) => {
+                this.state.projectName = text;
+                }}
+              />
+          </View>
+          <Button 
+            onPress={this._save}
+            text='保 存'
+            style={styles.buttonText}
+            containerStyle={styles.buttonContainer}
         />
-        <TouchableOpacity
-          // style={styles.okButton}
-          //   underlayColor="#763563"
-          onPress={() => this.onOK()}
-        >
-          <Text style={styles.okText}>{"确定"}</Text>
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
+      </View>
     );
   }
 }
@@ -113,32 +121,31 @@ class NewProjectScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    backgroundColor: "#fff"
+    backgroundColor: "#f4f4f4"
+  },
+  nameInputContainer: {
+    margin: 0,
+    marginTop: 5,
+    flexDirection: "row",
+    alignItems: 'center',
+    backgroundColor: 'white',
+    height: 60,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#cccccc',
+    borderTopColor: '#cccccc',
   },
   textInput: {
-    height: 40,
-    marginLeft: 20,
-    marginRight: 20,
-    marginTop: 40,
-    marginBottom: 40,
-    paddingLeft: 10,
-    borderRadius: 8,
-    borderColor: "gray",
-    borderWidth: 1
+    width: 200,
+    fontSize: 16,
   },
-  textView: {
-    height: 100,
+  subTitle: {
     marginLeft: 20,
-    marginRight: 20,
-    marginTop: 40,
-    paddingLeft: 10,
-    borderRadius: 5,
-    borderColor: "gray",
-    borderWidth: 1
+    width: 95,
+    fontSize: 14,
+    textAlign: "left",
+    color: '#404040',
   },
+ 
   checkbox: {
     // flex: 1,
     padding: 0,
@@ -159,27 +166,25 @@ const styles = StyleSheet.create({
     // backgroundColor: "#142523",
     marginTop: 10
   },
-  okButton: {
+  buttonContainer: {
     alignSelf: "stretch",
-    margin: 20,
-    padding: 20,
-    backgroundColor: "blue",
-    borderWidth: 1,
-    borderColor: "#fff",
-    backgroundColor: "rgba(255, 255, 255, 0.6)"
+    margin: 10,
+    marginTop: 5,
+    marginBottom: 10,
+    padding: 15,
   },
-  okText: {
-    width: Dimensions.get("window").width - 40,
-    height: 40,
-    fontSize: 16,
-    fontWeight: "bold",
+  buttonText: {
+    justifyContent: 'center',
+    paddingTop: 12,
+    fontSize: 15,
     textAlign: "center",
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 8,
-    borderColor: "black"
-    // backgroundColor: "blue"
-  }
+    backgroundColor: '#78e9ff',
+    color: '#3f7a86',
+    //设置圆角
+    borderRadius: 21,
+    overflow: 'hidden',
+    height: 42,
+  },
 });
 
 // export default NewCheckItemScreen;

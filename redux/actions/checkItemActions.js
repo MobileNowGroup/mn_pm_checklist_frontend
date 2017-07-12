@@ -48,10 +48,10 @@ let loadCheckitemData = (isLoading) => {
   }
 }
 
-let receiveCheckitemData = (checkItems) => {
+let receiveCheckitemData = (checkItemList) => {
   return {
     type: types.GET_CHECKITEM_LIST,
-    checkItems,
+    checkItems: checkItemList,
   }
 }
 
@@ -61,7 +61,7 @@ export function deleteCheckItem(itemID, index) {
     let currentState = getState();
     const { checkItems } = currentState.default.checkItemsReducer;
     return axios
-      .delete("http://119.23.47.185:4001/checkitem/" + itemID)
+      .delete(API_DELETE_CHECKITEM + itemID)
       .then(responce => handleDeleteItem(responce, dispatch, checkItems, index))
       .catch(error => tokenActions.handleError(dispatch, error));
   };
