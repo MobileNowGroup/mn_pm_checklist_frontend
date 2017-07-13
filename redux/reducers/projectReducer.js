@@ -4,6 +4,9 @@ const initialState = {
   projects: [],
   isRefreshing: false,
   isLoading: false,
+  deleteResult: null,
+  createResult: null,
+  editResult: null,
 };
 
 let projectReducer = (state = initialState, action) => {
@@ -12,13 +15,44 @@ let projectReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         isRefreshing: action.isRefreshing,
         loading: action.isLoading,
+        deleteResult: null,
+        createResult: null,
+        editResult: null,
       });
     case types.SET_PROJECTS:
       return Object.assign({}, state, {
         isRefreshing: false,
         isLoading: false,
         projects: action.projects,
+        deleteResult: null,
+        createResult: null,
+        editResult: null,
       });
+    case types.DELETE_PROJECT:
+       return Object.assign({}, state, {
+        isRefreshing: false,
+        isLoading: false,
+        deleteResult: action.deleteResult,
+        createResult: null,
+        editResult: null,
+      }); 
+    case types.CREATE_PROJECT:
+       return Object.assign({}, state, {
+        isRefreshing: false,
+        isLoading: false,
+        deleteResult: null,
+        createResult: action.createResult,
+        editResult: null,
+      }); 
+    case types.EDIT_PROJECT:
+       return Object.assign({}, state, {
+        isRefreshing: false,
+        isLoading: false,
+        deleteResult: null,
+        createResult: null,
+        editResult: action.editResult,
+      });
+    
     default:
       return state;
   }

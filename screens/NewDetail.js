@@ -1,6 +1,16 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Alert, ListView,TouchableOpacity,Image,Dimensions,DeviceEventEmitter } from "react-native";
-import axios from "axios";
+import {
+   View,
+   Text, 
+   StyleSheet, 
+   Alert, 
+   ListView,
+   TouchableOpacity,
+   Image,
+   Dimensions,
+   DeviceEventEmitter 
+} from "react-native";
+
 import SegmentedControlTab from "react-native-segmented-control-tab";
 import Loading from '../app/components/Loading';
 import Button from '../app/components/Button';
@@ -8,7 +18,6 @@ import * as timeTool from "../tool/timeTool";
 import ToastUtil from '../tool/ToastUtil';
 import { commonstyles } from '../common/CommonStyles'
 import * as Api from '../app/constant/api';
-//import { checkItem } from  '../redux/actions/checkItemActions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as DetailCreators from '../redux/actions/checkItemActions';
@@ -145,7 +154,7 @@ class NewDetail extends Component {
          this.props.navigation.goBack(parentKey);
       },500);
     }else {
-      this.timer =  setTimeout(() => {
+      this.timer = setTimeout(() => {
         ToastUtil.showShort('保存失败，请重试')
       },500);
     }

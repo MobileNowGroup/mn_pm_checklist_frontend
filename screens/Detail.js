@@ -177,7 +177,7 @@ class Detail extends Component {
     const { detailActions } = this.props;
     detailActions
      .deleteRelease(this.state.releaseId,true)
-     .then(response => this.handlePublishResult(response))
+     .then(response => this.handleDeleteResult(response))
 
   }
 
@@ -191,7 +191,7 @@ class Detail extends Component {
     this.setState({
       isLoading: response.isLoading
     })
-    if (response.editResult == true) {
+    if (response.deleteResult == true) {
         //发送刷新列表成功的通知
       DeviceEventEmitter.emit('RefreshNotification');
       this.timer =  setTimeout(() => {

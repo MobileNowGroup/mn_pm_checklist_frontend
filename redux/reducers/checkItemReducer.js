@@ -7,6 +7,9 @@ const initialState = {
   checkItems: [],
   isLoading: true,
   addResult: null,
+  deleteResult: null,
+  editResult: null,
+  createResult: null,
 };
 
 let checkItemsReducer = (state = initialState, action) => {
@@ -15,17 +18,26 @@ let checkItemsReducer = (state = initialState, action) => {
             return Object.assign({}, state, {
                 isLoading: action.isLoading,
                 addResult: null,
+                deleteResult: null,
+                editResult: null,
+                createResult: null,
             });
         case types.GET_CHECKITEM_LIST:
             return Object.assign({}, state, {
                 isLoading: false,
                 checkItems: action.checkItems,
                 addResult: null,
+                deleteResult: null,
+                editResult: null,
+                createResult: null,
             });
          case types.ADD_RELEASE:
             return Object.assign({}, state, {
                 addResult: action.addResult,
                 isLoading: action.isLoading,
+                deleteResult: null,
+                editResult: null,
+                createResult: null,
             });
         default:
             return state;

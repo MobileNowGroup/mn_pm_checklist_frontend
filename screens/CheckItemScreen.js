@@ -3,33 +3,30 @@ import {
   View,
   Text,
   StyleSheet,
-  Button,
   ListView,
+  Dimensions,
   TouchableOpacity,
-  Swipeout,
-  TouchableHighlight,
   Image,
+  TouchableHighlight,
   RefreshControl,
 } from "react-native";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
+
 import NewCheckItemScreen from "./NewCheckItemScreen";
-import * as DetailCreators from '../redux/actions/checkItemActions';
-import { commonstyles } from '../common/CommonStyles';
-import * as timeTool from "../tool/timeTool";
+import Swipeout from "react-native-swipeout";
 import Loading from '../app/components/Loading';
+import * as timeTool from "../tool/timeTool";
+import ToastUtil from '../tool/ToastUtil';
+import { commonstyles } from '../common/CommonStyles'
+import * as Api from '../app/constant/api';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as DetailCreators from '../redux/actions/checkItemActions';
 
 /**
  * 初始化状态
  */
-let isLoading = false;
 let isRefreshing = false;
-
-let flag = false;
-let flag2 = false;
-let number = 0;
-let first = null;
-
+let deleteIndex = -1;
 
 
 class CheckItemScreen extends Component {
@@ -56,6 +53,7 @@ class CheckItemScreen extends Component {
     super(props);
 
     this.state = {
+      isLoading: true,
       checkItemData: [],
       dataSource: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2
@@ -65,17 +63,32 @@ class CheckItemScreen extends Component {
     this.setDataSource = this.setDataSource.bind(this);
     this.renderItem = this.renderItem.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
-    this.itemOnPress = this.itemOnPress.bind(timeTool);
+    this.itemOnPress = this.itemOnPress.bind(this);
+    this.loadData = this.loadData.bind(this);
+    this.onRefresh  = this.onRefresh.bind(this);
   }
 
   componentDidMount() {
      //绑定导航栏右侧按钮的点击事件
     this.props.navigation.setParams({ handleNew: this.new });
     // 加载题目列表
+    this.loadData();
+  }
+
+  /**
+   * 
+   * 加载列表
+   * @memberof CheckItemScreen
+   */
+  loadData() {
+    this.setState({
+      isLoading: true,
+    });
     const { detailActions } = this.props;
     detailActions
-      .checkItem(isLoading)
-      .then(response => this.setDataSource(response))
+      .checkItem(this.state.isLoading)
+      .then(response => this.setDataSource(response.checkItems))
+
   }
   
   /**
@@ -93,27 +106,23 @@ class CheckItemScreen extends Component {
    * @param {array} checkItems 
    * @memberof CheckItemScreen
    */
-  setDataSource(response) {
+  setDataSource(checkItems) {
 
-    isLoading = false;
-    
-    if (response.checkItems.length !== 0) {
-      flag = true;
-      number = response.checkItems.length;
-      first = response.checkItems[5];
-    }
+    isRefreshing = false;
+    let tempItems = JSON.parse(JSON.stringify(checkItems));
 
-    // this.setState({
-    //   checkItemData: response.checkItems,
-    //   dataSource: this.state.dataSource.cloneWithRows(response.checkItems)
-    // });
+    this.setState({
+      isLoading: false,
+      checkItemData: tempItems,
+      dataSource: this.state.dataSource.cloneWithRows(tempItems),
+    });
   }
 
-  componentWillReceiveProps(nextProps) {
-    // if (nextProps.checkItems !== this.props.checkItems) {
-    //   this.setSource(nextProps.checkItems);
-    // }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   // if (nextProps.checkItems !== this.props.checkItems) {
+  //   //   this.setSource(nextProps.checkItems);
+  //   // }
+  // }
   
   /**
    * 下拉刷新
@@ -121,13 +130,16 @@ class CheckItemScreen extends Component {
    * @memberof CheckItemScreen
    */
   onRefresh() {
-    isLoading = false;
+   
+    this.setState({
+      isLoading: false,
+    })
     isRefreshing = true;
 
      //加载题目列表
     const { detailActions } = this.props;
     detailActions
-      .checkItem(isLoading)
+      .checkItem(this.state.isLoading)
       .then(response => this.setDataSource(response.checkItems))
 
   }
@@ -140,10 +152,50 @@ class CheckItemScreen extends Component {
    * @memberof CheckItemScreen
    */
   deleteItem(itemData,rowId) {
+    deleteIndex = parseInt(rowId);
+    this.setState({
+      isLoading: true,
+    })
     const { detailActions } = this.props;
     detailActions
-      .deleteCheckItem(itemData.ItemId,rowId)
-      .then(response => this.setDataSource(response.checkItems))
+      .deleteCheckItem(itemData.ItemId,this.state.isLoading)
+      .then(response => this.handleDeleteResult(response))
+      .catch(error => this.showError(error));
+  }
+
+  /**
+   * 处理删除单元格的返回结果
+   * @param {any} response 
+   * @memberof CheckItemScreen
+   */
+  handleDeleteResult(response) {
+    console.log('deleteIndex: ' + deleteIndex);
+    const { CheckItem } = this.props;
+    //如果操作成功
+    if (response.deleteResult === true && deleteIndex !== -1 && deleteIndex < CheckItem.checkItems.length) {
+      //删除数据源，并刷新列表
+      CheckItem.checkItems.splice(deleteIndex, 1);
+      this.setDataSource(CheckItem.checkItems);
+      deleteIndex = -1;
+    }else {
+      ToastUtil.showShort('删除失败，请重试');
+    }
+
+  }
+  
+  /**
+   * 
+   * 显示错误信息
+   * @param {any} error 
+   * @memberof CheckItemScreen
+   */
+  showError(error) {
+    //停止加载动画
+    this.setState({
+      isLoading: false,
+    })
+    //显示错误信息
+    ToastUtil.showShort(error)
   }
   
   /**
@@ -164,21 +216,20 @@ class CheckItemScreen extends Component {
    * @param {any} itemData 
    * @memberof CheckItemScreen
    */
-  // renderItem() {
-  //   return <View style={{height: 30,backgroundColor: 'red'}} />
-  // }
+  renderItem(itemData,sectionId,rowId) {
+    console.log('itemTitle:  ' + itemData.ItemTitle);
 
-  renderItem(itemData,rowID) {
-    let swipeBtns = [
+     let swipeBtns = [
       {
         text: "删除",
         backgroundColor: "red",
         underlayColor: "rgba(0, 0, 0, 0.6)",
         onPress: () => {
-          this.deleteItem(itemData,rowID);
+          this.deleteItem(itemData,rowId);
         }
       }
     ];
+
     return (
       <Swipeout
         buttonWidth={60}
@@ -188,19 +239,17 @@ class CheckItemScreen extends Component {
       >
         <TouchableHighlight
           underlayColor="lightgray"
-          onPress={this.itemOnPress}
+          onPress={() => this.itemOnPress(itemData)}
         >
           <View style={styles.itemContainer}>
-            <Text style={styles.itemText} numberOfLines={1}>
-              {itemData.ItemTitle}
-            </Text>
+            <Text style={styles.itemText} numberOfLines={1}>{itemData.ItemTitle}</Text>
             <Text style={styles.itemSubText}>
-              {"更新时间时间：" +
-                timeTool.formatTimeString(itemData.UpdatedAt)}
+              是否必须: {itemData.IsMandatory === 1 
+                         ? <Text style={{color: '#f47411'}} >是</Text>
+                         : <Text style={{color: '#666'}} >否</Text>
+                       } 
             </Text>
-            <Text style={styles.itemSubText}>
-              {"是否必须：" + (Boolean(itemData.IsMandatory) ? "是" : "否")}
-            </Text>
+            <Text style={styles.itemTimeText}>{"更新时间时间：" + timeTool.formatTimeString(itemData.UpdatedAt)} </Text>
           </View>
         </TouchableHighlight>
       </Swipeout>
@@ -211,13 +260,15 @@ class CheckItemScreen extends Component {
   加载动画
   */
   renderLoading() {
-    return <Loading visible={isLoading} size='large' color='white'/>;
+    return <Loading visible={this.state.isLoading} size='large' color='white'/>;
   }
 
   render() {
+
+    console.log("length:  " + this.state.checkItemData.length);
+
     return (
       <View style={styles.container}>
-       {this.renderLoading()}
        <ListView
           style={styles.list}
           enableEmptySections
@@ -260,23 +311,36 @@ const styles = StyleSheet.create({
   itemContainer: {
     flex: 1,
     padding: 0,
-    height: 80,
+   // height: 80,
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "flex-start"
   },
   itemText: {
-    height: 25,
-    marginLeft: 12,
+    marginLeft: 15,
+    marginRight: 15,
     fontSize: 16,
-    marginTop: 10,
+    marginTop: 5,
+    color: '#333',
   },
-  itemSubText: {
+  itemTimeText: {
     fontSize: 12,
-    marginLeft: 12,
-    marginTop: 2,
-    color: "gray"
-  }
+    marginLeft: 15,
+    marginTop: 5,
+    color: "#999",
+    marginBottom: 5,
+  },
+ 
+  itemSubText: {
+    fontSize: 14,
+    marginLeft: 15,
+    marginTop: 5,
+    color: "#666",
+  },
+
+  refreshControlBase: {
+    backgroundColor: 'transparent'
+  },
 });
 
 const mapStateToProps = (state) => {

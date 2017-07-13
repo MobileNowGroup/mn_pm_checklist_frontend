@@ -57,6 +57,7 @@ class Login extends Component {
   }
 
   login() {
+    
     if (this.state.userName.length < 6) {
       Alert.alert("温馨提醒", "用户名必须大于6位!");
       return;
@@ -64,6 +65,7 @@ class Login extends Component {
       Alert.alert("温馨提醒", "密码必须大于6位!");
       return;
     }
+    console.log('登录了登录了');
     // console.log("this props are " + this.props.login());
     this.setState({animating:true})
     this.props

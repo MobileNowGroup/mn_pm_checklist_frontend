@@ -32,23 +32,29 @@ class NewCheckItemScreen extends Component {
 
   constructor(props) {
     super(props);
-    if (typeof this.props.navigation.state.params == "undefined") {
-      this.state = {
+    this.state = {
         isEssential: false,
         itemTitle: "",
         itemDesc: ""
-      };
-    } else {
-      this.state = {
-        isEssential: Boolean(
-          this.props.navigation.state.params.checkItem.IsMandatory
-        ),
-        itemTitle: this.props.navigation.state.params.checkItem.ItemTitle,
-        itemDesc: this.props.navigation.state.params.checkItem.ItemDesc
-      };
-    }
+    };
+    // if (typeof this.props.navigation.state.params == "undefined") {
+    //   this.state = {
+    //     isEssential: false,
+    //     itemTitle: "",
+    //     itemDesc: ""
+    //   };
+    // } else {
+    //   this.state = {
+    //     isEssential: Boolean(
+    //       this.props.navigation.state.params.checkItem.IsMandatory
+    //     ),
+    //     itemTitle: this.props.navigation.state.params.checkItem.ItemTitle,
+    //     itemDesc: this.props.navigation.state.params.checkItem.ItemDesc
+    //   };
+    // }
 
     this.handleNewCheckItemSuccess = this.handleNewCheckItemSuccess.bind(this);
+    this.save = this.save.bind(this);
   }
 
   onCheck() {
@@ -56,14 +62,20 @@ class NewCheckItemScreen extends Component {
       isEssential: !this.state.isEssential
     });
   }
-
-  onOK() {
-    if (this.state.itemTitle.length == 0) {
-      Alert.alert("请输入名称");
+  
+  /**
+   * 完成
+   * 
+   * @returns 
+   * @memberof NewCheckItemScreen
+   */
+  save() {
+    if (this.state.itemTitle.length == 0 || this.state.itemTitle.replace(/\s+/g, '') === '') {
+      ToastUtil.showShort('请输入标题');
       return;
     }
-    if (this.state.itemDesc.length == 0) {
-      Alert.alert("请输入描述");
+    if (this.state.itemDesc.length == 0 || this.state.itemDesc.replace(/\s+/g, '') === '') {
+      ToastUtil.showShort('请输入描述');
       return;
     }
     var body = {
@@ -139,7 +151,7 @@ class NewCheckItemScreen extends Component {
             />
         </View>
           <Button 
-            onPress={this.nextBtnClick}
+            onPress={this.save}
             text='保 存'
             style={styles.buttonText}
             containerStyle={styles.buttonContainer}

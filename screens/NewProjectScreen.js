@@ -7,7 +7,8 @@ import {
   Dimensions,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Alert
+  Alert,
+  DeviceEventEmitter,
 } from "react-native";
 import CheckBox from "react-native-check-box";
 import axios from "axios";
@@ -16,6 +17,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Button from '../app/components/Button';
 import ToastUtil from '../tool/ToastUtil';
+import Loading from '../app/components/Loading';
 
 class NewProjectScreen extends Component {
   static navigationOptions = props => {
@@ -30,19 +32,28 @@ class NewProjectScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       projectName: ''
     };
     this._handleResult = this._handleResult.bind(this);
     this._save = this._save.bind(this);
+    this.renderLoading = this.renderLoading.bind(this);
+    this._showError = this._showError.bind(this);
   }
 
   componentDidMount() {
+    const { params } = this.props.navigation.state
     //获取上个页面的传值
     this.setState({
-      projectName: this.props.navigation.state.params === undefined
+      projectName: params === undefined
                      ? ""
-                     : this.props.navigation.state.params.project.ProjectName
+                     : params.project.ProjectName
     })
+  }
+
+  componentWillUnmount() {
+     //清空定时器
+    clearTimeout(this.timer);
   }
 
   /**
@@ -51,31 +62,41 @@ class NewProjectScreen extends Component {
    * @memberof NewProjectScreen
    */
   _save() {
-    if (this.state.projectName.length == 0) {
+
+    if (this.state.projectName.length == 0 || this.state.projectName.replace(/\s+/g, '') === '') {
       ToastUtil.showShort('请输入项目名');
       return;
     }
+  
+    const { params } = this.props.navigation.state;
+    const { actions } = this.props;
 
-    var body = {
+    let body = {
       ProjectName: this.state.projectName,
       ProjectCode: this.state.projectName
     };
+    //显示加载动画
+    this.setState({
+      isLoading: true,
+    })
 
-    if (typeof this.props.navigation.state.params == "undefined") {
-      this.props.actions
-        .newProject(body)
-        .then(responce => this.handleNewProjectSuccess(responce));
+    if (params === undefined) {
+      //创建项目
+      actions
+        .newProject(body,this.state.isLoading)
+        .then(responce => this._handleResult(responce))
+        .catch(error => this._showError(error));
+
     } else {
-      this.props.actions
-        .updateProject(
-          this.props.navigation.state.params.project.ProjectId,
-          body
-        )
-        .then(responce => this._handleResult(responce));
-      // .catch(error => console.log(error));
+      //编辑项目
+      actions
+        .updateProject(params.project.ProjectId,body,this.state.isLoading)
+        .then(responce => this._handleResult(responce))
+        .catch(error => this._showError(error));
     }
 
   }
+
   
   /**
    * 
@@ -84,18 +105,47 @@ class NewProjectScreen extends Component {
    * @memberof NewProjectScreen
    */
   _handleResult(response) {
-    if (typeof responce == "undefined") {
-      return;
+    this.setState({
+      isLoading: false,
+    })
+    if (response.editResult === true || response.createResult === true) {
+        //发送刷新项目列表成功的通知
+      DeviceEventEmitter.emit('ProjectRefreshNotification');
+      this.timer =  setTimeout(() => {
+         ToastUtil.showShort('操作成功');
+         this.props.navigation.goBack();
+      },500);
+    }else {
+        ToastUtil.showShort('操作失败，请重试');
     }
-    Alert.alert("Success", "", [
-      { text: "OK", onPress: () => this.props.navigation.goBack() }
-    ]);
   }
 
+   /**
+   * 
+   * 显示错误信息
+   * @param {any} error 
+   * @memberof NewProjectScreen
+   */
+  _showError(error) {
+    //停止加载动画
+    this.setState({
+      isLoading: false,
+    })
+    //显示错误信息
+    ToastUtil.showShort(error);
+  }
+
+  /*
+  加载动画
+  */
+  renderLoading() {
+    return <Loading visible={this.state.isLoading} size='large' color='white'/>;
+  }
 
   render() {
     return (
       <View style={styles.container}>
+      {this.renderLoading()}
         <View style={styles.nameInputContainer} >
             <Text style={styles.subTitle}>输入项目名:</Text>
               <TextInput
@@ -103,7 +153,9 @@ class NewProjectScreen extends Component {
                 style={styles.textInput}
                 value={this.state.projectName}
                 onChangeText={(text) => {
-                this.state.projectName = text;
+                  this.setState({
+                    projectName: text,
+                  });
                 }}
               />
           </View>

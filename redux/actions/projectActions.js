@@ -23,6 +23,10 @@ let loadProjectData = (isLoading,isRefreshing) => {
     }
 }
 
+/**
+ * 接收list数据
+ * @param {array} projectList 
+ */
 let receiveProjectData = (projectList) => {
     return {
         type: types.SET_PROJECTS,
@@ -30,38 +34,142 @@ let receiveProjectData = (projectList) => {
     }
 }
 
-export function deleteProject(projectID, index) {
-  return (dispatch, getState) => {
-    let currentState = getState();
-    const { projects } = currentState.Project;
+/**
+ * 
+ * 删除project
+ * @export
+ * @param {int} projectID 
+ * @param {bool} isLoading 
+ * @returns 
+ */
+export function deleteProject(projectID,isLoading) {
+  return dispatch => {
+    // 1.发出开始操作数据的信号
+    dispatch(loadProjectData(isLoading,false));
     return axios
-      .delete(API_DELETE_PROJECT + projectID)
-      .then(responce =>
-        handleDeleteProject(responce, dispatch, projects, index)
-      )
-      .catch(error => tokenActions.handleError(dispatch, error));
+      .delete(Api.API_DELETE_PROJECT + projectID)
+      .then(response => dispatch(receiveDeleteResult(response.data.data)))
+      .catch(error => dispatch(handleDeleteError(dispatch, error)));
   };
 }
 
-export function updateProject(projectID, body) {
-  return (dispatch, getState) => {
-    let url = "http://119.23.47.185:4001/projects/" + projectID;
+/**
+ * 接收删除project的结果
+ * @param {bool} result 
+ */
+let receiveDeleteResult = (result) => {
+  return {
+    type: types.DELETE_PROJECT,
+    isLoading: false,
+    deleteResult: result,
+  }
+}
+
+/**
+ * 处理删除project报错
+ * @param {*} dispatch 
+ * @param {*} error 
+ */
+let handleDeleteError = (dispatch,error) => {
+  tokenActions.handleError(dispatch, error)
+  return {
+    type: types.DELETE_PROJECT,
+    deleteResult: false,
+    isLoading: false,
+  }
+}
+
+/**
+ * 
+ * 更新project
+ * @export
+ * @param {any} projectID 
+ * @param {any} body 
+ * @returns 
+ */
+export function updateProject(projectID, body,isLoading) {
+  return dispatch => {
+      // 1.发出开始操作数据的信号
+    dispatch(loadProjectData(isLoading,false));
+    let url = Api.API_EDIT_PROJECT + projectID;
     return axios
       .put(url, body)
-      .then(responce => dispatch(fetchProjects()))
-      .catch(error => tokenActions.handleError(dispatch, error));
+      .then(response => dispatch(receiveEditResult(response.data.data)))
+      .catch(error => dispatch(handleEditError(dispatch, error)));
   };
 }
 
-export function newProject(body) {
-  return (dispatch, getState) => {
-    let url = "http://119.23.47.185:4001/projects";
+/**
+ * 接收编辑project的结果
+ * @param {bool} result 
+ */
+let receiveEditResult = (result) => {
+  return {
+    type: types.EDIT_PROJECT,
+    isLoading: false,
+    editResult: result,
+  }
+}
+
+/**
+ * 处理编辑project报错
+ * @param {*} dispatch 
+ * @param {*} error 
+ */
+let handleEditError = (dispatch,error) => {
+  tokenActions.handleError(dispatch, error)
+  return {
+    type: types.EDIT_PROJECT,
+    editResult: false,
+    isLoading: false,
+  }
+}
+
+/**
+ * 
+ * 创建project
+ * @export
+ * @param {any} body 
+ * @returns 
+ */
+export function newProject(body,isLoading) {
+  return dispatch => {
+    let url = Api.API_CREATE_PROJECT;
+      // 1.发出开始操作数据的信号
+    dispatch(loadProjectData(isLoading,false));
     return axios
       .post(url, body)
-      .then(responce => dispatch(fetchProjects()))
-      .catch(error => tokenActions.handleError(dispatch, error));
+      .then(response => dispatch(receiveCreateResult(response.data.data)))
+      .catch(error => dispatch(handleCreateError(dispatch, error)));
   };
 }
+
+/**
+ * 接收创建project的结果
+ * @param {bool} result 
+ */
+let receiveCreateResult = (result) => {
+  return {
+    type: types.CREATE_PROJECT,
+    isLoading: false,
+    createResult: result,
+  }
+}
+
+/**
+ * 处理编辑project报错
+ * @param {*} dispatch 
+ * @param {*} error 
+ */
+let handleCreateError = (dispatch,error) => {
+  tokenActions.handleError(dispatch, error)
+  return {
+    type: types.CREATE_PROJECT,
+    createResult: false,
+    isLoading: false,
+  }
+}
+
 
 function handleDeleteProject(responce, dispatch, projects, index) {
   if (responce.status == 200) {

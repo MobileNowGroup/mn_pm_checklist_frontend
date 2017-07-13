@@ -86,6 +86,7 @@ class Home extends Component {
       .get(Api.API_PROJECT_LIST)
       .then(response => this.setProjects(response.data.data))
       .catch(error => console.log(error));
+      
       //监听保存成功的通知
       this.subscription = DeviceEventEmitter.addListener('RefreshNotification', () => {
          //在收到通知后刷新当前显示的列表 

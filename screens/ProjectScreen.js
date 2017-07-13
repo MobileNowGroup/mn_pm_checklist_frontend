@@ -10,6 +10,7 @@ import {
   Image,
   TouchableHighlight,
   RefreshControl,
+  DeviceEventEmitter,
 } from "react-native";
 import { bindActionCreators } from "redux";
 import * as ProjectCreators from "../redux/actions/projectActions";
@@ -21,11 +22,11 @@ import { commonstyles } from '../common/CommonStyles';
 import Swipeout from "react-native-swipeout";
 import * as timeTool from "../tool/timeTool";
 import Loading from '../app/components/Loading';
+import ToastUtil from '../tool/ToastUtil';
 
 /**
  * 初始化状态
  */
-let isLoading = true;
 let isRefreshing = false;
 /**
  * 记录当前将要删除的item的位置
@@ -58,6 +59,7 @@ class ProjectScreen extends Component {
       rowHasChanged: (r1, r2) => r1 !== r2
     });
     this.state = {
+      isLoading: true,
       projectList: [],
       dataSource: ds.cloneWithRows([])
     };
@@ -67,6 +69,10 @@ class ProjectScreen extends Component {
     this.deleteItem = this.deleteItem.bind(this);
     this.renderItem = this.renderItem.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
+    this.handleDeleteResult = this.handleDeleteResult.bind(this);
+    this.showError = this.showError.bind(this);
+    this.loadData = this.loadData.bind(this);
+  
   }
 
   componentDidMount() {
@@ -75,18 +81,36 @@ class ProjectScreen extends Component {
      */ 
     this.props.navigation.setParams({ handleNew: this.new });
     //加载项目列表数据
-     const { projectActions } = this.props;
-     projectActions
-      .fetchProjects(isLoading,isRefreshing)
-      .then(response => this.setSource(response.projects))
+    this.loadData();
+        //监听刷新列表的通知
+      this.subscription = DeviceEventEmitter.addListener('ProjectRefreshNotification', () => {
+         //在收到通知后刷新列表
+         this.loadData(); 
+      });
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.projects !== this.props.projects) {
-      this.setSource(nextProps.projects);
-    }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.projects !== this.props.projects) {
+  //     this.setSource(nextProps.projects);
+  //   }
+  // }
   
+  /**
+   * 
+   * 加载数据
+   * @memberof ProjectScreen
+   */
+  loadData() {
+    this.setState({
+      isLoading: true,
+      isRefreshing: false,
+    });
+    const { projectActions } = this.props;
+    projectActions
+      .fetchProjects(this.state.isLoading,isRefreshing)
+      .then(response => this.setSource(response.projects))
+      .catch(error => ToastUtil.showShort(error));
+  }
   /**
    * 
    * 下拉刷新
@@ -95,11 +119,13 @@ class ProjectScreen extends Component {
   onRefresh() {
 
     isRefreshing = true;
-    isLoading = false;
+    this.setState({
+      isLoading: false,
+    })
 
     const { projectActions } = this.props;
     projectActions
-      .fetchProjects(isLoading,isRefreshing)
+      .fetchProjects(this.state.isLoading,isRefreshing)
       .then(response => this.setSource(response.projects))
   }
 
@@ -118,11 +144,13 @@ class ProjectScreen extends Component {
   setSource(projects) {
 
     isRefreshing = false;
-    isLoading = false;
+
+    let tempItems = JSON.parse(JSON.stringify(projects));
 
     this.setState({
-      projectList: projects,
-      dataSource: this.state.dataSource.cloneWithRows(projects)
+      isLoading: false,
+      projectList: tempItems,
+      dataSource: this.state.dataSource.cloneWithRows(tempItems),
     });
   }
 
@@ -134,12 +162,19 @@ class ProjectScreen extends Component {
    * @memberof ProjectScreen
    */
   deleteItem(itemData,rowId) {
-    deleteIndex = rowId
+
+    //记录选择的删除单元格的位置
+    deleteIndex = parseInt(rowId);
+    this.setState({
+      isLoading: true,
+    })
+    
     const { projectActions } = this.props;
     projectActions
-      .deleteProject(itemData.ProjectId, rowId)
-      .then(responce => console.log("res is " + responce))
-      .catch(error => console.log("error is " + error));
+      .deleteProject(itemData.ProjectId, this.state.isLoading)
+      .then(response => this.handleDeleteResult(response))
+      .catch(error => this.showError(error));
+
   }
   
   /**
@@ -148,8 +183,36 @@ class ProjectScreen extends Component {
    * @memberof ProjectScreen
    */
   handleDeleteResult(response) {
+    console.log('deleteIndex: ' + deleteIndex);
+    const { Project } = this.props;
+    //如果操作成功
+    if (response.deleteResult === true && deleteIndex !== -1 && deleteIndex < Project.projects.length) {
+      //删除数据源，并刷新列表
+      Project.projects.splice(deleteIndex, 1);
+      this.setSource(Project.projects);
+      deleteIndex = -1;
+    }else {
+      ToastUtil.showShort('删除失败，请重试');
+    }
 
   }
+  
+  /**
+   * 
+   * 显示错误信息
+   * @param {any} error 
+   * @memberof ProjectScreen
+   */
+  showError(error) {
+    //停止加载动画
+    this.setState({
+      isLoading: false,
+    })
+    //显示错误信息
+    ToastUtil.showShort(error)
+  }
+
+  
 
   /**
    * 
@@ -171,7 +234,11 @@ class ProjectScreen extends Component {
    * @memberof ProjectScreen
    */
  
-  renderItem(itemData,rowId) {
+  renderItem(itemData,sectionId,rowId) {
+    console.log('itemData:  '+itemData);
+    if (itemData === undefined) {
+      return <View/>;
+    }
     //创建左滑删除的按钮
      let swipeBtns = [
       {
@@ -192,7 +259,7 @@ class ProjectScreen extends Component {
       >
         <TouchableHighlight
           underlayColor="lightgray"
-          onPress={this.itemOnPress}
+          onPress={() => this.itemOnPress(itemData)}
         >
           <View style={styles.itemContainer}>
             <Text style={styles.itemText} numberOfLines={1}>{itemData.ProjectName}</Text>
@@ -209,7 +276,7 @@ class ProjectScreen extends Component {
   加载动画
   */
   renderLoading() {
-    return <Loading visible={isLoading} size='large' color='white'/>;
+    return <Loading visible={this.state.isLoading} size='large' color='white'/>;
   }
 
   render() {
