@@ -46742,15 +46742,15 @@ var _redux = require(495    ); // 495 = redux
 
 var _reactRedux = require(485          ); // 485 = react-redux
 
-var _reduxThunk = require(760          ); // 760 = redux-thunk
+var _reduxThunk = require(761          ); // 761 = redux-thunk
 
 var _reduxThunk2 = babelHelpers.interopRequireDefault(_reduxThunk);
 
-var _reduxLogger = require(761           ); // 761 = redux-logger
+var _reduxLogger = require(762           ); // 762 = redux-logger
 
 var _reduxLogger2 = babelHelpers.interopRequireDefault(_reduxLogger);
 
-var _store = require(762                ); // 762 = ./app/store/store
+var _store = require(763                ); // 763 = ./app/store/store
 
 var _store2 = babelHelpers.interopRequireDefault(_store);
 
@@ -46796,7 +46796,7 @@ var _main = require(558     ); // 558 = ./main
 
 var _main2 = babelHelpers.interopRequireDefault(_main);
 
-var _Splash = require(755                ); // 755 = ../screens/Splash
+var _Splash = require(756                ); // 756 = ../screens/Splash
 
 var _Splash2 = babelHelpers.interopRequireDefault(_Splash);
 
@@ -54062,6 +54062,10 @@ var _Button = require(554                       ); // 554 = ../app/components/Bu
 
 var _Button2 = babelHelpers.interopRequireDefault(_Button);
 
+var _ToastUtil = require(734                ); // 734 = ../tool/ToastUtil
+
+var _ToastUtil2 = babelHelpers.interopRequireDefault(_ToastUtil);
+
 var Login = function (_Component) {
   babelHelpers.inherits(Login, _Component);
 
@@ -54102,14 +54106,15 @@ var Login = function (_Component) {
     value: function login() {
       var _this2 = this;
 
-      if (this.state.userName.length < 6) {
-        _reactNative.Alert.alert("温馨提醒", "用户名必须大于6位!");
-        return;
-      } else if (this.state.userPwd.length < 6) {
-        _reactNative.Alert.alert("温馨提醒", "密码必须大于6位!");
+      if (this.state.userName.length == 0 || this.state.userName.replace(/\s+/g, '') === '') {
+        _ToastUtil2.default.showShort('请输入用户名');
         return;
       }
-      console.log('登录了登录了');
+
+      if (this.state.userPwd.length == 0 || this.state.userPwd.replace(/\s+/g, '') === '') {
+        _ToastUtil2.default.showShort('请输入密码');
+        return;
+      }
 
       this.setState({ animating: true });
       this.props.login("Perry", "123").then(function (responce) {
@@ -54118,6 +54123,15 @@ var Login = function (_Component) {
       }).catch(function (error) {
         return console.log(error);
       });
+    }
+  }, {
+    key: "showError",
+    value: function showError(error) {
+      this.setState({
+        animating: false
+      });
+
+      _ToastUtil2.default.showShort(error);
     }
   }, {
     key: "render",
@@ -54129,7 +54143,8 @@ var Login = function (_Component) {
         { style: styles.bgView },
         _react2.default.createElement(_Loading2.default, { visible: this.state.animating,
           size: "large",
-          color: "white"
+          color: "white",
+          text: "\u767B\u5F55\u4E2D..."
         }),
         _react2.default.createElement(
           _reactNative.View,
@@ -57057,15 +57072,15 @@ var API_CREATE_PROJECT = exports.API_CREATE_PROJECT = BASE_API + 'projects';
 var API_RELEASE_LIST = exports.API_RELEASE_LIST = BASE_API + 'projects/';
 
 var API_CHECKITEM_LIST = exports.API_CHECKITEM_LIST = BASE_API + 'checkitems';
-var API_DELETE_CHECKITEM = exports.API_DELETE_CHECKITEM = BASE_API + 'checkitem/';
+var API_DELETE_CHECKITEM = exports.API_DELETE_CHECKITEM = BASE_API + 'checkitems/';
 var API_CREATE_CHECKITEM = exports.API_CREATE_CHECKITEM = BASE_API + 'checkitems';
 var API_EDIT_CHECKITEM = exports.API_EDIT_CHECKITEM = BASE_API + +'checkitems/';
 
-var API_ADD_RELEASE = exports.API_ADD_RELEASE = BASE_API + 'release';
+var API_ADD_RELEASE = exports.API_ADD_RELEASE = BASE_API + 'releases';
 
-var API_RELEASE_DETAIL = exports.API_RELEASE_DETAIL = BASE_API + 'release/';
+var API_RELEASE_DETAIL = exports.API_RELEASE_DETAIL = BASE_API + 'releases/';
 
-var API_PUBLISH_RELEASE = exports.API_PUBLISH_RELEASE = BASE_API + 'release/';
+var API_PUBLISH_RELEASE = exports.API_PUBLISH_RELEASE = BASE_API + 'releases/';
 }, 550, null, "MNReleaseTool/app/constant/api.js");
 __d(/* MNReleaseTool/redux/actions/projectActions.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
@@ -57221,7 +57236,12 @@ var _react2 = babelHelpers.interopRequireDefault(_react);
 
 var _reactNative = require(12            ); // 12 = react-native
 
-var LoadingView = function LoadingView() {
+var propTypes = {
+  title: _react2.default.PropTypes.string
+};
+
+var LoadingView = function LoadingView(_ref) {
+  var title = _ref.title;
   return _react2.default.createElement(
     _reactNative.View,
     { style: styles.loading },
@@ -57229,7 +57249,8 @@ var LoadingView = function LoadingView() {
     _react2.default.createElement(
       _reactNative.Text,
       { style: styles.loadingText },
-      '\u6570\u636E\u52A0\u8F7D\u4E2D...'
+      title,
+      ' '
     )
   );
 };
@@ -57247,6 +57268,10 @@ var styles = _reactNative.StyleSheet.create({
   }
 });
 
+LoadingView.propTypes = propTypes;
+LoadingView.defaultProps = {
+  title: '数据加载中...'
+};
 exports.default = LoadingView;
 }, 552, null, "MNReleaseTool/app/components/LoadingView.js");
 __d(/* MNReleaseTool/app/components/Loading.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
@@ -57266,7 +57291,8 @@ var propTypes = {
   color: _react2.default.PropTypes.string,
   size: _react2.default.PropTypes.oneOf(SIZES),
   overlayColor: _react2.default.PropTypes.string,
-  onRequestClose: _react2.default.PropTypes.func
+  onRequestClose: _react2.default.PropTypes.func,
+  text: _react2.default.PropTypes.string
 };
 
 var Loading = function Loading(_ref) {
@@ -57274,7 +57300,8 @@ var Loading = function Loading(_ref) {
       color = _ref.color,
       size = _ref.size,
       overlayColor = _ref.overlayColor,
-      onRequestClose = _ref.onRequestClose;
+      onRequestClose = _ref.onRequestClose,
+      text = _ref.text;
   return _react2.default.createElement(
     _reactNative.Modal,
     { visible: visible, transparent: true, onRequestClose: onRequestClose },
@@ -57291,7 +57318,7 @@ var Loading = function Loading(_ref) {
           _react2.default.createElement(
             _reactNative.Text,
             { style: styles.loadingText },
-            '\u6570\u636E\u52A0\u8F7D\u4E2D...'
+            text
           )
         )
       )
@@ -57340,7 +57367,9 @@ Loading.defaultProps = {
   color: 'white',
   size: 'large',
   overlayColor: 'transparent',
-  onRequestClose: function onRequestClose() {}
+  onRequestClose: function onRequestClose() {},
+
+  text: '数据加载中..'
 };
 
 exports.default = Loading;
@@ -57398,6 +57427,36 @@ Button.defaultProps = {
 
 exports.default = Button;
 }, 554, null, "MNReleaseTool/app/components/Button.js");
+__d(/* MNReleaseTool/tool/ToastUtil.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _reactNative = require(12            ); // 12 = react-native
+
+var showShort = function showShort(content, isAlert) {
+  if (!content) {
+    return;
+  }
+  if (isAlert || _reactNative.Platform.OS === 'ios') {
+    _reactNative.Alert.alert('提示', content.toString());
+  } else {
+    _reactNative.ToastAndroid.show(content.toString(), _reactNative.ToastAndroid.SHORT);
+  }
+};
+
+var showLong = function showLong(content, isAlert) {
+  if (isAlert || _reactNative.Platform.OS === 'ios') {
+    _reactNative.Alert.alert('提示', content.toString());
+  } else {
+    _reactNative.ToastAndroid.show(content.toString(), _reactNative.ToastAndroid.LONG);
+  }
+};
+
+exports.default = {
+  showShort: showShort,
+  showLong: showLong
+};
+}, 734, null, "MNReleaseTool/tool/ToastUtil.js");
 __d(/* MNReleaseTool/img/logo.png */function(global, require, module, exports) {module.exports = require(276                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/img","width":104,"height":41,"scales":[2],"hash":"a25202738da72a610d72cb1f7c4b2ba6","name":"logo","type":"png"}); // 276 = react-native/Libraries/Image/AssetRegistry
 }, 555, null, "MNReleaseTool/img/logo.png");
 __d(/* MNReleaseTool/img/username_icon.png */function(global, require, module, exports) {module.exports = require(276                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/img","width":13,"height":19,"scales":[2],"hash":"bed99f242459c9cf7f983a3934f3a0d8","name":"username_icon","type":"png"}); // 276 = react-native/Libraries/Image/AssetRegistry
@@ -57441,7 +57500,7 @@ var _ManagerTabNavigator = require(746                             ); // 746 = .
 
 var _ManagerTabNavigator2 = babelHelpers.interopRequireDefault(_ManagerTabNavigator);
 
-var _NewCheckItemScreen = require(754                            ); // 754 = ../screens/NewCheckItemScreen
+var _NewCheckItemScreen = require(755                            ); // 755 = ../screens/NewCheckItemScreen
 
 var _NewCheckItemScreen2 = babelHelpers.interopRequireDefault(_NewCheckItemScreen);
 
@@ -57469,7 +57528,7 @@ var _projectActions = require(551                              ); // 551 = ../re
 
 var projectActions = babelHelpers.interopRequireWildcard(_projectActions);
 
-var _Splash = require(755                ); // 755 = ../screens/Splash
+var _Splash = require(756                ); // 756 = ../screens/Splash
 
 var _Splash2 = babelHelpers.interopRequireDefault(_Splash);
 
@@ -67416,36 +67475,6 @@ __d(/* moment/moment.js */function(global, require, module, exports) {
 }, 732, null, "moment/moment.js");
 __d(/* react-native-datepicker/date_icon.png */function(global, require, module, exports) {module.exports = require(276                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/node_modules/react-native-datepicker","width":64,"height":64,"scales":[1],"hash":"1edd5017f455b09c608e175b1285c06d","name":"date_icon","type":"png"}); // 276 = react-native/Libraries/Image/AssetRegistry
 }, 733, null, "react-native-datepicker/date_icon.png");
-__d(/* MNReleaseTool/tool/ToastUtil.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _reactNative = require(12            ); // 12 = react-native
-
-var showShort = function showShort(content, isAlert) {
-  if (!content) {
-    return;
-  }
-  if (isAlert || _reactNative.Platform.OS === 'ios') {
-    _reactNative.Alert.alert('提示', content.toString());
-  } else {
-    _reactNative.ToastAndroid.show(content.toString(), _reactNative.ToastAndroid.SHORT);
-  }
-};
-
-var showLong = function showLong(content, isAlert) {
-  if (isAlert || _reactNative.Platform.OS === 'ios') {
-    _reactNative.Alert.alert('提示', content.toString());
-  } else {
-    _reactNative.ToastAndroid.show(content.toString(), _reactNative.ToastAndroid.LONG);
-  }
-};
-
-exports.default = {
-  showShort: showShort,
-  showLong: showLong
-};
-}, 734, null, "MNReleaseTool/tool/ToastUtil.js");
 __d(/* MNReleaseTool/screens/NewDetail.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -68149,7 +68178,8 @@ var handleCreateError = function handleCreateError(dispatch, error) {
 function updateCheckItem(checkItemId, body, isLoading) {
   return function (dispatch) {
     dispatch(loadCheckitemData(isLoading));
-    var url = Api.API_EDIT_CHECKITEM + checkItemId;
+    var url = 'http://119.23.47.185:4001/checkitems/' + checkItemId;
+    console.log('url:  ' + url);
     return _axios2.default.put(url, body).then(function (response) {
       return dispatch(receiveEditResult(response.data.data));
     }).catch(function (error) {
@@ -68160,7 +68190,7 @@ function updateCheckItem(checkItemId, body, isLoading) {
 
 var receiveEditResult = function receiveEditResult(result) {
   return {
-    type: types.EDIT_PROJECT,
+    type: types.EDIT_CHECKITEM,
     isLoading: false,
     editResult: result
   };
@@ -68169,7 +68199,7 @@ var receiveEditResult = function receiveEditResult(result) {
 var handleEditError = function handleEditError(dispatch, error) {
   tokenActions.handleError(dispatch, error);
   return {
-    type: types.EDIT_PROJECT,
+    type: types.EDIT_CHECKITEM,
     editResult: false,
     isLoading: false
   };
@@ -69095,21 +69125,69 @@ var _ProjectScreen = require(747              ); // 747 = ./ProjectScreen
 
 var _ProjectScreen2 = babelHelpers.interopRequireDefault(_ProjectScreen);
 
-var _CheckItemScreen = require(753                ); // 753 = ./CheckItemScreen
+var _CheckItemScreen = require(754                ); // 754 = ./CheckItemScreen
 
 var _CheckItemScreen2 = babelHelpers.interopRequireDefault(_CheckItemScreen);
 
+var _TabBarItem = require(772                           ); // 772 = ../app/components/TabBarItem
+
+var _TabBarItem2 = babelHelpers.interopRequireDefault(_TabBarItem);
+
+var _reactNative = require(12            ); // 12 = react-native
+
+var _react = require(187    ); // 187 = react
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
 var ManagerTabNavigator = (0, _reactNavigation.TabNavigator)({
   Recent: {
-    screen: _ProjectScreen2.default
+    screen: _ProjectScreen2.default,
+    navigationOptions: function navigationOptions(_ref) {
+      var navigation = _ref.navigation;
+      return {
+        tabBarLabel: '项目',
+        tabBarIcon: function tabBarIcon(_ref2) {
+          var focused = _ref2.focused,
+              tintColor = _ref2.tintColor;
+          return _react2.default.createElement(_TabBarItem2.default, {
+            normalImage: require(775                        ), // 775 = ../img/project_normal.png
+            selectedImage: require(776                          ), // 776 = ../img/project_selected.png
+            tintColor: tintColor,
+            focused: focused
+          });
+        }
+      };
+    }
   },
   All: {
-    screen: _CheckItemScreen2.default
+    screen: _CheckItemScreen2.default,
+    navigationOptions: function navigationOptions(_ref3) {
+      var navigation = _ref3.navigation;
+      return {
+        tabBarLabel: '题库',
+        tabBarIcon: function tabBarIcon(_ref4) {
+          var focused = _ref4.focused,
+              tintColor = _ref4.tintColor;
+          return _react2.default.createElement(_TabBarItem2.default, {
+            normalImage: require(777                          ), // 777 = ../img/checkitem_normal.png
+            selectedImage: require(778                            ), // 778 = ../img/checkitem_selected.png
+            tintColor: tintColor,
+            focused: focused
+          });
+        }
+      };
+    }
   }
 }, {
   lazy: true,
   tabBarPosition: 'bottom',
+  swipeEnabled: false,
+  animationEnabled: false,
   tabBarOptions: {
+    activeTintColor: '#51c4d4',
+    inactiveTintColor: '#8a8a8a',
+    labelStyle: {
+      fontSize: 14 },
     showIcon: true,
     style: {
       backgroundColor: '#fff'
@@ -69141,23 +69219,15 @@ var _projectActions = require(551                              ); // 551 = ../re
 
 var ProjectCreators = babelHelpers.interopRequireWildcard(_projectActions);
 
-var _loginActions = require(521                            ); // 521 = ../redux/actions/loginActions
-
-var loginActions = babelHelpers.interopRequireWildcard(_loginActions);
-
 var _reactRedux = require(485          ); // 485 = react-redux
 
 var _NewProjectScreen = require(748                 ); // 748 = ./NewProjectScreen
 
 var _NewProjectScreen2 = babelHelpers.interopRequireDefault(_NewProjectScreen);
 
-var _Octicons = require(565                                 ); // 565 = react-native-vector-icons/Octicons
-
-var _Octicons2 = babelHelpers.interopRequireDefault(_Octicons);
-
 var _CommonStyles = require(726                     ); // 726 = ../common/CommonStyles
 
-var _reactNativeSwipeout = require(749                    ); // 749 = react-native-swipeout
+var _reactNativeSwipeout = require(750                    ); // 750 = react-native-swipeout
 
 var _reactNativeSwipeout2 = babelHelpers.interopRequireDefault(_reactNativeSwipeout);
 
@@ -69173,9 +69243,15 @@ var _ToastUtil = require(734                ); // 734 = ../tool/ToastUtil
 
 var _ToastUtil2 = babelHelpers.interopRequireDefault(_ToastUtil);
 
+var _notification = require(749                           ); // 749 = ../app/constant/notification
+
+var Notification = babelHelpers.interopRequireWildcard(_notification);
+
 var isRefreshing = false;
 
 var deleteIndex = -1;
+
+var flag = 0;
 
 var ProjectScreen = function (_Component) {
   babelHelpers.inherits(ProjectScreen, _Component);
@@ -69215,11 +69291,18 @@ var ProjectScreen = function (_Component) {
 
       this.props.navigation.setParams({ handleNew: this.new });
 
-      this.loadData();
-
-      this.subscription = _reactNative.DeviceEventEmitter.addListener('ProjectRefreshNotification', function () {
+      _reactNative.InteractionManager.runAfterInteractions(function () {
         _this2.loadData();
       });
+
+      this.subscription = _reactNative.DeviceEventEmitter.addListener(Notification.ProjectRefreshNotification, function () {
+        _this2.loadData();
+      });
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.subscription.removeAllListeners(Notification.ProjectRefreshNotification);
     }
   }, {
     key: "loadData",
@@ -69243,6 +69326,7 @@ var ProjectScreen = function (_Component) {
     value: function onRefresh() {
       var _this4 = this;
 
+      flag = 1;
       isRefreshing = true;
       this.setState({
         isLoading: false
@@ -69322,9 +69406,42 @@ var ProjectScreen = function (_Component) {
       });
     }
   }, {
+    key: "renderEmptyView",
+    value: function renderEmptyView() {
+      var _this6 = this;
+
+      return _react2.default.createElement(
+        _reactNative.ScrollView,
+        {
+          automaticallyAdjustContentInsets: false,
+          horizontal: false,
+          contentContainerStyle: styles.empty,
+          style: styles.flex,
+          refreshControl: _react2.default.createElement(_reactNative.RefreshControl, {
+            style: styles.refreshControlBase,
+            refreshing: isRefreshing,
+            onRefresh: function onRefresh() {
+              return _this6.onRefresh();
+            },
+            title: "Loading...",
+            colors: ['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']
+          })
+        },
+        _react2.default.createElement(
+          _reactNative.View,
+          { style: { alignItems: 'center' } },
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: { fontSize: 16 } },
+            "\u76EE\u524D\u6CA1\u6709\u6570\u636E\uFF0C\u8BF7\u5237\u65B0\u91CD\u8BD5..."
+          )
+        )
+      );
+    }
+  }, {
     key: "renderItem",
     value: function renderItem(itemData, sectionId, rowId) {
-      var _this6 = this;
+      var _this7 = this;
 
       console.log('itemData:  ' + itemData);
       if (itemData === undefined) {
@@ -69336,7 +69453,7 @@ var ProjectScreen = function (_Component) {
         backgroundColor: "red",
         underlayColor: "rgba(0, 0, 0, 0.6)",
         onPress: function onPress() {
-          _this6.deleteItem(itemData, rowId);
+          _this7.deleteItem(itemData, rowId);
         }
       }];
       return _react2.default.createElement(
@@ -69352,7 +69469,7 @@ var ProjectScreen = function (_Component) {
           {
             underlayColor: "lightgray",
             onPress: function onPress() {
-              return _this6.itemOnPress(itemData);
+              return _this7.itemOnPress(itemData);
             }
           },
           _react2.default.createElement(
@@ -69380,7 +69497,13 @@ var ProjectScreen = function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this7 = this;
+      var _this8 = this;
+
+      var Project = this.props.Project;
+
+      if (this.state.isLoading === false && Project.projects.length === 0) {
+        return this.renderEmptyView();
+      }
 
       return _react2.default.createElement(
         _reactNative.View,
@@ -69399,7 +69522,7 @@ var ProjectScreen = function (_Component) {
             style: styles.refreshControlBase,
             refreshing: isRefreshing,
             onRefresh: function onRefresh() {
-              return _this7.onRefresh();
+              return _this8.onRefresh();
             },
             title: "Loading...",
             colors: ['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']
@@ -69417,7 +69540,7 @@ ProjectScreen.navigationOptions = function (props) {
       setParams = _props$navigation.setParams;
 
   return {
-    title: "项目",
+    headerTitle: "项目",
     headerLeft: null,
     headerStyle: _CommonStyles.commonstyles.headerStyle,
     headerTitleStyle: _CommonStyles.commonstyles.headerTitleStyle,
@@ -69436,7 +69559,7 @@ var styles = _reactNative.StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f4f4f4"
+    backgroundColor: "#f8f8f8"
   },
   list: {
     width: _reactNative.Dimensions.get("window").width,
@@ -69467,6 +69590,16 @@ var styles = _reactNative.StyleSheet.create({
   },
   refreshControlBase: {
     backgroundColor: 'transparent'
+  },
+  empty: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 100,
+    backgroundColor: '#fff'
+  },
+  flex: {
+    flex: 1
   }
 });
 
@@ -69525,6 +69658,10 @@ var _Loading = require(553                        ); // 553 = ../app/components/
 
 var _Loading2 = babelHelpers.interopRequireDefault(_Loading);
 
+var _notification = require(749                           ); // 749 = ../app/constant/notification
+
+var Notification = babelHelpers.interopRequireWildcard(_notification);
+
 var NewProjectScreen = function (_Component) {
   babelHelpers.inherits(NewProjectScreen, _Component);
 
@@ -69568,13 +69705,15 @@ var NewProjectScreen = function (_Component) {
         return;
       }
 
+      _reactNative.Keyboard.dismiss();
+
       var params = this.props.navigation.state.params;
       var actions = this.props.actions;
 
 
       var body = {
         ProjectName: this.state.projectName,
-        ProjectCode: this.state.projectName
+        ProjectCode: params === undefined ? this.state.projectName : params.project.ProjectCode
       };
 
       this.setState({
@@ -69604,7 +69743,7 @@ var NewProjectScreen = function (_Component) {
         isLoading: false
       });
       if (response.editResult === true || response.createResult === true) {
-        _reactNative.DeviceEventEmitter.emit('ProjectRefreshNotification');
+        _reactNative.DeviceEventEmitter.emit(Notification.ProjectRefreshNotification);
         this.timer = setTimeout(function () {
           _ToastUtil2.default.showShort('操作成功');
           _this3.props.navigation.goBack();
@@ -69625,7 +69764,7 @@ var NewProjectScreen = function (_Component) {
   }, {
     key: "renderLoading",
     value: function renderLoading() {
-      return _react2.default.createElement(_Loading2.default, { visible: this.state.isLoading, size: "large", color: "white" });
+      return _react2.default.createElement(_Loading2.default, { visible: this.state.isLoading, size: "large", color: "white", text: "\u4FDD\u5B58\u4E2D..." });
     }
   }, {
     key: "render",
@@ -69644,16 +69783,20 @@ var NewProjectScreen = function (_Component) {
             { style: styles.subTitle },
             "\u8F93\u5165\u9879\u76EE\u540D:"
           ),
-          _react2.default.createElement(_reactNative.TextInput, {
-            placeholder: "\u9879\u76EE\u540D\u79F0",
-            style: styles.textInput,
-            value: this.state.projectName,
-            onChangeText: function onChangeText(text) {
-              _this4.setState({
-                projectName: text
-              });
-            }
-          })
+          _react2.default.createElement(
+            _reactNative.View,
+            { style: styles.flex },
+            _react2.default.createElement(_reactNative.TextInput, {
+              placeholder: "\u9879\u76EE\u540D\u79F0",
+              style: styles.textInput,
+              value: this.state.projectName,
+              onChangeText: function onChangeText(text) {
+                _this4.setState({
+                  projectName: text
+                });
+              }
+            })
+          )
         ),
         _react2.default.createElement(_Button2.default, {
           onPress: this._save,
@@ -69694,8 +69837,8 @@ var styles = _reactNative.StyleSheet.create({
     borderTopColor: '#cccccc'
   },
   textInput: {
-    width: 200,
-    fontSize: 16
+    fontSize: 16,
+    height: 60
   },
   subTitle: {
     marginLeft: 20,
@@ -69734,6 +69877,9 @@ var styles = _reactNative.StyleSheet.create({
     borderRadius: 21,
     overflow: 'hidden',
     height: 42
+  },
+  flex: {
+    flex: 1
   }
 });
 
@@ -69745,19 +69891,26 @@ exports.default = (0, _reactRedux.connect)(function (state) {
   };
 })(NewProjectScreen);
 }, 748, null, "MNReleaseTool/screens/NewProjectScreen.js");
+__d(/* MNReleaseTool/app/constant/notification.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var ProjectRefreshNotification = exports.ProjectRefreshNotification = 'ProjectRefreshNotification';
+
+var CheckItemRefreshNotification = exports.CheckItemRefreshNotification = 'CheckItemRefreshNotification';
+}, 749, null, "MNReleaseTool/app/constant/notification.js");
 __d(/* react-native-swipeout/index.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _reactTweenState = require(750                ); // 750 = react-tween-state
+var _reactTweenState = require(751                ); // 751 = react-tween-state
 
 var _reactTweenState2 = babelHelpers.interopRequireDefault(_reactTweenState);
 
-var _NativeButton = require(751             ); // 751 = ./NativeButton
+var _NativeButton = require(752             ); // 752 = ./NativeButton
 
 var _NativeButton2 = babelHelpers.interopRequireDefault(_NativeButton);
 
-var _styles = require(752       ); // 752 = ./styles
+var _styles = require(753       ); // 753 = ./styles
 
 var _styles2 = babelHelpers.interopRequireDefault(_styles);
 
@@ -70147,7 +70300,7 @@ Swipeout.NativeButton = _NativeButton2.default;
 Swipeout.SwipeoutButton = SwipeoutBtn;
 
 exports.default = Swipeout;
-}, 749, null, "react-native-swipeout/index.js");
+}, 750, null, "react-native-swipeout/index.js");
 __d(/* react-tween-state/lib/index.js */function(global, require, module, exports) {!function (e, n) {
   "object" == typeof exports && "object" == typeof module ? module.exports = n() : "function" == typeof define && define.amd ? define([], n) : "object" == typeof exports ? exports.tweenState = n() : e.tweenState = n();
 }(this, function () {
@@ -70378,7 +70531,7 @@ __d(/* react-tween-state/lib/index.js */function(global, require, module, export
         } };e.exports = t;
     } });
 });
-}, 750, null, "react-tween-state/lib/index.js");
+}, 751, null, "react-tween-state/lib/index.js");
 __d(/* react-native-swipeout/NativeButton.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -70487,7 +70640,7 @@ var NativeButton = _react2.default.createClass({
 });
 
 exports.default = NativeButton;
-}, 751, null, "react-native-swipeout/NativeButton.js");
+}, 752, null, "react-native-swipeout/NativeButton.js");
 __d(/* react-native-swipeout/styles.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -70534,7 +70687,7 @@ var styles = _reactNative.StyleSheet.create({
 });
 
 exports.default = styles;
-}, 752, null, "react-native-swipeout/styles.js");
+}, 753, null, "react-native-swipeout/styles.js");
 __d(/* MNReleaseTool/screens/CheckItemScreen.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -70545,11 +70698,11 @@ var _react2 = babelHelpers.interopRequireDefault(_react);
 
 var _reactNative = require(12            ); // 12 = react-native
 
-var _NewCheckItemScreen = require(754                   ); // 754 = ./NewCheckItemScreen
+var _NewCheckItemScreen = require(755                   ); // 755 = ./NewCheckItemScreen
 
 var _NewCheckItemScreen2 = babelHelpers.interopRequireDefault(_NewCheckItemScreen);
 
-var _reactNativeSwipeout = require(749                    ); // 749 = react-native-swipeout
+var _reactNativeSwipeout = require(750                    ); // 750 = react-native-swipeout
 
 var _reactNativeSwipeout2 = babelHelpers.interopRequireDefault(_reactNativeSwipeout);
 
@@ -70578,6 +70731,10 @@ var _redux = require(495    ); // 495 = redux
 var _checkItemActions = require(737                                ); // 737 = ../redux/actions/checkItemActions
 
 var DetailCreators = babelHelpers.interopRequireWildcard(_checkItemActions);
+
+var _notification = require(749                           ); // 749 = ../app/constant/notification
+
+var Notification = babelHelpers.interopRequireWildcard(_notification);
 
 var isRefreshing = false;
 var deleteIndex = -1;
@@ -70612,14 +70769,27 @@ var CheckItemScreen = function (_Component) {
   babelHelpers.createClass(CheckItemScreen, [{
     key: "componentDidMount",
     value: function componentDidMount() {
+      var _this2 = this;
+
       this.props.navigation.setParams({ handleNew: this.new });
 
-      this.loadData();
+      _reactNative.InteractionManager.runAfterInteractions(function () {
+        _this2.loadData();
+      });
+
+      this.subscription = _reactNative.DeviceEventEmitter.addListener(Notification.CheckItemRefreshNotification, function () {
+        _this2.loadData();
+      });
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      this.subscription.removeAllListeners(Notification.CheckItemRefreshNotification);
     }
   }, {
     key: "loadData",
     value: function loadData() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.setState({
         isLoading: true
@@ -70627,7 +70797,7 @@ var CheckItemScreen = function (_Component) {
       var detailActions = this.props.detailActions;
 
       detailActions.checkItem(this.state.isLoading).then(function (response) {
-        return _this2.setDataSource(response.checkItems);
+        return _this3.setDataSource(response.checkItems);
       });
     }
   }, {
@@ -70651,7 +70821,7 @@ var CheckItemScreen = function (_Component) {
   }, {
     key: "onRefresh",
     value: function onRefresh() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.setState({
         isLoading: false
@@ -70661,13 +70831,13 @@ var CheckItemScreen = function (_Component) {
       var detailActions = this.props.detailActions;
 
       detailActions.checkItem(this.state.isLoading).then(function (response) {
-        return _this3.setDataSource(response.checkItems);
+        return _this4.setDataSource(response.checkItems);
       });
     }
   }, {
     key: "deleteItem",
     value: function deleteItem(itemData, rowId) {
-      var _this4 = this;
+      var _this5 = this;
 
       deleteIndex = parseInt(rowId);
       this.setState({
@@ -70676,9 +70846,9 @@ var CheckItemScreen = function (_Component) {
       var detailActions = this.props.detailActions;
 
       detailActions.deleteCheckItem(itemData.ItemId, this.state.isLoading).then(function (response) {
-        return _this4.handleDeleteResult(response);
+        return _this5.handleDeleteResult(response);
       }).catch(function (error) {
-        return _this4.showError(error);
+        return _this5.showError(error);
       });
     }
   }, {
@@ -70712,9 +70882,42 @@ var CheckItemScreen = function (_Component) {
       });
     }
   }, {
+    key: "renderEmptyView",
+    value: function renderEmptyView() {
+      var _this6 = this;
+
+      return _react2.default.createElement(
+        ScrollView,
+        {
+          automaticallyAdjustContentInsets: false,
+          horizontal: false,
+          contentContainerStyle: styles.empty,
+          style: styles.flex,
+          refreshControl: _react2.default.createElement(_reactNative.RefreshControl, {
+            style: styles.refreshControlBase,
+            refreshing: isRefreshing,
+            onRefresh: function onRefresh() {
+              return _this6.onRefresh();
+            },
+            title: "Loading...",
+            colors: ['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']
+          })
+        },
+        _react2.default.createElement(
+          _reactNative.View,
+          { style: { alignItems: 'center' } },
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: { fontSize: 16 } },
+            "\u76EE\u524D\u6CA1\u6709\u6570\u636E\uFF0C\u8BF7\u5237\u65B0\u91CD\u8BD5..."
+          )
+        )
+      );
+    }
+  }, {
     key: "renderItem",
     value: function renderItem(itemData, sectionId, rowId) {
-      var _this5 = this;
+      var _this7 = this;
 
       console.log('itemTitle:  ' + itemData.ItemTitle);
 
@@ -70723,7 +70926,7 @@ var CheckItemScreen = function (_Component) {
         backgroundColor: "red",
         underlayColor: "rgba(0, 0, 0, 0.6)",
         onPress: function onPress() {
-          _this5.deleteItem(itemData, rowId);
+          _this7.deleteItem(itemData, rowId);
         }
       }];
 
@@ -70740,7 +70943,7 @@ var CheckItemScreen = function (_Component) {
           {
             underlayColor: "lightgray",
             onPress: function onPress() {
-              return _this5.itemOnPress(itemData);
+              return _this7.itemOnPress(itemData);
             }
           },
           _react2.default.createElement(
@@ -70783,10 +70986,13 @@ var CheckItemScreen = function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this6 = this;
+      var _this8 = this;
 
-      console.log("length:  " + this.state.checkItemData.length);
+      var CheckItem = this.props.CheckItem;
 
+      if (this.state.isLoading === false && CheckItem.checkItems.length === 0) {
+        return this.renderEmptyView();
+      }
       return _react2.default.createElement(
         _reactNative.View,
         { style: styles.container },
@@ -70803,7 +71009,7 @@ var CheckItemScreen = function (_Component) {
             style: styles.refreshControlBase,
             refreshing: isRefreshing,
             onRefresh: function onRefresh() {
-              return _this6.onRefresh();
+              return _this8.onRefresh();
             },
             title: "Loading...",
             colors: ['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']
@@ -70821,7 +71027,7 @@ CheckItemScreen.navigationOptions = function (props) {
       setParams = _props$navigation.setParams;
 
   return {
-    title: "题库",
+    headerTitle: "题库",
     headerLeft: null,
     headerStyle: _CommonStyles.commonstyles.headerStyle,
     headerTitleStyle: _CommonStyles.commonstyles.headerTitleStyle,
@@ -70879,9 +71085,18 @@ var styles = _reactNative.StyleSheet.create({
     marginTop: 5,
     color: "#666"
   },
-
   refreshControlBase: {
     backgroundColor: 'transparent'
+  },
+  empty: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 100,
+    backgroundColor: '#fff'
+  },
+  flex: {
+    flex: 1
   }
 });
 
@@ -70901,7 +71116,7 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
 };
 
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(CheckItemScreen);
-}, 753, null, "MNReleaseTool/screens/CheckItemScreen.js");
+}, 754, null, "MNReleaseTool/screens/CheckItemScreen.js");
 __d(/* MNReleaseTool/screens/NewCheckItemScreen.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -70920,13 +71135,13 @@ var _axios = require(523    ); // 523 = axios
 
 var _axios2 = babelHelpers.interopRequireDefault(_axios);
 
+var _redux = require(495    ); // 495 = redux
+
 var _checkItemActions = require(737                                ); // 737 = ../redux/actions/checkItemActions
 
-var checkItemActions = babelHelpers.interopRequireWildcard(_checkItemActions);
+var DetailCreators = babelHelpers.interopRequireWildcard(_checkItemActions);
 
 var _reactRedux = require(485          ); // 485 = react-redux
-
-var _redux = require(495    ); // 495 = redux
 
 var _ToastUtil = require(734                ); // 734 = ../tool/ToastUtil
 
@@ -70942,6 +71157,10 @@ var timeTool = babelHelpers.interopRequireWildcard(_timeTool);
 
 var _CommonStyles = require(726                     ); // 726 = ../common/CommonStyles
 
+var _notification = require(749                           ); // 749 = ../app/constant/notification
+
+var Notification = babelHelpers.interopRequireWildcard(_notification);
+
 var NewCheckItemScreen = function (_Component) {
   babelHelpers.inherits(NewCheckItemScreen, _Component);
 
@@ -70953,16 +71172,31 @@ var NewCheckItemScreen = function (_Component) {
     _this.state = {
       isEssential: false,
       itemTitle: "",
-      itemDesc: ""
+      itemDesc: "",
+      isLoading: false
     };
 
-
-    _this.handleNewCheckItemSuccess = _this.handleNewCheckItemSuccess.bind(_this);
     _this.save = _this.save.bind(_this);
+    _this.onCheck = _this.onCheck.bind(_this);
+    _this.renderLoading = _this.renderLoading.bind(_this);
+    _this.handleResult = _this.handleResult.bind(_this);
+    _this.showError = _this.showError.bind(_this);
+
     return _this;
   }
 
   babelHelpers.createClass(NewCheckItemScreen, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var params = this.props.navigation.state.params;
+
+      this.setState({
+        isEssential: params === undefined ? false : Boolean(params.checkItem.IsMandatory),
+        itemTitle: params === undefined ? "" : params.checkItem.ItemTitle,
+        itemDesc: params === undefined ? "" : params.checkItem.ItemDesc
+      });
+    }
+  }, {
     key: "onCheck",
     value: function onCheck() {
       this.setState({
@@ -70982,37 +71216,70 @@ var NewCheckItemScreen = function (_Component) {
         _ToastUtil2.default.showShort('请输入描述');
         return;
       }
+
+      _reactNative.Keyboard.dismiss();
+
+      var params = this.props.navigation.state.params;
+      var newActions = this.props.newActions;
+
+
       var body = {
         ItemTitle: this.state.itemTitle,
         ItemDesc: this.state.itemDesc,
         IsMandatory: this.state.isEssential ? 1 : 0,
         Tags: "基础信息",
-        ItemCode: this.state.itemTitle
+        ItemCode: params === undefined ? this.state.itemTitle : params.checkItem.ItemCode
       };
 
-      if (typeof this.props.navigation.state.params == "undefined") {
-        this.props.actions.newCheckItem(body).then(function (responce) {
-          return _this2.handleNewCheckItemSuccess(responce);
+      this.setState({
+        isLoading: true
+      });
+
+      if (params === undefined) {
+        newActions.newCheckItem(body, this.state.isLoading).then(function (response) {
+          return _this2.handleResult(response);
+        }).catch(function (error) {
+          return _this2.showError(error);
         });
       } else {
-        this.props.actions.updateCheckItem(this.props.navigation.state.params.checkItem.ItemId, body).then(function (responce) {
-          return _this2.handleNewCheckItemSuccess(responce);
+        newActions.updateCheckItem(params.checkItem.ItemId, body, this.state.isLoadin).then(function (response) {
+          return _this2.handleResult(response);
         }).catch(function (error) {
-          return console.log(error);
+          return _this2.showError(error);
         });
       }
     }
   }, {
-    key: "handleNewCheckItemSuccess",
-    value: function handleNewCheckItemSuccess(responce) {
+    key: "handleResult",
+    value: function handleResult(response) {
       var _this3 = this;
 
-      if (typeof responce == "undefined") {
-        return;
+      this.setState({
+        isLoading: false
+      });
+      if (response.editResult === true || response.createResult === true) {
+        _reactNative.DeviceEventEmitter.emit(Notification.CheckItemRefreshNotification);
+        this.timer = setTimeout(function () {
+          _ToastUtil2.default.showShort('操作成功');
+          _this3.props.navigation.goBack();
+        }, 500);
+      } else {
+        _ToastUtil2.default.showShort('操作失败，请重试');
       }
-      _reactNative.Alert.alert("Success", "", [{ text: "OK", onPress: function onPress() {
-          return _this3.props.navigation.goBack();
-        } }]);
+    }
+  }, {
+    key: "showError",
+    value: function showError(error) {
+      this.setState({
+        isLoading: false
+      });
+
+      _ToastUtil2.default.showShort(error);
+    }
+  }, {
+    key: "renderLoading",
+    value: function renderLoading() {
+      return _react2.default.createElement(Loading, { visible: this.state.isLoading, size: "large", color: "white", text: "\u4FDD\u5B58\u4E2D..." });
     }
   }, {
     key: "render",
@@ -71030,12 +71297,21 @@ var NewCheckItemScreen = function (_Component) {
             { style: styles.subTitle },
             "\u8F93\u5165\u6807\u9898:"
           ),
-          _react2.default.createElement(_reactNative.TextInput, {
-            style: styles.textInput,
-            onChangeText: function onChangeText(text) {
-              _this4.state.itemTitle = text;
-            }
-          })
+          _react2.default.createElement(
+            _reactNative.View,
+            { style: styles.flex },
+            _react2.default.createElement(_reactNative.TextInput, {
+              style: styles.textInput,
+              autoCorrect: false,
+              autoCapitalize: "none",
+              value: this.state.itemTitle,
+              onChangeText: function onChangeText(text) {
+                _this4.setState({
+                  itemTitle: text
+                });
+              }
+            })
+          )
         ),
         _react2.default.createElement(
           _reactNative.View,
@@ -71045,14 +71321,22 @@ var NewCheckItemScreen = function (_Component) {
             { style: styles.subTitle },
             "\u63CF\u8FF0:"
           ),
-          _react2.default.createElement(_reactNative.TextInput, {
-            style: styles.textInputMutibleLine,
-            ref: "updateInput",
-            multiline: true,
-            onChangeText: function onChangeText(text) {
-              _this4.state.itemDesc = text;
-            }
-          })
+          _react2.default.createElement(
+            _reactNative.View,
+            { style: styles.flex },
+            _react2.default.createElement(_reactNative.TextInput, {
+              autoCorrect: false,
+              autoCapitalize: "none",
+              style: styles.textInputMutibleLine,
+              value: this.state.itemDesc,
+              multiline: true,
+              onChangeText: function onChangeText(text) {
+                _this4.setState({
+                  itemDesc: text
+                });
+              }
+            })
+          )
         ),
         _react2.default.createElement(
           _reactNative.View,
@@ -71063,7 +71347,7 @@ var NewCheckItemScreen = function (_Component) {
               return _this4.onCheck();
             },
             leftText: "\u662F\u5426\u5FC5\u9700",
-            isChecked: this.state.isEssential,
+            isChecked: !this.state.isEssential,
             leftTextStyle: { color: '#404040', fontSize: 14 }
           })
         ),
@@ -71105,12 +71389,15 @@ var styles = _reactNative.StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: '#cccccc'
   },
+  flex: {
+    flex: 1
+  },
   updateContainer: {
     margin: 0,
     flexDirection: "row",
     alignItems: 'center',
     backgroundColor: 'white',
-    height: 100,
+    height: 110,
     borderBottomWidth: 0.5,
     borderBottomColor: '#cccccc'
   },
@@ -71122,15 +71409,19 @@ var styles = _reactNative.StyleSheet.create({
     color: '#404040'
   },
   textInput: {
-    width: 200,
-    fontSize: 16
+    paddingLeft: 5,
+    marginLeft: 0,
+    marginRight: 15,
+    fontSize: 16,
+    height: 60
   },
   textInputMutibleLine: {
     height: 100,
-    width: 200,
     fontSize: 16,
     marginTop: 5,
-    marginBottom: 5
+    marginBottom: 5,
+    marginLeft: 0,
+    marginRight: 15
   },
   buttonContainer: {
     alignSelf: "stretch",
@@ -71163,14 +71454,63 @@ var styles = _reactNative.StyleSheet.create({
   }
 });
 
-exports.default = (0, _reactRedux.connect)(function (state) {
-  return {};
-}, function (dispatch) {
+var mapStateToProps = function mapStateToProps(state) {
+  var CheckItem = state.CheckItem;
+
   return {
-    actions: (0, _redux.bindActionCreators)(checkItemActions, dispatch)
+    CheckItem: CheckItem
   };
-})(NewCheckItemScreen);
-}, 754, null, "MNReleaseTool/screens/NewCheckItemScreen.js");
+};
+
+var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+  var newActions = (0, _redux.bindActionCreators)(DetailCreators, dispatch);
+  return {
+    newActions: newActions
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(NewCheckItemScreen);
+}, 755, null, "MNReleaseTool/screens/NewCheckItemScreen.js");
+__d(/* MNReleaseTool/app/components/TabBarItem.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = require(187    ); // 187 = react
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require(12            ); // 12 = react-native
+
+var TabBarItem = function (_Component) {
+    babelHelpers.inherits(TabBarItem, _Component);
+
+    function TabBarItem() {
+        babelHelpers.classCallCheck(this, TabBarItem);
+        return babelHelpers.possibleConstructorReturn(this, (TabBarItem.__proto__ || Object.getPrototypeOf(TabBarItem)).apply(this, arguments));
+    }
+
+    babelHelpers.createClass(TabBarItem, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(_reactNative.Image, {
+                source: this.props.focused ? this.props.selectedImage : this.props.normalImage,
+                style: { tintColor: this.props.tintColor, width: 25, height: 25 }
+            });
+        }
+    }]);
+    return TabBarItem;
+}(_react.Component);
+
+exports.default = TabBarItem;
+}, 772, null, "MNReleaseTool/app/components/TabBarItem.js");
+__d(/* MNReleaseTool/img/project_normal.png */function(global, require, module, exports) {module.exports = require(276                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/img","width":25,"height":25,"scales":[2],"hash":"8c7c52d40a84b07c0bb39c1b198fb1a6","name":"project_normal","type":"png"}); // 276 = react-native/Libraries/Image/AssetRegistry
+}, 775, null, "MNReleaseTool/img/project_normal.png");
+__d(/* MNReleaseTool/img/project_selected.png */function(global, require, module, exports) {module.exports = require(276                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/img","width":25,"height":25,"scales":[2],"hash":"416392b9744c42e877a0b1b4417461fa","name":"project_selected","type":"png"}); // 276 = react-native/Libraries/Image/AssetRegistry
+}, 776, null, "MNReleaseTool/img/project_selected.png");
+__d(/* MNReleaseTool/img/checkitem_normal.png */function(global, require, module, exports) {module.exports = require(276                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/img","width":25,"height":25,"scales":[2],"hash":"ee0608c86c4f3644ca4dbc4c2b291ab2","name":"checkitem_normal","type":"png"}); // 276 = react-native/Libraries/Image/AssetRegistry
+}, 777, null, "MNReleaseTool/img/checkitem_normal.png");
+__d(/* MNReleaseTool/img/checkitem_selected.png */function(global, require, module, exports) {module.exports = require(276                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/img","width":25,"height":25,"scales":[2],"hash":"89fa9a37c9d5cc1eafed502999e5b915","name":"checkitem_selected","type":"png"}); // 276 = react-native/Libraries/Image/AssetRegistry
+}, 778, null, "MNReleaseTool/img/checkitem_selected.png");
 __d(/* MNReleaseTool/screens/Splash.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -71181,17 +71521,17 @@ var _react2 = babelHelpers.interopRequireDefault(_react);
 
 var _reactNative = require(12            ); // 12 = react-native
 
-var _reactNativeSimpleStore = require(756                        ); // 756 = react-native-simple-store
+var _reactNativeSimpleStore = require(757                        ); // 757 = react-native-simple-store
 
 var _reactNativeSimpleStore2 = babelHelpers.interopRequireDefault(_reactNativeSimpleStore);
 
-var _NavigationUtil = require(758                     ); // 758 = ../tool/NavigationUtil
+var _NavigationUtil = require(759                     ); // 759 = ../tool/NavigationUtil
 
 var _NavigationUtil2 = babelHelpers.interopRequireDefault(_NavigationUtil);
 
 var maxHeight = _reactNative.Dimensions.get('window').height;
 var maxWidth = _reactNative.Dimensions.get('window').width;
-var splashImg = require(759                ); // 759 = ../img/splash.png
+var splashImg = require(760                ); // 760 = ../img/splash.png
 
 var Splash = function (_React$Component) {
   babelHelpers.inherits(Splash, _React$Component);
@@ -71242,7 +71582,7 @@ Splash.navigationOptions = {
   header: null
 };
 exports.default = Splash;
-}, 755, null, "MNReleaseTool/screens/Splash.js");
+}, 756, null, "MNReleaseTool/screens/Splash.js");
 __d(/* react-native-simple-store/dist/index.js */function(global, require, module, exports) {'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof (typeof Symbol === "function" ? Symbol.iterator : "@@iterator") === "symbol" ? function (obj) {
@@ -71251,7 +71591,7 @@ var _typeof = typeof Symbol === "function" && typeof (typeof Symbol === "functio
 	return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== (typeof Symbol === "function" ? Symbol.prototype : "@@prototype") ? "symbol" : typeof obj;
 };
 
-var _lodash = require(757           ); // 757 = lodash.merge
+var _lodash = require(758           ); // 758 = lodash.merge
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
@@ -71334,7 +71674,7 @@ var deviceStorage = {
 };
 
 module.exports = deviceStorage;
-}, 756, null, "react-native-simple-store/dist/index.js");
+}, 757, null, "react-native-simple-store/dist/index.js");
 __d(/* lodash.merge/index.js */function(global, require, module, exports) {
 var LARGE_ARRAY_SIZE = 200;
 
@@ -72333,7 +72673,7 @@ function stubFalse() {
 }
 
 module.exports = merge;
-}, 757, null, "lodash.merge/index.js");
+}, 758, null, "lodash.merge/index.js");
 __d(/* MNReleaseTool/tool/NavigationUtil.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -72349,9 +72689,9 @@ var reset = function reset(navigation, routeName) {
 };
 
 exports.default = { reset: reset };
-}, 758, null, "MNReleaseTool/tool/NavigationUtil.js");
+}, 759, null, "MNReleaseTool/tool/NavigationUtil.js");
 __d(/* MNReleaseTool/img/splash.png */function(global, require, module, exports) {module.exports = require(276                                         ).registerAsset({"__packager_asset":true,"httpServerLocation":"/assets/img","width":320,"height":568,"scales":[2],"hash":"8d9a82d7eeb5888f59c871708b1d2fec","name":"splash","type":"png"}); // 276 = react-native/Libraries/Image/AssetRegistry
-}, 759, null, "MNReleaseTool/img/splash.png");
+}, 760, null, "MNReleaseTool/img/splash.png");
 __d(/* redux-thunk/lib/index.js */function(global, require, module, exports) {'use strict';
 
 exports.__esModule = true;
@@ -72375,7 +72715,7 @@ var thunk = createThunkMiddleware();
 thunk.withExtraArgument = createThunkMiddleware;
 
 exports['default'] = thunk;
-}, 760, null, "redux-thunk/lib/index.js");
+}, 761, null, "redux-thunk/lib/index.js");
 __d(/* redux-logger/dist/redux-logger.js */function(global, require, module, exports) {!function (e, t) {
   "object" == typeof exports && "undefined" != typeof module ? t(exports) : "function" == typeof define && define.amd ? define(["exports"], t) : t(e.reduxLogger = e.reduxLogger || {});
 }(this, function (e) {
@@ -72657,18 +72997,18 @@ __d(/* redux-logger/dist/redux-logger.js */function(global, require, module, exp
         r = e.getState;return "function" == typeof t || "function" == typeof r ? S()({ dispatch: t, getState: r }) : void console.error("\n[redux-logger v3] BREAKING CHANGE\n[redux-logger v3] Since 3.0.0 redux-logger exports by default logger with default settings.\n[redux-logger v3] Change\n[redux-logger v3] import createLogger from 'redux-logger'\n[redux-logger v3] to\n[redux-logger v3] import { createLogger } from 'redux-logger'\n");
   };e.defaults = L, e.createLogger = S, e.logger = T, e.default = T, Object.defineProperty(e, "__esModule", { value: !0 });
 });
-}, 761, null, "redux-logger/dist/redux-logger.js");
+}, 762, null, "redux-logger/dist/redux-logger.js");
 __d(/* MNReleaseTool/app/store/store.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _reduxThunk = require(760          ); // 760 = redux-thunk
+var _reduxThunk = require(761          ); // 761 = redux-thunk
 
 var _reduxThunk2 = babelHelpers.interopRequireDefault(_reduxThunk);
 
 var _redux = require(495    ); // 495 = redux
 
-var _rootReducer = require(763                               ); // 763 = ../../redux/reducers/rootReducer
+var _rootReducer = require(764                               ); // 764 = ../../redux/reducers/rootReducer
 
 var _rootReducer2 = babelHelpers.interopRequireDefault(_rootReducer);
 
@@ -72677,34 +73017,34 @@ var store = (0, _redux.createStore)(_rootReducer2.default, {}, (0, _redux.compos
 }));
 
 exports.default = store;
-}, 762, null, "MNReleaseTool/app/store/store.js");
+}, 763, null, "MNReleaseTool/app/store/store.js");
 __d(/* MNReleaseTool/redux/reducers/rootReducer.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
 var _redux = require(495    ); // 495 = redux
 
-var _checkItemReducer = require(764                 ); // 764 = ./checkItemReducer
+var _checkItemReducer = require(765                 ); // 765 = ./checkItemReducer
 
 var _checkItemReducer2 = babelHelpers.interopRequireDefault(_checkItemReducer);
 
-var _loginReducer = require(765             ); // 765 = ./loginReducer
+var _loginReducer = require(766             ); // 766 = ./loginReducer
 
 var _loginReducer2 = babelHelpers.interopRequireDefault(_loginReducer);
 
-var _projectReducer = require(766               ); // 766 = ./projectReducer
+var _projectReducer = require(767               ); // 767 = ./projectReducer
 
 var _projectReducer2 = babelHelpers.interopRequireDefault(_projectReducer);
 
-var _tokenReducer = require(767             ); // 767 = ./tokenReducer
+var _tokenReducer = require(768             ); // 768 = ./tokenReducer
 
 var _tokenReducer2 = babelHelpers.interopRequireDefault(_tokenReducer);
 
-var _releaseReducer = require(768               ); // 768 = ./releaseReducer
+var _releaseReducer = require(769               ); // 769 = ./releaseReducer
 
 var _releaseReducer2 = babelHelpers.interopRequireDefault(_releaseReducer);
 
-var _releaseDetailReducer = require(769                     ); // 769 = ./releaseDetailReducer
+var _releaseDetailReducer = require(770                     ); // 770 = ./releaseDetailReducer
 
 var _releaseDetailReducer2 = babelHelpers.interopRequireDefault(_releaseDetailReducer);
 
@@ -72716,7 +73056,7 @@ exports.default = rootReducer = (0, _redux.combineReducers)({
     Release: _releaseReducer2.default,
     ReleaseDetail: _releaseDetailReducer2.default
 });
-}, 763, null, "MNReleaseTool/redux/reducers/rootReducer.js");
+}, 764, null, "MNReleaseTool/redux/reducers/rootReducer.js");
 __d(/* MNReleaseTool/redux/reducers/checkItemReducer.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -72770,7 +73110,7 @@ var checkItemsReducer = function checkItemsReducer() {
 };
 
 exports.default = checkItemsReducer;
-}, 764, null, "MNReleaseTool/redux/reducers/checkItemReducer.js");
+}, 765, null, "MNReleaseTool/redux/reducers/checkItemReducer.js");
 __d(/* MNReleaseTool/redux/reducers/loginReducer.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -72799,7 +73139,7 @@ var loginReducer = function loginReducer() {
 };
 
 exports.default = loginReducer;
-}, 765, null, "MNReleaseTool/redux/reducers/loginReducer.js");
+}, 766, null, "MNReleaseTool/redux/reducers/loginReducer.js");
 __d(/* MNReleaseTool/redux/reducers/projectReducer.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -72871,7 +73211,7 @@ var projectReducer = function projectReducer() {
 };
 
 exports.default = projectReducer;
-}, 766, null, "MNReleaseTool/redux/reducers/projectReducer.js");
+}, 767, null, "MNReleaseTool/redux/reducers/projectReducer.js");
 __d(/* MNReleaseTool/redux/reducers/tokenReducer.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -72901,7 +73241,7 @@ var tokenReducer = function tokenReducer() {
 };
 
 exports.default = tokenReducer;
-}, 767, null, "MNReleaseTool/redux/reducers/tokenReducer.js");
+}, 768, null, "MNReleaseTool/redux/reducers/tokenReducer.js");
 __d(/* MNReleaseTool/redux/reducers/releaseReducer.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -72936,7 +73276,7 @@ var releaseReducer = function releaseReducer() {
 };
 
 exports.default = releaseReducer;
-}, 768, null, "MNReleaseTool/redux/reducers/releaseReducer.js");
+}, 769, null, "MNReleaseTool/redux/reducers/releaseReducer.js");
 __d(/* MNReleaseTool/redux/reducers/releaseDetailReducer.js */function(global, require, module, exports) {Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -73003,7 +73343,7 @@ var releaseDetailReducer = function releaseDetailReducer() {
 };
 
 exports.default = releaseDetailReducer;
-}, 769, null, "MNReleaseTool/redux/reducers/releaseDetailReducer.js");
+}, 770, null, "MNReleaseTool/redux/reducers/releaseDetailReducer.js");
 ;require(126);
 ;require(0);
 //# sourceMappingURL=index.ios.map

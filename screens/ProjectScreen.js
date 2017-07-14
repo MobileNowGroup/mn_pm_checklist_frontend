@@ -11,18 +11,21 @@ import {
   TouchableHighlight,
   RefreshControl,
   DeviceEventEmitter,
+  ScrollView,
+  InteractionManager,
 } from "react-native";
+
 import { bindActionCreators } from "redux";
 import * as ProjectCreators from "../redux/actions/projectActions";
-import * as loginActions from "../redux/actions/loginActions";
 import { connect } from "react-redux";
 import NewProjectScreen from "./NewProjectScreen";
-import Icon from "react-native-vector-icons/Octicons";
 import { commonstyles } from '../common/CommonStyles';
 import Swipeout from "react-native-swipeout";
 import * as timeTool from "../tool/timeTool";
 import Loading from '../app/components/Loading';
 import ToastUtil from '../tool/ToastUtil';
+import * as Notification from '../app/constant/notification';
+
 
 /**
  * 初始化状态
@@ -33,11 +36,13 @@ let isRefreshing = false;
  */
 let deleteIndex = -1
 
+let flag = 0
+
 class ProjectScreen extends Component {
  static navigationOptions = props => {
     const { state, setParams } = props.navigation;
     return {
-        title: "项目",
+        headerTitle: "项目",
         headerLeft: null,
         headerStyle: commonstyles.headerStyle,
         headerTitleStyle: commonstyles.headerTitleStyle,
@@ -81,13 +86,22 @@ class ProjectScreen extends Component {
      */ 
     this.props.navigation.setParams({ handleNew: this.new });
     //加载项目列表数据
-    this.loadData();
-        //监听刷新列表的通知
-      this.subscription = DeviceEventEmitter.addListener('ProjectRefreshNotification', () => {
-         //在收到通知后刷新列表
-         this.loadData(); 
-      });
+   //InteractionManager 这个方法用来标记参数中传入的方法在所有当前进行的交互和动画完成后再执行。可以理解为将func加入到一个等待队列。
+   InteractionManager.runAfterInteractions(() => {
+      this.loadData();
+   })
+     //监听刷新列表的通知
+    this.subscription = DeviceEventEmitter.addListener(Notification.ProjectRefreshNotification, () => {
+        //在收到通知后刷新列表
+        this.loadData(); 
+    });
   }
+
+    componentWillUnmount(){
+      //移除通知
+     this.subscription.removeAllListeners(Notification.ProjectRefreshNotification);
+  }
+
 
   // componentWillReceiveProps(nextProps) {
   //   if (nextProps.projects !== this.props.projects) {
@@ -117,7 +131,7 @@ class ProjectScreen extends Component {
    * @memberof ProjectScreen
    */
   onRefresh() {
-
+    flag = 1;
     isRefreshing = true;
     this.setState({
       isLoading: false,
@@ -226,6 +240,37 @@ class ProjectScreen extends Component {
       project: itemData,
     });
   }
+  
+  /**
+   * 没有数据时显示的视图
+   * 
+   * @memberof ProjectScreen
+   */
+  renderEmptyView() {
+    return (
+      <ScrollView
+        automaticallyAdjustContentInsets={false}
+        horizontal={false}
+        contentContainerStyle={styles.empty}
+        style={styles.flex}
+        refreshControl={
+          <RefreshControl
+            style={styles.refreshControlBase}
+            refreshing={isRefreshing}
+            onRefresh={() => this.onRefresh()}
+            title='Loading...'
+            colors={['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']}
+          />
+        }
+      >
+        <View style={{ alignItems:'center' }} >
+          <Text style={{fontSize: 16}}>
+            目前没有数据，请刷新重试...
+          </Text>
+        </View>
+      </ScrollView>
+    )
+  }
 
   /**
    * 
@@ -280,6 +325,13 @@ class ProjectScreen extends Component {
   }
 
   render() {
+
+    const { Project } = this.props;
+    if (this.state.isLoading === false && Project.projects.length === 0) {
+      //在数据加载完成后，如果数据为空,则显示空视图
+      return this.renderEmptyView();
+    }
+
     return (
       <View style={styles.container}>
         {this.renderLoading()}
@@ -312,7 +364,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f4f4f4"
+    backgroundColor: "#f8f8f8"
   },
   list: {
     // flex: 1,
@@ -345,6 +397,16 @@ const styles = StyleSheet.create({
   refreshControlBase: {
     backgroundColor: 'transparent',
   },
+  empty: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 100,
+    backgroundColor: '#fff',
+  },
+  flex: {
+    flex: 1,
+  }
 });
 
 const mapStateToProps = (state) => {

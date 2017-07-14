@@ -20,6 +20,7 @@ import * as projectActions from "../redux/actions/projectActions";
 import LoadingView from '../app/components/LoadingView';
 import Loading from '../app/components/Loading';
 import Button  from '../app/components/Button';
+import ToastUtil from '../tool/ToastUtil';
 
 
 class Login extends Component {
@@ -56,17 +57,25 @@ class Login extends Component {
     });
   }
 
+  /**
+   * 
+   * 登录
+   * @returns 
+   * @memberof Login
+   */
   login() {
-    
-    if (this.state.userName.length < 6) {
-      Alert.alert("温馨提醒", "用户名必须大于6位!");
-      return;
-    } else if (this.state.userPwd.length < 6) {
-      Alert.alert("温馨提醒", "密码必须大于6位!");
+
+    if (this.state.userName.length == 0 || this.state.userName.replace(/\s+/g, '') === '') {
+      ToastUtil.showShort('请输入用户名');
       return;
     }
-    console.log('登录了登录了');
-    // console.log("this props are " + this.props.login());
+
+     if (this.state.userPwd.length == 0 || this.state.userPwd.replace(/\s+/g, '') === '') {
+      ToastUtil.showShort('请输入密码');
+      return;
+    }
+
+    //开始加载动画
     this.setState({animating:true})
     this.props
       .login("Perry", "123")
@@ -76,6 +85,21 @@ class Login extends Component {
       })
       .catch(error => console.log(error));
   }
+  
+  /**
+   * 显示错误信息
+   * 
+   * @param {any} error 
+   * @memberof Login
+   */
+  showError(error) {
+     //停止加载动画
+    this.setState({
+      animating: false,
+    })
+    //显示错误信息
+    ToastUtil.showShort(error);
+  }
 
   render() {
     return (
@@ -83,6 +107,7 @@ class Login extends Component {
         <Loading visible={this.state.animating}
           size='large'
           color='white'
+          text='登录中...'
           />
           <View style={styles.content}>
             <Image source={require('../img/logo.png')} style={styles.logo} />

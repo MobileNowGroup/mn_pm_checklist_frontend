@@ -32,17 +32,18 @@ const propTypes = {
   color: React.PropTypes.string,
   size: React.PropTypes.oneOf(SIZES),
   overlayColor: React.PropTypes.string,
-  onRequestClose: React.PropTypes.func
+  onRequestClose: React.PropTypes.func,
+  text: React.PropTypes.string,
 };
 
-const Loading = ({ visible, color, size, overlayColor, onRequestClose }) => (
+const Loading = ({ visible, color, size, overlayColor, onRequestClose,text }) => (
   <Modal visible={visible} transparent onRequestClose={onRequestClose}>
     {visible
       ? <View key={'spinner'} style={styles.container}>
         <View style={[styles.background, { backgroundColor: overlayColor }]}>
           <View style={styles.loading}>
             <ActivityIndicator size={size} color={color} />
-            <Text style={styles.loadingText}>数据加载中...</Text>
+            <Text style={styles.loadingText}>{text}</Text>
           </View>
         </View>
       </View>
@@ -91,7 +92,8 @@ Loading.defaultProps = {
   color: 'white',
   size: 'large',
   overlayColor: 'transparent',
-  onRequestClose() {}
+  onRequestClose() {},
+  text: '数据加载中..'
 };
 
 export default Loading;

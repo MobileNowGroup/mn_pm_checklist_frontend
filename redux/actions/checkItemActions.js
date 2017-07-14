@@ -164,7 +164,8 @@ let handleCreateError = (dispatch,error) => {
 export function updateCheckItem(checkItemId, body,isLoading) {
   return dispatch => {
     dispatch(loadCheckitemData(isLoading));
-    let url = Api.API_EDIT_CHECKITEM + checkItemId;
+    let url = 'http://119.23.47.185:4001/checkitems/' + checkItemId;
+    console.log('url:  '+url);
     return axios
       .put(url, body)
       .then(response => dispatch(receiveEditResult(response.data.data)))
@@ -178,7 +179,7 @@ export function updateCheckItem(checkItemId, body,isLoading) {
  */
 let receiveEditResult = (result) => {
   return {
-    type: types.EDIT_PROJECT,
+    type: types.EDIT_CHECKITEM,
     isLoading: false,
     editResult: result,
   }
@@ -192,7 +193,7 @@ let receiveEditResult = (result) => {
 let handleEditError = (dispatch,error) => {
   tokenActions.handleError(dispatch, error)
   return {
-    type: types.EDIT_PROJECT,
+    type: types.EDIT_CHECKITEM,
     editResult: false,
     isLoading: false,
   }

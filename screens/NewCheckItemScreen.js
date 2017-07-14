@@ -8,17 +8,20 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Alert,
+  DeviceEventEmitter,
+  Keyboard,
 
 } from "react-native";
 import CheckBox from "react-native-check-box";
 import axios from "axios";
-import * as checkItemActions from "../redux/actions/checkItemActions";
+import { bindActionCreators } from 'redux';
+import * as DetailCreators from '../redux/actions/checkItemActions';
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import ToastUtil from '../tool/ToastUtil';
 import Button from '../app/components/Button'
 import * as timeTool from "../tool/timeTool";
 import { commonstyles } from '../common/CommonStyles'
+import * as Notification from '../app/constant/notification';
 
 class NewCheckItemScreen extends Component {
   static navigationOptions = props => {
@@ -35,28 +38,39 @@ class NewCheckItemScreen extends Component {
     this.state = {
         isEssential: false,
         itemTitle: "",
-        itemDesc: ""
+        itemDesc: "",
+        isLoading: false,
     };
-    // if (typeof this.props.navigation.state.params == "undefined") {
-    //   this.state = {
-    //     isEssential: false,
-    //     itemTitle: "",
-    //     itemDesc: ""
-    //   };
-    // } else {
-    //   this.state = {
-    //     isEssential: Boolean(
-    //       this.props.navigation.state.params.checkItem.IsMandatory
-    //     ),
-    //     itemTitle: this.props.navigation.state.params.checkItem.ItemTitle,
-    //     itemDesc: this.props.navigation.state.params.checkItem.ItemDesc
-    //   };
-    // }
 
-    this.handleNewCheckItemSuccess = this.handleNewCheckItemSuccess.bind(this);
     this.save = this.save.bind(this);
+    this.onCheck = this.onCheck.bind(this);
+    this.renderLoading = this.renderLoading.bind(this);
+    this.handleResult = this.handleResult.bind(this);
+    this.showError = this.showError.bind(this);
+
   }
 
+  componentDidMount() {
+    //获取上个页面的返回值
+    const { params } = this.props.navigation.state;
+    this.setState({
+      isEssential: params === undefined 
+                    ? false
+                    : Boolean(params.checkItem.IsMandatory),
+      itemTitle: params === undefined 
+                    ? ""
+                    : params.checkItem.ItemTitle,
+      itemDesc: params === undefined 
+                    ? ""
+                    : params.checkItem.ItemDesc,
+    })
+  }
+
+  /**
+   * 
+   * check按钮的点击事件
+   * @memberof NewCheckItemScreen
+   */
   onCheck() {
     this.setState({
       isEssential: !this.state.isEssential
@@ -70,6 +84,7 @@ class NewCheckItemScreen extends Component {
    * @memberof NewCheckItemScreen
    */
   save() {
+
     if (this.state.itemTitle.length == 0 || this.state.itemTitle.replace(/\s+/g, '') === '') {
       ToastUtil.showShort('请输入标题');
       return;
@@ -78,44 +93,86 @@ class NewCheckItemScreen extends Component {
       ToastUtil.showShort('请输入描述');
       return;
     }
-    var body = {
+
+    Keyboard.dismiss();
+
+    const { params } = this.props.navigation.state;
+    const { newActions } = this.props;
+
+    let body = {
       ItemTitle: this.state.itemTitle,
       ItemDesc: this.state.itemDesc,
       IsMandatory: this.state.isEssential ? 1 : 0,
       Tags: "基础信息",
-      ItemCode: this.state.itemTitle
+      ItemCode: params === undefined
+                 ? this.state.itemTitle
+                 : params.checkItem.ItemCode,
     };
+    
+    //开始加载动画
+    this.setState({
+      isLoading: true,
+    });
 
-    if (typeof this.props.navigation.state.params == "undefined") {
-      this.props.actions
-        .newCheckItem(body)
-        .then(responce => this.handleNewCheckItemSuccess(responce));
+    if (params === undefined) {
+      //新建题目
+      newActions
+        .newCheckItem(body,this.state.isLoading)
+        .then(response => this.handleResult(response))
+        .catch(error => this.showError(error));
+
     } else {
-      this.props.actions
-        .updateCheckItem(
-          this.props.navigation.state.params.checkItem.ItemId,
-          body
-        )
-        .then(responce => this.handleNewCheckItemSuccess(responce))
-        .catch(error => console.log(error));
+      //编辑题目
+      newActions
+        .updateCheckItem(params.checkItem.ItemId,body,this.state.isLoadin)
+        .then(response => this.handleResult(response))
+        .catch(error => this.showError(error));
     }
-
-    /*
-    let url = "http://119.23.47.185:4001/checkitem";
-    axios
-      .post(url, body)
-      .then(responce => console.log(responce))
-      .catch(error => console.log(error));
-      */
   }
 
-  handleNewCheckItemSuccess(responce) {
-    if (typeof responce == "undefined") {
-      return;
+  /**
+   * 
+   * 处理返回结果
+   * @param {any} response 
+   * @memberof NewCheckItemScreen
+   */
+  handleResult(response) {
+    //停止加载动画
+    this.setState({
+      isLoading: false,
+    })
+    if (response.editResult === true || response.createResult === true) {
+        //发送刷新项目列表成功的通知
+      DeviceEventEmitter.emit(Notification.CheckItemRefreshNotification);
+      this.timer = setTimeout(() => {
+         ToastUtil.showShort('操作成功');
+         this.props.navigation.goBack();
+      },500);
+    }else {
+        ToastUtil.showShort('操作失败，请重试');
     }
-    Alert.alert("Success", "", [
-      { text: "OK", onPress: () => this.props.navigation.goBack() }
-    ]);
+  }
+
+   /**
+   * 
+   * 显示错误信息
+   * @param {any} error 
+   * @memberof NewCheckItemScreen
+   */
+  showError(error) {
+    //停止加载动画
+    this.setState({
+      isLoading: false,
+    })
+    //显示错误信息
+    ToastUtil.showShort(error);
+  }
+
+  /*
+  加载动画
+  */
+  renderLoading() {
+    return <Loading visible={this.state.isLoading} size='large' color='white' text='保存中...'/>;
   }
 
   render() {
@@ -123,30 +180,43 @@ class NewCheckItemScreen extends Component {
       <View style={styles.container}>
         <View style={styles.rowContainer} >
             <Text style={styles.subTitle}>输入标题:</Text>
-              <TextInput
-                style={styles.textInput}
-                onChangeText={(text) => {
-                this.state.itemTitle = text;
-                }}
-              />
+              <View style = {styles.flex}>
+                <TextInput
+                  style={styles.textInput}
+                  autoCorrect={false}
+                  autoCapitalize='none'
+                  value={this.state.itemTitle}
+                  onChangeText={(text) => {
+                     this.setState({
+                      itemTitle: text,
+                    })
+                  }}
+                />
+              </View>
           </View>
         <View style={styles.updateContainer} >
             <Text style={styles.subTitle}>描述:</Text>
-              <TextInput
-                style={styles.textInputMutibleLine}
-                ref = 'updateInput'
-                multiline={true}
-                onChangeText={(text) => {
-                this.state.itemDesc = text;
-                }}
-            />
+              <View style = {styles.flex}>
+                <TextInput
+                  autoCorrect={false}
+                  autoCapitalize='none'
+                  style={styles.textInputMutibleLine}
+                  value={this.state.itemDesc}
+                  multiline={true}
+                  onChangeText={(text) => {
+                    this.setState({
+                      itemDesc: text,
+                    })
+                  }}
+                 />
+              </View>
           </View>
           <View style={styles.checkBoxContainer}>
             <CheckBox
               style={styles.checkbox}
               onClick={() => this.onCheck()}
               leftText="是否必需"
-              isChecked={this.state.isEssential}
+              isChecked={!this.state.isEssential}
               leftTextStyle={{color: '#404040',fontSize: 14}}
             />
         </View>
@@ -170,6 +240,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f4f4f4"
   },
   rowContainer: {
+   // flex: 1,
     margin: 0,
     flexDirection: "row",
     alignItems: 'center',
@@ -178,12 +249,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: '#cccccc',
   },
+  flex: {
+    flex: 1,
+  },
   updateContainer: {
     margin: 0,
     flexDirection: "row",
     alignItems: 'center',
     backgroundColor: 'white',
-    height: 100,
+    height: 110,
     borderBottomWidth: 0.5,
     borderBottomColor: '#cccccc',
   },
@@ -195,15 +269,19 @@ const styles = StyleSheet.create({
     color: '#404040',
   },
   textInput: {
-    width: 200,
+    paddingLeft: 5,
+    marginLeft: 0,
+    marginRight: 15,
     fontSize: 16,
+    height: 60,
   },
   textInputMutibleLine: {
     height: 100,
-    width: 200,
     fontSize: 16,
     marginTop: 5,
     marginBottom: 5,
+    marginLeft: 0,
+    marginRight: 15,
   },
   buttonContainer: {
     alignSelf: "stretch",
@@ -236,13 +314,18 @@ const styles = StyleSheet.create({
   },
 });
 
-// export default NewCheckItemScreen;
+const mapStateToProps = (state) => {
+  const { CheckItem } = state;
+  return {
+    CheckItem
+  };
+};
 
-export default connect(
-  state => ({
-    // checkItems: Object.assign({}, state.default.checkItemsReducer.checkItems)
-  }),
-  dispatch => ({
-    actions: bindActionCreators(checkItemActions, dispatch)
-  })
-)(NewCheckItemScreen);
+const mapDispatchToProps = (dispatch) => {
+  const newActions = bindActionCreators(DetailCreators, dispatch);
+  return {
+    newActions
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewCheckItemScreen);

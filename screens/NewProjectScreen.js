@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Alert,
   DeviceEventEmitter,
+  Keyboard,
 } from "react-native";
 import CheckBox from "react-native-check-box";
 import axios from "axios";
@@ -18,6 +19,7 @@ import { bindActionCreators } from "redux";
 import Button from '../app/components/Button';
 import ToastUtil from '../tool/ToastUtil';
 import Loading from '../app/components/Loading';
+import * as Notification from '../app/constant/notification';
 
 class NewProjectScreen extends Component {
   static navigationOptions = props => {
@@ -67,13 +69,17 @@ class NewProjectScreen extends Component {
       ToastUtil.showShort('请输入项目名');
       return;
     }
-  
+    //收起键盘
+    Keyboard.dismiss();
+
     const { params } = this.props.navigation.state;
     const { actions } = this.props;
 
     let body = {
       ProjectName: this.state.projectName,
-      ProjectCode: this.state.projectName
+      ProjectCode: params === undefined
+                    ? this.state.projectName
+                    : params.project.ProjectCode,
     };
     //显示加载动画
     this.setState({
@@ -109,9 +115,9 @@ class NewProjectScreen extends Component {
       isLoading: false,
     })
     if (response.editResult === true || response.createResult === true) {
-        //发送刷新项目列表成功的通知
-      DeviceEventEmitter.emit('ProjectRefreshNotification');
-      this.timer =  setTimeout(() => {
+      //发送刷新项目列表成功的通知
+      DeviceEventEmitter.emit(Notification.ProjectRefreshNotification);
+      this.timer = setTimeout(() => {
          ToastUtil.showShort('操作成功');
          this.props.navigation.goBack();
       },500);
@@ -139,7 +145,7 @@ class NewProjectScreen extends Component {
   加载动画
   */
   renderLoading() {
-    return <Loading visible={this.state.isLoading} size='large' color='white'/>;
+    return <Loading visible={this.state.isLoading} size='large' color='white' text='保存中...' />;
   }
 
   render() {
@@ -148,16 +154,18 @@ class NewProjectScreen extends Component {
       {this.renderLoading()}
         <View style={styles.nameInputContainer} >
             <Text style={styles.subTitle}>输入项目名:</Text>
-              <TextInput
-                placeholder='项目名称'
-                style={styles.textInput}
-                value={this.state.projectName}
-                onChangeText={(text) => {
+              <View style={styles.flex}>
+                <TextInput
+                  placeholder='项目名称'
+                  style={styles.textInput}
+                  value={this.state.projectName}
+                  onChangeText={(text) => {
                   this.setState({
                     projectName: text,
                   });
                 }}
-              />
+                />
+              </View>
           </View>
           <Button 
             onPress={this._save}
@@ -187,8 +195,9 @@ const styles = StyleSheet.create({
     borderTopColor: '#cccccc',
   },
   textInput: {
-    width: 200,
+   // width: 200,
     fontSize: 16,
+    height: 60,
   },
   subTitle: {
     marginLeft: 20,
@@ -237,6 +246,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     height: 42,
   },
+  flex: {
+    flex: 1,
+  }
 });
 
 // export default NewCheckItemScreen;

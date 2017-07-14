@@ -12,6 +12,7 @@ import {
   View,
   DeviceEventEmitter,
   TouchableHighlight,
+  InteractionManager,
 } from "react-native";
 import HomeRow from "../views/HomeRow";
 import Header from "../views/Header";
@@ -81,12 +82,15 @@ class Home extends Component {
   componentDidMount() {
      //绑定添加按钮点击事件
     this.props.navigation.setParams({ handleNew: this.addAction });
-    //加载项目列表 
-     axios
-      .get(Api.API_PROJECT_LIST)
-      .then(response => this.setProjects(response.data.data))
-      .catch(error => console.log(error));
-      
+    InteractionManager.runAfterInteractions(() => {
+       //加载项目列表 
+      axios
+       .get(Api.API_PROJECT_LIST)
+       .then(response => this.setProjects(response.data.data))
+       .catch(error => console.log(error));
+
+    })
+   
       //监听保存成功的通知
       this.subscription = DeviceEventEmitter.addListener('RefreshNotification', () => {
          //在收到通知后刷新当前显示的列表 
@@ -122,7 +126,6 @@ class Home extends Component {
    console.log('release: ' + release);
    release(projectId,isLoading)
    console.log('projectId: ' + projectId);
-
   }
    
   //设置projects的值

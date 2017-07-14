@@ -9,6 +9,8 @@ import {
   Image,
   TouchableHighlight,
   RefreshControl,
+  DeviceEventEmitter,
+  InteractionManager,
 } from "react-native";
 
 import NewCheckItemScreen from "./NewCheckItemScreen";
@@ -21,6 +23,8 @@ import * as Api from '../app/constant/api';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as DetailCreators from '../redux/actions/checkItemActions';
+import * as Notification from '../app/constant/notification';
+
 
 /**
  * 初始化状态
@@ -33,7 +37,7 @@ class CheckItemScreen extends Component {
   static navigationOptions = props => {
     const { state, setParams } = props.navigation;
     return {
-        title: "题库",
+        headerTitle: "题库",
         headerLeft: null,
         headerStyle: commonstyles.headerStyle,
         headerTitleStyle: commonstyles.headerTitleStyle,
@@ -72,7 +76,22 @@ class CheckItemScreen extends Component {
      //绑定导航栏右侧按钮的点击事件
     this.props.navigation.setParams({ handleNew: this.new });
     // 加载题目列表
-    this.loadData();
+    //用InteractionManager来延时加载
+    InteractionManager.runAfterInteractions(() => {
+      this.loadData();
+    });
+
+    //监听刷新列表的通知
+    this.subscription = DeviceEventEmitter.addListener(Notification.CheckItemRefreshNotification, () => {
+        //在收到通知后刷新列表
+        this.loadData(); 
+    });
+
+  }
+
+  componentWillUnmount() {
+    //移除通知
+    this.subscription.removeAllListeners(Notification.CheckItemRefreshNotification);
   }
 
   /**
@@ -81,6 +100,7 @@ class CheckItemScreen extends Component {
    * @memberof CheckItemScreen
    */
   loadData() {
+    //开始加载动画
     this.setState({
       isLoading: true,
     });
@@ -211,6 +231,37 @@ class CheckItemScreen extends Component {
   }
   
   /**
+   * 没有数据时显示的视图
+   * 
+   * @memberof CheckItemScreen
+   */
+  renderEmptyView() {
+    return (
+      <ScrollView
+        automaticallyAdjustContentInsets={false}
+        horizontal={false}
+        contentContainerStyle={styles.empty}
+        style={styles.flex}
+        refreshControl={
+          <RefreshControl
+            style={styles.refreshControlBase}
+            refreshing={isRefreshing}
+            onRefresh={() => this.onRefresh()}
+            title='Loading...'
+            colors={['#ffaa66cc', '#ff00ddff', '#ffffbb33', '#ffff4444']}
+          />
+        }
+      >
+        <View style={{ alignItems:'center' }} >
+          <Text style={{fontSize: 16}}>
+            目前没有数据，请刷新重试...
+          </Text>
+        </View>
+      </ScrollView>
+    )
+  }
+
+  /**
    * 
    * 刷新单元格
    * @param {any} itemData 
@@ -264,9 +315,11 @@ class CheckItemScreen extends Component {
   }
 
   render() {
-
-    console.log("length:  " + this.state.checkItemData.length);
-
+    const { CheckItem } = this.props;
+    if (this.state.isLoading === false && CheckItem.checkItems.length === 0) {
+      //在数据加载完成后，如果数据为空,则显示空视图
+      return this.renderEmptyView();
+    }
     return (
       <View style={styles.container}>
        <ListView
@@ -337,10 +390,19 @@ const styles = StyleSheet.create({
     marginTop: 5,
     color: "#666",
   },
-
   refreshControlBase: {
     backgroundColor: 'transparent'
   },
+  empty: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingBottom: 100,
+    backgroundColor: '#fff',
+  },
+  flex: {
+    flex: 1,
+  }
 });
 
 const mapStateToProps = (state) => {
