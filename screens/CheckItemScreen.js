@@ -301,7 +301,7 @@ class CheckItemScreen extends Component {
                          : <Text style={{color: '#666'}} >否</Text>
                        } 
             </Text>
-            <Text style={styles.itemTimeText}>{"更新时间时间：" + timeTool.formatTimeString(itemData.UpdatedAt)} </Text>
+            <Text style={styles.itemTimeText}>{"更新时间：" + timeTool.formatTimeString(itemData.UpdatedAt)} </Text>
           </View>
         </TouchableHighlight>
       </Swipeout>

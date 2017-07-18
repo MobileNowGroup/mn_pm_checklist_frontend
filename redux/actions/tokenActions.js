@@ -6,6 +6,7 @@ export function handleError(dispatch, error) {
     // token过期
     dispatch(setTokenState(true));
   } else {
+    console.log('error:  '+error);
   }
 }
 

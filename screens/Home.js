@@ -168,6 +168,10 @@ class Home extends Component {
   
   //根据项目id获取到相应的release
   getReleases(projectId) {
+    //开始加载动画
+    this.setState({
+      isLoading: true,
+    });
     const { release } = this.props;
     release(projectId,this.state.isLoading)
       .then(response => this.setReleaseDataSource(response.releaseList))
@@ -210,6 +214,9 @@ class Home extends Component {
    * @memberof Home
    */
   onRefresh() {
+    this.setState({
+      isLoading: false,
+    })
     isRefreshing = true;
      //根据当前选中的项目刷新releases
     let project = this.state.projects[selectIndex];
