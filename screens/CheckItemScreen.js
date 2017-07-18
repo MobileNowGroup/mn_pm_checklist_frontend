@@ -104,9 +104,10 @@ class CheckItemScreen extends Component {
     this.setState({
       isLoading: true,
     });
+    isRefreshing = false;
     const { detailActions } = this.props;
     detailActions
-      .checkItem(this.state.isLoading)
+      .checkItem(this.state.isLoading,isRefreshing)
       .then(response => this.setDataSource(response.checkItems))
 
   }
@@ -159,7 +160,7 @@ class CheckItemScreen extends Component {
      //加载题目列表
     const { detailActions } = this.props;
     detailActions
-      .checkItem(this.state.isLoading)
+      .checkItem(this.state.isLoading,isRefreshing)
       .then(response => this.setDataSource(response.checkItems))
 
   }

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "configureJPush": "node node_modules/jpush-react-native/JPushConfiguration.js",
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
     "flow": "node_modules/.bin/flow",
@@ -13,10 +14,13 @@
   },
   "dependencies": {
     "axios": "^0.16.1",
+    "jcore-react-native": "^1.1.5",
+    "jpush-react-native": "^1.7.1",
     "react": "16.0.0-alpha.6",
     "react-native": "0.44.0",
     "react-native-check-box": "^1.0.4",
     "react-native-datepicker": "^1.6.0",
+    "react-native-launch-image": "^1.0.3",
     "react-native-progress-hud": "^1.0.4",
     "react-native-scrollable-tab-view": "^0.6.7",
     "react-native-segmented-control-tab": "^3.0.2",
@@ -27,7 +31,8 @@
     "react-redux": "^5.0.4",
     "redux": "^3.6.0",
     "redux-logger": "^3.0.1",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "rnpm": "^1.9.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",

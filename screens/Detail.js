@@ -16,6 +16,7 @@ import Loading from '../app/components/Loading';
  * 用于标识当前题目是否已经全部选中
  */
 let flag = false
+let loadingText = '数据加载中...'
 
 class Detail extends Component {
   static navigationOptions = props => {
@@ -142,6 +143,7 @@ class Detail extends Component {
     this.setState({
       isLoading: true,
     })
+    loadingText = '保存中...';
 
    let checkedItems = [];
    let unCheckedItems = [];
@@ -173,6 +175,7 @@ class Detail extends Component {
     this.setState({
       isLoading: true,
     })
+    loadingText = '删除中...';
     //开始删除 
     const { detailActions } = this.props;
     detailActions
@@ -260,6 +263,7 @@ class Detail extends Component {
     this.setState({
       isLoading: true,
     })
+    loadingText = '发布中...';
     //开始发布
     const { detailActions } = this.props;
     console.log('开始发布.....')
@@ -394,7 +398,7 @@ class Detail extends Component {
    * 加载动画
    */
   renderLoading() {
-    return <Loading visible={this.state.isLoading} size='large' color='white'/>;
+    return <Loading visible={this.state.isLoading} size='large' color='white' text={loadingText} />;
   }
 
   render() {

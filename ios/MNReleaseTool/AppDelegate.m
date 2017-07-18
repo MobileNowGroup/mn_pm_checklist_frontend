@@ -11,6 +11,9 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+//#import <React/RNLaunchImage.h>
+
+#import "RNLaunchImage.h"  // <-- 加入这一行
 
 @implementation AppDelegate
 
@@ -31,6 +34,9 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  //使启动画面就会一直保持，直到你主动将它关闭
+  [RNLaunchImage wait];   // <-- 加入这一行。这必须是这个方法return之前的最后一行
   return YES;
 }
 

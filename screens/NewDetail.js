@@ -71,16 +71,14 @@ class NewDetail extends Component {
   //  this.handleResult = this.handleResult.bind(this);
   }
 
-  componentWillMount() {
-    //加载题目列表
+  componentDidMount() {
+
+    this.props.navigation.setParams({ handleSave: this.save });
+     //加载题目列表
     const { detailActions } = this.props;
     detailActions
-      .checkItem(isLoading)
+      .checkItem(isLoading,false)
       .then(response => this.setDataSource(response.checkItems))
-  }
-
-  componentDidMount() {
-    this.props.navigation.setParams({ handleSave: this.save });
   }
 
 
@@ -251,7 +249,7 @@ class NewDetail extends Component {
   加载动画
   */
   renderLoading() {
-    return <Loading visible={isLoading} size='large' color='white'/>;
+    return <Loading visible={isLoading} size='large' color='white' text='保存中...' />;
   }
 
   render() {

@@ -77,7 +77,8 @@ class ProjectScreen extends Component {
     this.handleDeleteResult = this.handleDeleteResult.bind(this);
     this.showError = this.showError.bind(this);
     this.loadData = this.loadData.bind(this);
-  
+    this.showError = this.showError.bind(this);
+
   }
 
   componentDidMount() {
@@ -123,8 +124,23 @@ class ProjectScreen extends Component {
     projectActions
       .fetchProjects(this.state.isLoading,isRefreshing)
       .then(response => this.setSource(response.projects))
-      .catch(error => ToastUtil.showShort(error));
+      .catch(error => this.showError(error));
   }
+  
+  /**
+   * 
+   * 显示错误信息
+   * @param {any} error 
+   * @memberof ProjectScreen
+   */
+  showError(error) {
+    this.setState({
+      isLoading: false,
+    });
+    ToastUtil.showShort(error);
+  }
+
+
   /**
    * 
    * 下拉刷新

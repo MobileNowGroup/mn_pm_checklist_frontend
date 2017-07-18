@@ -16,3 +16,15 @@ export const Root = StackNavigator(
     headerMode: "none"
   }
 );
+
+
+export const IosRoot = StackNavigator(
+  {
+    Main: { screen: Main },
+    Login: { screen: Login },
+  },
+  {
+    mode: "modal",
+    headerMode: "none"
+  }
+);

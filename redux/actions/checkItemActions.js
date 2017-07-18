@@ -3,19 +3,42 @@ import axios from "axios";
 import * as tokenActions from "./tokenActions";
 import * as Api from '../../app/constant/api';
 
-export let checkItem = (isLoading) => {
+export let checkItem = (isLoading,isRefreshing) => {
   return dispatch => {
-    dispatch(loadCheckitemData(isLoading));
+    dispatch(loadCheckitemData(isLoading,isRefreshing));
     return axios
       .get(Api.API_CHECKITEM_LIST)
       .then(responce => dispatch(receiveCheckitemData(responce.data.data)))
       .catch(error => tokenActions.handleError(dispatch, error));
   }
 }
+/**
+ * 
+ * @param {bool} isLoading 
+ * @param {bool} isRefreshing 
+ */
+let loadCheckitemData = (isLoading,isRefreshing) => {
+  return {
+    type: types.LOAD_CHECKITEM_LIST,
+    isLoading: isLoading,
+    isRefreshing: isRefreshing,
+  }
+}
+
+/**
+ * 接收checkItemList
+ * @param {array} checkItemList 
+ */
+let receiveCheckitemData = (checkItemList) => {
+  return {
+    type: types.GET_CHECKITEM_LIST,
+    checkItems: checkItemList,
+  }
+}
 
 export let addRelease = (parmar,isLoading) => {
   return dispatch => {
-    dispatch(loadCheckitemData(isLoading));
+    dispatch(loadCheckitemData(isLoading,false));
     let url = Api.API_ADD_RELEASE;
     return axios.post(url,parmar)
    .then(response => dispatch(receiveResult(response.data.data)))
@@ -41,20 +64,6 @@ let handleError = (dispatch,error) => {
 }
 
 
-let loadCheckitemData = (isLoading) => {
-  return {
-    type: types.LOAD_CHECKITEM_LIST,
-    isLoading: isLoading,
-  }
-}
-
-let receiveCheckitemData = (checkItemList) => {
-  return {
-    type: types.GET_CHECKITEM_LIST,
-    checkItems: checkItemList,
-  }
-}
-
 /**
  * 
  * 删除checkItem
@@ -65,7 +74,7 @@ let receiveCheckitemData = (checkItemList) => {
  */
 export function deleteCheckItem(itemID, isLoading) {
   return dispatch => {
-    dispatch(loadCheckitemData(isLoading));
+    dispatch(loadCheckitemData(isLoading,false));
     let url = Api.API_DELETE_CHECKITEM + itemID;
     return axios
       .delete(url)
@@ -117,7 +126,7 @@ function handleDeleteItem(responce, dispatch, checkItems, index) {
  */
 export function newCheckItem(body,isLoading) {
   return dispatch => {
-    dispatch(loadCheckitemData(isLoading));
+    dispatch(loadCheckitemData(isLoading,false));
     let url = Api.API_CREATE_CHECKITEM;
     return axios
       .post(url, body)
@@ -163,7 +172,7 @@ let handleCreateError = (dispatch,error) => {
  */
 export function updateCheckItem(checkItemId, body,isLoading) {
   return dispatch => {
-    dispatch(loadCheckitemData(isLoading));
+    dispatch(loadCheckitemData(isLoading,false));
     let url = 'http://119.23.47.185:4001/checkitems/' + checkItemId;
     console.log('url:  '+url);
     return axios
