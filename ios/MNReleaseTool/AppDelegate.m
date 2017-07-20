@@ -20,7 +20,7 @@
 #endif
 
 //填写appkey
-static NSString *appKey = @"";
+static NSString *appKey = @"e93afa82134e88343c231523";
 //填写channel  一般为nil
 static NSString *channel = @"";
 //填写isProdurion  平时测试时为false ，生产时填写true

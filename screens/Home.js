@@ -104,7 +104,10 @@ class Home extends Component {
     //监听app通知,监听 ReceiveNotification 事件，收到到推送的时候会回调
     NativeAppEventEmitter.addListener(
       'ReceiveNotification',
-      (notification) => this.loadProjectData()
+      (notification) => {
+        ToastUtil.showShort('收到通知了，收到通知了');
+        this.loadProjectData();
+      }
     );
   
   }

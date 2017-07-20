@@ -89,7 +89,7 @@ android {
     defaultConfig {
         applicationId "com.mnreleasetool"
         manifestPlaceholders = [
-                JPUSH_APPKEY: "",
+                JPUSH_APPKEY: "e93afa82134e88343c231523",
                 APP_CHANNEL: "",
         ]
         minSdkVersion 16
